@@ -1,0 +1,135 @@
+.skilltree-wrapper {
+  padding: 20px 24px;
+  height: calc(100vh - 60px);
+  overflow: auto;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.skilltree-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.skilltree-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #25313a;
+  margin: 0;
+}
+
+.skilltree-total {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.skilltree-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skill-category {
+  background: #f8f8f6;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.skill-category-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.skill-category-header:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.skill-cat-icon {
+  font-size: 1.2rem;
+}
+
+.skill-cat-label {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #25313a;
+  flex-shrink: 0;
+}
+
+.skill-cat-count {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.skill-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #e0e0de;
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 80px;
+}
+
+.skill-progress-fill {
+  height: 100%;
+  background: #2d8a4e;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.skill-cat-chevron {
+  font-size: 0.65rem;
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+.skill-list {
+  padding: 0 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.84rem;
+}
+
+.skill-learned {
+  color: #25313a;
+}
+
+.skill-open {
+  color: #aaa;
+}
+
+.skill-status-icon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.skill-name {
+  font-weight: 500;
+}
+
+.skill-source {
+  font-size: 0.72rem;
+  color: #999;
+  margin-left: auto;
+}

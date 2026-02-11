@@ -1,0 +1,24 @@
+.delete-modal {
+  text-align: center;
+}
+
+.delete-msg {
+  font-size: 0.9rem;
+  color: #444;
+  margin: 0 0 20px;
+}
+
+.delete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.delete-confirm-btn {
+  background: #c60a0f !important;
+  color: #fff !important;
+}
+
+.delete-confirm-btn:hover {
+  background: #a80810 !important;
+}

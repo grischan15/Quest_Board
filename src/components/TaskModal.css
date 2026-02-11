@@ -1,0 +1,121 @@
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #25313a;
+}
+
+.form-optional {
+  font-weight: 400;
+  color: #aaa;
+}
+
+.form-input,
+.form-textarea {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: #25313a;
+  transition: border-color 0.15s;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #25313a;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.quadrant-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quadrant-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: #444;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.quadrant-radio input {
+  accent-color: #c60a0f;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.form-actions-right {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.form-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.form-btn-cancel {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.form-btn-cancel:hover {
+  background: #e0e0e0;
+}
+
+.form-btn-save {
+  background: #25313a;
+  color: #fff;
+}
+
+.form-btn-save:hover {
+  background: #3a4a56;
+}
+
+.form-btn-save:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.form-btn-delete {
+  background: none;
+  color: #c60a0f;
+  padding: 8px 12px;
+}
+
+.form-btn-delete:hover {
+  background: #fff0f0;
+}

@@ -1,0 +1,115 @@
+.export-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.export-description {
+  font-size: 0.85rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.export-description p {
+  margin: 0 0 8px 0;
+}
+
+.export-use-cases {
+  font-weight: 600;
+  color: #25313a;
+  margin-bottom: 4px !important;
+}
+
+.export-description ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.export-description li {
+  margin-bottom: 4px;
+}
+
+.export-summary {
+  background: #f8f8f6;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.export-summary-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.export-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.export-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border-radius: 6px;
+  padding: 8px 14px;
+  min-width: 70px;
+  flex: 1;
+}
+
+.export-stat-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #25313a;
+}
+
+.export-stat-label {
+  font-size: 0.7rem;
+  color: #888;
+  text-align: center;
+}
+
+.export-includes {
+  font-size: 0.82rem;
+  color: #444;
+}
+
+.export-includes-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.export-includes-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.export-includes-list li {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.export-hint {
+  font-size: 0.78rem;
+  color: #888;
+  background: #f0efea;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.export-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
