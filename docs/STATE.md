@@ -9,7 +9,7 @@
 ## AKTUELLER STATUS
 
 ```
-███████████████████░ Phase: MVP IMPLEMENTIERT (95%)
+████████████████████ Phase: MVP IMPLEMENTIERT (98%)
 ```
 
 **Was ist fertig:**
@@ -17,19 +17,21 @@
 - [x] PRD geschrieben (PRD_Quest_Board_v1_0.md)
 - [x] App Flow dokumentiert (App_Flow_Quest_Board_v1_0.md)
 - [x] Skill-Matrix definiert (Skill_Matrix_v1_0.md)
+- [x] Neurodivergenz UI Guidelines (2025_12_25_Neurodivergenz_UI_Guidelines_v1_0.md)
 - [x] Tech-Stack entschieden: Vite + React + dnd-kit + localStorage
 - [x] Vite + React Projekt aufgesetzt
 - [x] Dependencies installiert (@dnd-kit/core, @dnd-kit/sortable, uuid)
-- [x] Datenmodell & localStorage Persistenz (useQuestBoard Hook, Schema v3)
-- [x] Skill-Matrix Daten (35 Skills, 6 Kategorien)
-- [x] Header mit Tab-Navigation (Backlog, Kanban, Skills) + P3 Logo
+- [x] Datenmodell & localStorage Persistenz (useQuestBoard Hook, Schema v4)
+- [x] Skill-Matrix Daten (35 Skills, 6 Kategorien, mit createdAt/learnedAt)
+- [x] Header mit Tab-Navigation (Backlog, Kanban, Skills) + P3 Logo + Import/Export
 - [x] Eisenhower-Ansicht mit 4 Quadranten + Unsortiert-Bereich + Drag & Drop
 - [x] Kanban-Ansicht: Normal Flow + Fast Lane (getrennte Bereiche)
 - [x] Kanban-Spalten: Vorbereiten, Entwickeln, Testing Intern, Testing Extern
 - [x] Geteilter Done-Bereich (Last Week / Last Month Gruppierung)
 - [x] Fast Lane ist Einbahnstraße (kann nicht rückgängig gemacht werden)
 - [x] Ex-Fast-Lane Tasks rot markiert im Done-Bereich
-- [x] Skill-Tree-Ansicht mit Kategorien, Fortschrittsbalken, Collapse
+- [x] Skill-Tree 3-Spalten-Layout: Skills | Letzter Monat | Letzte Woche (Neuro-UI)
+- [x] Skill-Timestamps: createdAt + learnedAt pro Skill
 - [x] Task-Modal (Erstellen/Bearbeiten) mit Fälligkeitsdatum
 - [x] Skill-Check-Modal (bei Done) mit Konfetti
 - [x] Lösch-Bestätigung Modal
@@ -39,15 +41,16 @@
 - [x] Erstellungsdatum auf Tasks angezeigt
 - [x] Fälligkeitsdatum ("Zu erledigen bis") mit Überfällig/Bald-fällig Styling
 - [x] Historie-Tracking auf Tasks (für spätere Auswertungen)
-- [x] Schema-Versionierung mit Migration (v1 → v2 → v3)
+- [x] Schema-Versionierung mit Migration (v1 → v2 → v3 → v4)
 - [x] P3 Design System (Farben, Fonts, Quadranten-Farben)
+- [x] Neurodivergenz-UI: sanfte Farben, prefers-reduced-motion, Dopamin-Feedback
+- [x] Dynamic base path (dev: `/`, production: `/Quest_Board/`)
+- [x] GitHub Repo erstellt + gepusht
 - [x] Build erfolgreich (Vite Production Build)
 
 **Was kommt als NÄCHSTES:**
 - [ ] Browser-Testing & Feinschliff
-- [ ] GitHub Repo erstellen
 - [ ] GitHub Pages Deployment mit GitHub Actions
-- [ ] Optionales: Neurodivergenz-UI Polish
 - [ ] Optionales: Analytics/Auswertung basierend auf Historie-Daten
 
 ---
@@ -60,21 +63,22 @@ Quest_Board/
 │   ├── PRD_Quest_Board_v1_0.md
 │   ├── App_Flow_Quest_Board_v1_0.md
 │   ├── Skill_Matrix_v1_0.md
+│   ├── 2025_12_25_Neurodivergenz_UI_Guidelines_v1_0.md
 │   ├── P3_Logo_RZ_WortBild_mClaim_hell.svg
 │   └── STATE.md
 ├── src/
 │   ├── assets/
 │   │   └── P3_Logo_RZ_WortBild_mClaim_hell.svg
 │   ├── data/
-│   │   └── skillsData.js          <- 35 Skills, 6 Kategorien
+│   │   └── skillsData.js          <- 35 Skills, 6 Kategorien, createdAt/learnedAt
 │   ├── hooks/
 │   │   ├── useLocalStorage.js     <- localStorage Wrapper
-│   │   └── useQuestBoard.js       <- Haupt-State-Management (Schema v3)
+│   │   └── useQuestBoard.js       <- Haupt-State-Management (Schema v4)
 │   ├── components/
 │   │   ├── Header.jsx/css         <- Navigation + Tabs + P3 Logo + Import/Export
 │   │   ├── Eisenhower.jsx/css     <- 4-Quadranten Backlog + Unsortiert
 │   │   ├── Kanban.jsx/css         <- Normal + Fast Lane + Shared Done
-│   │   ├── SkillTree.jsx/css      <- Skill-Fortschritt
+│   │   ├── SkillTree.jsx/css      <- 3-Spalten: Skills + Letzter Monat + Letzte Woche
 │   │   ├── TaskCard.jsx/css       <- Karte mit Datum, Due Date, Fast Lane
 │   │   ├── DroppableContainer.jsx <- DnD Wrapper
 │   │   ├── Modal.jsx/css          <- Basis-Modal
@@ -100,6 +104,7 @@ Quest_Board/
 | v1 | Initiales Datenmodell (location, quadrant, kanbanColumn: prepare/doing/done) |
 | v2 | Kanban-Refactor: doing → develop, neue Spalten testing-intern/testing-extern |
 | v3 | Due Date, History-Array, Unsortiert-Quadrant, One-Way Fast Lane |
+| v4 | Skills: createdAt + learnedAt Timestamps, Migration bestehender Skills |
 
 ---
 
