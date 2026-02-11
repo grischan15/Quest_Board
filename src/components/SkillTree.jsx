@@ -29,6 +29,11 @@ export default function SkillTree({ skills, tasks }) {
     return task?.title || 'Unbekannt';
   }
 
+  function formatDate(iso) {
+    if (!iso) return null;
+    return new Date(iso).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
   function toggleCategory(catId) {
     setCollapsed((prev) => ({ ...prev, [catId]: !prev[catId] }));
   }
@@ -83,7 +88,17 @@ export default function SkillTree({ skills, tasks }) {
                     <span className="skill-status-icon">
                       {skill.status === 'learned' ? '\u2705' : '\u2B1C'}
                     </span>
-                    <span className="skill-name">{skill.name}</span>
+                    <div className="skill-info">
+                      <span className="skill-name">{skill.name}</span>
+                      <div className="skill-dates">
+                        {skill.createdAt && (
+                          <span className="skill-date">Angelegt: {formatDate(skill.createdAt)}</span>
+                        )}
+                        {skill.learnedAt && (
+                          <span className="skill-date skill-date-learned">Gelernt: {formatDate(skill.learnedAt)}</span>
+                        )}
+                      </div>
+                    </div>
                     {skill.learnedFrom.length > 0 && (
                       <span className="skill-source">
                         ({skill.learnedFrom.map(getTaskTitle).join(', ')})

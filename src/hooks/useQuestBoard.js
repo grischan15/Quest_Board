@@ -4,7 +4,7 @@ import { useLocalStorage } from './useLocalStorage';
 import { initialSkills } from '../data/skillsData';
 
 const STORAGE_KEY = 'questboard';
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 
 const defaultState = {
   version: SCHEMA_VERSION,
@@ -33,6 +33,17 @@ function migrateState(state) {
         task.dueDate = null;
       }
       return task;
+    }),
+    // V3 -> V4: add createdAt/learnedAt to skills
+    skills: (state.skills || initialSkills).map((s) => {
+      const skill = { ...s };
+      if (!skill.createdAt) {
+        skill.createdAt = '2025-01-15T00:00:00.000Z';
+      }
+      if (skill.learnedAt === undefined) {
+        skill.learnedAt = skill.status === 'learned' ? (skill.createdAt || '2025-01-15T00:00:00.000Z') : null;
+      }
+      return skill;
     }),
   };
   return migrated;
@@ -235,10 +246,11 @@ export function useQuestBoard() {
         return { ...updated, skillsLearned: skillIds };
       })
     );
+    const now = new Date().toISOString();
     updateSkills((prev) =>
       prev.map((s) =>
         skillIds.includes(s.id)
-          ? { ...s, status: 'learned', learnedFrom: [...new Set([...s.learnedFrom, taskId])] }
+          ? { ...s, status: 'learned', learnedAt: s.learnedAt || now, learnedFrom: [...new Set([...s.learnedFrom, taskId])] }
           : s
       )
     );

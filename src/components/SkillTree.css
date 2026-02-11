@@ -124,12 +124,34 @@
   flex-shrink: 0;
 }
 
+.skill-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
 .skill-name {
   font-weight: 500;
+}
+
+.skill-dates {
+  display: flex;
+  gap: 12px;
+}
+
+.skill-date {
+  font-size: 0.68rem;
+  color: #aaa;
+}
+
+.skill-date-learned {
+  color: #2d8a4e;
 }
 
 .skill-source {
   font-size: 0.72rem;
   color: #999;
-  margin-left: auto;
+  flex-shrink: 0;
 }
