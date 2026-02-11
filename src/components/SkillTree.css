@@ -2,8 +2,6 @@
   padding: 20px 24px;
   height: calc(100vh - 60px);
   overflow: auto;
-  max-width: 800px;
-  margin: 0 auto;
 }
 
 .skilltree-header {
@@ -24,6 +22,18 @@
   font-size: 0.85rem;
   color: #666;
   font-weight: 600;
+}
+
+/* 3-column layout: Skill Tree | Letzter Monat | Letzte Woche */
+.skilltree-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px 280px;
+  gap: 20px;
+  align-items: start;
+}
+
+.skilltree-main {
+  min-width: 0;
 }
 
 .skilltree-categories {
@@ -154,4 +164,153 @@
   font-size: 0.72rem;
   color: #999;
   flex-shrink: 0;
+}
+
+/* Done Panels - Neurodivergenz-friendly: soft colors, clear hierarchy, generous spacing */
+.done-panel {
+  background: #faf8f5;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: sticky;
+  top: 0;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+
+.done-panel-header {
+  text-align: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e8e6e1;
+}
+
+.done-panel-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #25313a;
+  letter-spacing: -0.01em;
+}
+
+.done-panel-subtitle {
+  font-size: 0.72rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.done-panel-count {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #888;
+  margin-top: 6px;
+  line-height: 1;
+}
+
+.done-panel-count-week {
+  color: #2d8a4e;
+}
+
+.done-panel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.done-panel-empty {
+  font-size: 0.8rem;
+  color: #aaa;
+  text-align: center;
+  padding: 20px 8px;
+  line-height: 1.5;
+}
+
+.done-panel-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  border-radius: 8px;
+  border-left: 3px solid #d4edda;
+  transition: background 0.15s;
+}
+
+.done-panel-item:hover {
+  background: #f5f8f5;
+}
+
+.done-panel-item-recent {
+  border-left-color: #2d8a4e;
+  background: #f0faf2;
+}
+
+.done-panel-item-recent:hover {
+  background: #e5f5e8;
+}
+
+.done-panel-item-fast {
+  border-left-color: #c60a0f !important;
+}
+
+.done-panel-check {
+  color: #2d8a4e;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.done-panel-item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.done-panel-item-title {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #25313a;
+  line-height: 1.4;
+}
+
+.done-panel-item-date {
+  font-size: 0.68rem;
+  color: #999;
+}
+
+.done-panel-skills {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #2d8a4e;
+  background: #d4edda;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Letzter Monat - more subdued */
+.done-panel-month {
+  background: #f5f5f3;
+}
+
+/* Letzte Woche - more prominent, success feel */
+.done-panel-week {
+  background: #f0faf2;
+  border: 2px solid #d4edda;
+}
+
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .skill-progress-fill {
+    transition: none;
+  }
+  .done-panel-item {
+    transition: none;
+  }
 }
