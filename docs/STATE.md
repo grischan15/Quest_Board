@@ -1,5 +1,5 @@
 # STATE: Quest Board
-## Wo stehen wir? Was kommt als nächstes?
+## Wo stehen wir?
 
 **Zuletzt aktualisiert:** 11. Februar 2026
 **Aktualisiert von:** Claude Code CLI
@@ -48,10 +48,7 @@
 - [x] GitHub Repo erstellt + gepusht
 - [x] Build erfolgreich (Vite Production Build)
 
-**Was kommt als NÄCHSTES:**
-- [ ] Browser-Testing & Feinschliff
-- [ ] GitHub Pages Deployment mit GitHub Actions
-- [ ] Optionales: Analytics/Auswertung basierend auf Historie-Daten
+**Planung & Roadmap:** Siehe [ROADMAP.md](ROADMAP.md)
 
 ---
 
@@ -65,7 +62,8 @@ Quest_Board/
 │   ├── Skill_Matrix_v1_0.md
 │   ├── 2025_12_25_Neurodivergenz_UI_Guidelines_v1_0.md
 │   ├── P3_Logo_RZ_WortBild_mClaim_hell.svg
-│   └── STATE.md
+│   ├── STATE.md
+│   └── ROADMAP.md
 ├── src/
 │   ├── assets/
 │   │   └── P3_Logo_RZ_WortBild_mClaim_hell.svg
