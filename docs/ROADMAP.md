@@ -1,15 +1,17 @@
 # ROADMAP: Quest Board
 ## Wohin geht die Reise?
 
-**Zuletzt aktualisiert:** 11. Februar 2026
+**Zuletzt aktualisiert:** 12. Februar 2026
 
 ---
 
 ## KURZFRISTIG (Feinschliff MVP)
 
 - [ ] Browser-Testing & Feinschliff
-- [ ] GitHub Pages Deployment mit GitHub Actions
+- [x] GitHub Pages Deployment mit GitHub Actions
 - [ ] Analytics/Auswertung basierend auf Historie-Daten
+- [ ] **Skill-Editor in der App** (Skills manuell hinzufügen, bearbeiten, löschen)
+- [ ] **Eigene Skill-Kategorien erstellen** (Name + Icon wählbar)
 
 ---
 
@@ -32,7 +34,14 @@
 - Braucht es einen "Skill-Editor" in der App oder reicht es die `skillsData.js` direkt zu editieren?
 - Sollen Skill-Sets exportierbar/teilbar sein (z.B. Coaching-Skills als JSON-Template)?
 
-**Status:** Noch nicht entschieden
+**Status:** Entschieden → **Option C (Hybrid)** — Vordefinierte Skills als Startvorlage + manuell eigene Skills und Kategorien in der App ergänzbar. Kein Code-Edit nötig für neue Skills.
+
+**Umsetzung (geplant):**
+- Skill Tree bekommt "+" Button zum Hinzufügen neuer Skills
+- Kategorie-Dropdown mit "Neue Kategorie erstellen" Option
+- Neue Kategorien: Name + Icon (Emoji-Picker oder Auswahl)
+- Alle manuell erstellten Skills/Kategorien werden im localStorage gespeichert
+- Export/Import unterstützt auch custom Skills + Kategorien
 
 ---
 
@@ -84,6 +93,8 @@
 | 11.02.2026 | Schema-Versionierung | Zukunftssicher für Datenmodell-Änderungen |
 | 11.02.2026 | Export/Import als Backup | Überbrückung bis DB-Lösung steht |
 | 11.02.2026 | Neurodivergenz-UI Guidelines | HSP/ADHS-optimiertes Design als Grundprinzip |
+| 12.02.2026 | Skills Hybrid-Ansatz (Option C) | Manuelles Hinzufügen von Skills + Kategorien in der App, keine Code-Änderung nötig |
+| 12.02.2026 | 3 neue DevOps Skills | DNS, SSL, FTP Deployment als predefined Skills hinzugefügt |
 
 ---
 

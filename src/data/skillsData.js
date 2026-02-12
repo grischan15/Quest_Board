@@ -17,9 +17,9 @@ export const initialSkills = [
   { id: 'dev-05', name: 'GitHub Pages Deployment', category: 'devops', categoryLabel: 'DevOps & Deployment', status: 'learned', learnedFrom: [], predefined: true, createdAt: '2025-01-15T00:00:00.000Z', learnedAt: '2025-01-15T00:00:00.000Z' },
   { id: 'dev-06', name: 'Testing (Unit / Integration)', category: 'devops', categoryLabel: 'DevOps & Deployment', status: 'open', learnedFrom: [], predefined: true, createdAt: '2025-01-15T00:00:00.000Z', learnedAt: null },
   { id: 'dev-07', name: 'Performance & Lighthouse', category: 'devops', categoryLabel: 'DevOps & Deployment', status: 'open', learnedFrom: [], predefined: true, createdAt: '2025-01-15T00:00:00.000Z', learnedAt: null },
-  { id: 'dev-08', name: 'DNS & Domain Management', category: 'devops', categoryLabel: 'DevOps & Deployment', status: 'learned', learnedFrom: [], predefined: true, createdAt: '2026-02-12T00:00:00.000Z', learnedAt: '2026-02-12T00:00:00.000Z' },
-  { id: 'dev-09', name: 'SSL/TLS Zertifikate', category: 'devops', categoryLabel: 'DevOps & Deployment', status: 'learned', learnedFrom: [], predefined: true, createdAt: '2026-02-12T00:00:00.000Z', learnedAt: '2026-02-12T00:00:00.000Z' },
-  { id: 'dev-10', name: 'FTP Deployment (Custom Hosting)', category: 'devops', categoryLabel: 'DevOps & Deployment', status: 'learned', learnedFrom: [], predefined: true, createdAt: '2026-02-12T00:00:00.000Z', learnedAt: '2026-02-12T00:00:00.000Z' },
+  { id: 'dev-08', name: 'DNS & Domain Management', category: 'devops', categoryLabel: 'DevOps & Deployment', status: 'open', learnedFrom: [], predefined: true, createdAt: '2026-02-12T00:00:00.000Z', learnedAt: null },
+  { id: 'dev-09', name: 'SSL/TLS Zertifikate', category: 'devops', categoryLabel: 'DevOps & Deployment', status: 'open', learnedFrom: [], predefined: true, createdAt: '2026-02-12T00:00:00.000Z', learnedAt: null },
+  { id: 'dev-10', name: 'FTP Deployment (Custom Hosting)', category: 'devops', categoryLabel: 'DevOps & Deployment', status: 'open', learnedFrom: [], predefined: true, createdAt: '2026-02-12T00:00:00.000Z', learnedAt: null },
 
   // Architektur & Planung (6 Skills)
   { id: 'arch-01', name: 'Anforderungsanalyse (PRD)', category: 'architektur', categoryLabel: 'Architektur & Planung', status: 'open', learnedFrom: [], predefined: true, createdAt: '2025-01-15T00:00:00.000Z', learnedAt: null },
