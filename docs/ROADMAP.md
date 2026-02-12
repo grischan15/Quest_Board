@@ -5,6 +5,22 @@
 
 ---
 
+## 📐 KONZEPT-DOKUMENT
+
+> **→ [Quest-Skill-Projekt Konzept v1.0](Quest_Skill_Projekt_Konzept_v1_0.md)**
+>
+> Definiert das komplette Hybrid-System mit:
+> - Abgrenzungsregeln: Quest vs Skill vs Projekt
+> - XP-System (30/50/80) und Skill-Level (0-5)
+> - Quest-Typen mit Energie-Kategorien (Code/Learn/Design/Config/Write)
+> - WIP-Limits, Fast Lane Regeln, Wildcard-Tageslimit
+> - Intake-Flow für neue Ideen + KI-Import-Template
+> - Inkrementelle Umsetzungs-Roadmap (9 Schritte)
+>
+> **Dieses Dokument ist die Referenz für die Claude Code CLI Umsetzung.**
+
+---
+
 ## 🐛 BEKANNTE BUGS
 
 ### BUG-001: Backup-Restore überschreibt neue predefined Skills
@@ -48,73 +64,37 @@ Vermutlich die Import/Restore-Logik – muss im Code lokalisiert werden (wahrsch
 
 ---
 
-## KURZFRISTIG (Feinschliff MVP)
+## KURZFRISTIG (v2.0 – Gamification)
+
+Umsetzung gemäß [Konzept v1.0](Quest_Skill_Projekt_Konzept_v1_0.md), Abschnitt 9:
 
 - [ ] **BUG-001 fixen** (Restore-Merge statt Overwrite)
-- [ ] Browser-Testing & Feinschliff
-- [x] GitHub Pages Deployment mit GitHub Actions
-- [ ] Analytics/Auswertung basierend auf Historie-Daten
+- [ ] **Schritt 1:** Quest-Typ Feld + Farbcoding auf TaskCard
+- [ ] **Schritt 2:** XP-System auf Quest + Berechnung auf Skill
+- [ ] **Schritt 3:** Skill-Level statt binär (Migration v4→v5)
+- [ ] **Schritt 4:** WIP-Limits auf Kanban-Spalten
+- [ ] **Schritt 5:** Wildcard-Limit (Tageszähler + Settings)
+- [ ] **Schritt 8:** Energie-Filter im Backlog
+- [ ] **Schritt 9:** Duration-Feld + Timer-Anzeige
 - [ ] **Skill-Editor in der App** (Skills manuell hinzufügen, bearbeiten, löschen)
 - [ ] **Eigene Skill-Kategorien erstellen** (Name + Icon wählbar)
 
 ---
 
-## MITTELFRISTIG (Nächste Features)
+## MITTELFRISTIG (v3.0 – Projekte & KI)
 
-### 1. Skills generalisieren
+- [ ] **Schritt 6:** Projekte als Unlock-Ziele im Skill-Tree
+- [ ] **Schritt 7:** KI-Import-Template (Prompt + JSON-Schema)
+- [ ] Analytics/Auswertung basierend auf Historie-Daten + XP-Verlauf
+- [ ] Browser-Testing & Feinschliff
 
-**Problem:** Aktuell sind 35 App-Entwicklung Skills hardcoded in `skillsData.js`. Das Board soll aber auch für andere Bereiche und Menschen nutzbar sein.
-
-**Optionen:**
-
-| Option | Beschreibung | Aufwand | Flexibilität |
-|--------|-------------|---------|-------------|
-| **A) Skill-Sets/Profile** | Vordefinierte Sets (App Dev, Projektmanagement, Coaching, etc.). User wählt beim Start. | Mittel | Mittel |
-| **B) Komplett custom** | User erstellt eigene Skills + Kategorien komplett frei. Keine Vorlagen. | Hoch | Hoch |
-| **C) Hybrid** | Vordefinierte Sets als Startvorlagen + eigene Skills/Kategorien ergänzbar und löschbar. | Hoch | Sehr hoch |
-
-**Offene Fragen:**
-- Soll das Quest Board nur für mich sein oder auch für andere Personen?
-- Braucht es einen "Skill-Editor" in der App oder reicht es die `skillsData.js` direkt zu editieren?
-- Sollen Skill-Sets exportierbar/teilbar sein (z.B. Coaching-Skills als JSON-Template)?
-
-**Status:** Entschieden → **Option C (Hybrid)** — Vordefinierte Skills als Startvorlage + manuell eigene Skills und Kategorien in der App ergänzbar. Kein Code-Edit nötig für neue Skills.
-
-**Umsetzung (geplant):**
-- Skill Tree bekommt "+" Button zum Hinzufügen neuer Skills
-- Kategorie-Dropdown mit "Neue Kategorie erstellen" Option
-- Neue Kategorien: Name + Icon (Emoji-Picker oder Auswahl)
-- Alle manuell erstellten Skills/Kategorien werden im localStorage gespeichert
-- Export/Import unterstützt auch custom Skills + Kategorien
-
----
-
-### 2. Datenbank statt localStorage
+### Datenbank statt localStorage
 
 **Problem:** Daten liegen nur im Browser. Bei Browser-Wechsel, Gerätewechsel oder Datenverlust sind die Daten weg (nur Export/Import als Backup).
 
-**Ziel:** Persistente Datenbank, geräteübergreifend.
+**Status:** Bewusst aufgeschoben – localStorage reicht für Single-User. Datenbank-Migration ist selbst ein **Projekt im System** (Skills: `be-01` Supabase Setup, `be-02` SQL Grundlagen).
 
-**Optionen:**
-
-| Option | Beschreibung | Vorteile | Nachteile |
-|--------|-------------|----------|-----------|
-| **Supabase** | PostgreSQL + Auth + Realtime. Steht als Skill-Lernziel. | Lerneffekt, kostenloser Tier, RLS | Dependency auf externen Dienst |
-| **Firebase** | Google Cloud. Firestore + Auth. | Einfaches Setup, gute Docs | Google Lock-in, NoSQL |
-| **Eigenes Backend** | z.B. Express + SQLite/PostgreSQL | Volle Kontrolle | Hosting nötig, mehr Aufwand |
-| **localStorage beibehalten** | Status Quo mit Export/Import | Kein Server nötig, einfach | Nicht geräteübergreifend |
-
-**Abhängigkeiten:**
-- Wenn Skills für andere Menschen nutzbar sein sollen → Auth nötig → DB nötig
-- Wenn nur für mich → localStorage + Export/Import reicht evtl.
-
-**Offene Fragen:**
-- Single-User (nur ich) oder Multi-User?
-- Brauchen andere User eigene Boards oder teilen sie sich eines?
-- Soll die App offline-fähig bleiben (PWA + DB-Sync)?
-- Supabase als Lernprojekt nutzen?
-
-**Status:** Noch nicht entschieden
+**Entscheidung:** Wenn das Gamification-System stabil läuft und du das Board öffnen willst → Supabase als Lernprojekt. Der Skill "Datenbank" wird dabei natürlich im eigenen Quest Board getrackt. 🔄
 
 ---
 
@@ -137,9 +117,12 @@ Vermutlich die Import/Restore-Logik – muss im Code lokalisiert werden (wahrsch
 | 11.02.2026 | Schema-Versionierung | Zukunftssicher für Datenmodell-Änderungen |
 | 11.02.2026 | Export/Import als Backup | Überbrückung bis DB-Lösung steht |
 | 11.02.2026 | Neurodivergenz-UI Guidelines | HSP/ADHS-optimiertes Design als Grundprinzip |
-| 12.02.2026 | Skills Hybrid-Ansatz (Option C) | Manuelles Hinzufügen von Skills + Kategorien in der App, keine Code-Änderung nötig |
-| 12.02.2026 | 3 neue DevOps Skills | DNS, SSL, FTP Deployment als predefined Skills hinzugefügt |
+| 12.02.2026 | Skills Hybrid-Ansatz (Option C) | Manuelles Hinzufügen von Skills + Kategorien in der App |
+| 12.02.2026 | 3 neue DevOps Skills | DNS, SSL, FTP Deployment als predefined Skills |
 | 12.02.2026 | BUG-001 dokumentiert | Restore überschreibt predefined Skills statt zu mergen |
+| **12.02.2026** | **Modell 3 (Hybrid-System)** | **Quest-Skill-Projekt Abgrenzung definiert. XP-Level statt binär. Single-User. Quest 30-45min. Konzept v1.0 erstellt.** |
+| **12.02.2026** | **DB bewusst aufgeschoben** | **localStorage reicht für Single-User. DB-Migration wird eigenes Projekt im System (Meta-Level).** |
+| **12.02.2026** | **Kanban-Spalten beibehalten** | **5 Spalten (Vorbereiten→Entwickeln→Testing Intern→Testing Extern→Done) sind gebaut und passen für Software-Quests.** |
 
 ---
 
