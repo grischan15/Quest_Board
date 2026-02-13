@@ -1,7 +1,25 @@
+/* ─── Layout: Sidebar + Content ─── */
+.help-layout {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+
+.help-sidebar {
+  width: 220px;
+  min-width: 220px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  border-right: 1px solid #f0f0ee;
+  padding: 16px 12px;
+  background: #fafaf8;
+}
+
 .help-wrapper {
+  flex: 1;
   padding: 20px 24px;
   height: calc(100vh - 60px);
   overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 .help-content {
@@ -9,6 +27,299 @@
   margin: 0 auto;
 }
 
+/* Inline TOC hidden on wide screens, shown on narrow */
+.help-toc-inline {
+  display: none;
+}
+
+/* On narrow screens: hide sidebar, show inline TOC */
+@media (max-width: 1100px) {
+  .help-sidebar {
+    display: none;
+  }
+
+  .help-toc-inline {
+    display: block;
+    margin-bottom: 24px;
+  }
+}
+
+/* ─── Hero Banner ─── */
+.help-hero {
+  text-align: center;
+  padding: 28px 20px 20px;
+  margin-bottom: 20px;
+}
+
+.help-hero-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #25313a;
+  margin: 0 0 8px;
+}
+
+.help-hero-text {
+  font-size: 0.92rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─── TOC (Table of Contents) ─── */
+.help-toc {
+  padding: 0;
+  background: none;
+}
+
+/* Sidebar TOC styles */
+.help-sidebar .help-toc {
+  position: sticky;
+  top: 0;
+}
+
+.help-toc-header {
+  margin-bottom: 10px;
+}
+
+.help-toc-label {
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.help-toc-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0ee;
+}
+
+.help-toc-action {
+  background: none;
+  border: 1px solid #e0e0de;
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.68rem;
+  color: #888;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  flex: 1;
+  text-align: center;
+}
+
+.help-toc-action:hover {
+  border-color: #25313a;
+  color: #25313a;
+}
+
+.help-toc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.help-toc-link {
+  background: none;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 0.74rem;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-align: left;
+  line-height: 1.4;
+}
+
+.help-toc-link:hover {
+  background: rgba(33, 150, 243, 0.08);
+  color: #2196F3;
+}
+
+.help-toc-closed-indicator {
+  font-size: 0.62rem;
+  color: #bbb;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Inline TOC (narrow screens) overrides */
+.help-toc-inline .help-toc {
+  background: #f8f8f6;
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+
+.help-toc-inline .help-toc-list {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.help-toc-inline .help-toc-link {
+  background: #fff;
+  border: 1px solid #e0e0de;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+}
+
+.help-toc-inline .help-toc-link:hover {
+  background: #f0f7ff;
+  border-color: #2196F3;
+}
+
+.help-toc-inline .help-toc-actions {
+  border-top: none;
+  margin-top: 8px;
+  padding-top: 0;
+  flex: 0;
+  justify-content: flex-end;
+}
+
+.help-toc-inline .help-toc-action {
+  flex: 0;
+}
+
+/* ─── Collapsible Sections ─── */
+.help-collapsible-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 4px;
+  text-align: left;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.help-collapsible-trigger:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.help-collapsible-trigger .help-section-title {
+  margin: 0;
+}
+
+.help-collapsible-trigger--sub {
+  padding: 6px 4px;
+}
+
+.help-collapsible-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: #888;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  width: 16px;
+}
+
+.help-collapsible-chevron--open {
+  transform: rotate(90deg);
+}
+
+.help-collapsible-summary {
+  font-size: 0.82rem;
+  color: #888;
+  padding: 0 4px 4px 30px;
+  line-height: 1.5;
+}
+
+.help-collapsible-content {
+  overflow: hidden;
+}
+
+.help-collapsible-content--open {
+  padding-top: 4px;
+}
+
+/* Sub-collapsible (e.g. energy curve inside energy section) */
+.help-sub-collapsible {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0ee;
+}
+
+.help-sub-collapsible-content {
+  padding-top: 8px;
+}
+
+/* ─── Demo Hero Card ─── */
+.help-demo-hero {
+  background: linear-gradient(135deg, #f0f7ff 0%, #fdf6e3 100%);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(33, 150, 243, 0.15);
+}
+
+.help-demo-hero-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.help-demo-hero-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.help-demo-hero-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #25313a;
+  margin-bottom: 4px;
+}
+
+.help-demo-hero-subtitle {
+  font-size: 0.82rem;
+  color: #888;
+}
+
+.help-demo-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.help-demo-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  font-size: 0.84rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.help-demo-cta {
+  text-align: center;
+  font-size: 0.86rem;
+  color: #555;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+/* ─── Original styles (preserved) ─── */
 .help-title {
   font-size: 1.4rem;
   font-weight: 700;
@@ -17,7 +328,7 @@
 }
 
 .help-section {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .help-section-title {
@@ -153,7 +464,7 @@
   color: #555;
 }
 
-/* Quest type cards (new universal style) */
+/* Quest type cards */
 .help-types-grid {
   display: flex;
   flex-direction: column;
@@ -425,7 +736,7 @@
 }
 
 /* Covey × Eisenhower × Pareto section */
-.help-section-covey {
+.help-section-covey-inner {
   background: #fafaf8;
   border-radius: 12px;
   padding: 20px;
@@ -649,12 +960,6 @@
 }
 
 /* Neurodivergence grid */
-.help-section-neuro {
-  background: #f8f8f6;
-  border-radius: 12px;
-  padding: 20px;
-}
-
 .help-neuro-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -663,7 +968,7 @@
 }
 
 .help-neuro-item {
-  background: #fff;
+  background: #f8f8f6;
   border-radius: 8px;
   padding: 14px;
 }
@@ -727,10 +1032,23 @@
   margin-top: 16px;
 }
 
+/* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
+  .help-wrapper {
+    scroll-behavior: auto;
+  }
+
+  .help-collapsible-chevron {
+    transition: none;
+  }
+
   .help-step,
   .help-card,
-  .help-neuro-item {
+  .help-neuro-item,
+  .help-collapsible-trigger,
+  .help-toc-action,
+  .help-toc-link,
+  .covey-links-list a {
     transition: none;
   }
 }
