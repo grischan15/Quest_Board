@@ -1,0 +1,132 @@
+.proj-requirements {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.proj-req-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: #f8f8f6;
+  border-radius: 6px;
+}
+
+.proj-req-skill {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.82rem;
+}
+
+.proj-req-levels {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.proj-req-level-btn {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  padding: 0;
+}
+
+.proj-req-level-btn:hover {
+  border-color: #25313a;
+  color: #25313a;
+}
+
+.proj-req-level-active {
+  background: #25313a;
+  color: #fff;
+  border-color: #25313a;
+}
+
+.proj-req-level-active:hover {
+  color: #fff;
+}
+
+.proj-req-status {
+  font-size: 0.72rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  min-width: 52px;
+  text-align: center;
+}
+
+.proj-req-met {
+  color: #2d8a4e;
+}
+
+.proj-req-unmet {
+  color: #c60a0f;
+}
+
+.proj-req-remove {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #ccc;
+  cursor: pointer;
+  padding: 4px 6px;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+
+.proj-req-remove:hover {
+  color: #c60a0f;
+}
+
+.proj-req-add {
+  background: #f0f0f0;
+  color: #25313a;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+  min-height: 36px;
+}
+
+.proj-req-add:hover {
+  background: #e0e0e0;
+}
+
+.proj-req-empty {
+  font-size: 0.8rem;
+  color: #999;
+  padding: 12px;
+  text-align: center;
+  background: #f8f8f6;
+  border-radius: 6px;
+}
+
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .proj-req-level-btn,
+  .proj-req-remove,
+  .proj-req-add {
+    transition: none;
+  }
+}

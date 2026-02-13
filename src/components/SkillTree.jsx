@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { getLevelLabel, getXpForNextLevel, LEVEL_THRESHOLDS } from '../data/questTypes';
 import RpgDashboard from './RpgDashboard';
+import ProjectCard from './ProjectCard';
 import './SkillTree.css';
 
-export default function SkillTree({ skills, tasks, categories, onEditSkill, onAddSkill, onEditCategory, onAddCategory, onImportSkills, onToggleDashboard }) {
+export default function SkillTree({ skills, tasks, categories, projects, onEditSkill, onAddSkill, onEditCategory, onAddCategory, onAddProject, onEditProject, onImportSkills, onToggleDashboard }) {
   const [collapsed, setCollapsed] = useState({});
   const [showHidden, setShowHidden] = useState(false);
 
@@ -70,6 +71,36 @@ export default function SkillTree({ skills, tasks, categories, onEditSkill, onAd
       <div className="skilltree-layout">
         {/* Skill Tree - Left */}
         <div className="skilltree-main">
+          {/* Projects Section */}
+          {(projects && projects.length > 0 || onAddProject) && (
+            <div className="project-section">
+              <div className="project-section-header">
+                <h3 className="project-section-title">Projekte</h3>
+                {onAddProject && (
+                  <button className="project-add-btn" onClick={onAddProject}>
+                    + Projekt
+                  </button>
+                )}
+              </div>
+              {projects && projects.length > 0 ? (
+                <div className="project-grid">
+                  {projects.map((proj) => (
+                    <ProjectCard
+                      key={proj.id}
+                      project={proj}
+                      skills={skills}
+                      onClick={onEditProject ? () => onEditProject(proj) : undefined}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="project-empty">
+                  Erstelle dein erstes Projekt &ndash; definiere welche Skills du brauchst, um es freizuschalten!
+                </div>
+              )}
+            </div>
+          )}
+
           {totalActive === 0 && (
             <div className="empty-state">
               <p>Schliesse Quests ab um Skills zu leveln!</p>
@@ -219,7 +250,7 @@ export default function SkillTree({ skills, tasks, categories, onEditSkill, onAd
         </div>
 
         {/* RPG Dashboard - Right */}
-        <RpgDashboard skills={skills} tasks={tasks} categories={categories} />
+        <RpgDashboard skills={skills} tasks={tasks} categories={categories} projects={projects} />
       </div>
     </div>
   );

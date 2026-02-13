@@ -24,6 +24,76 @@
   line-height: 1.6;
 }
 
+/* Active Projects */
+.rpg-projects {
+  background: #fff;
+  border: 1px solid #f0f0ee;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.rpg-projects-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #25313a;
+  margin: 0 0 10px;
+}
+
+.rpg-projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rpg-project-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rpg-project-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.rpg-project-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rpg-project-name {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #25313a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rpg-project-bar {
+  height: 4px;
+  background: #e0e0de;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rpg-project-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.rpg-project-percent {
+  font-size: 0.68rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  min-width: 28px;
+  text-align: right;
+}
+
 /* Scrollbar styling */
 .rpg-dashboard::-webkit-scrollbar {
   width: 4px;

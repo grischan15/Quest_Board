@@ -3,9 +3,10 @@ import RadarChart from './RadarChart';
 import CharacterCard from './CharacterCard';
 import RecentSkills from './RecentSkills';
 import { RPG_ATTRIBUTES } from '../data/questTypes';
+import { getProjectStatus, getProjectProgress, PROJECT_STATUS_CONFIG } from '../data/projectHelpers';
 import './RpgDashboard.css';
 
-export default function RpgDashboard({ skills, tasks, categories }) {
+export default function RpgDashboard({ skills, tasks, categories, projects }) {
   const { categoryStrengths, totalLevel, totalXP, nextLevel1, nextLevel2, progress1, progress2, weakestCategory } = useMemo(() => {
     const visibleSkills = skills.filter((s) => !s.hidden);
     const dashboardCats = [...categories]
@@ -71,6 +72,17 @@ export default function RpgDashboard({ skills, tasks, categories }) {
     );
   }
 
+  const activeProjects = useMemo(() => {
+    if (!projects || projects.length === 0) return [];
+    return projects
+      .map((p) => ({
+        ...p,
+        computedStatus: getProjectStatus(p, skills),
+        progress: getProjectProgress(p, skills),
+      }))
+      .filter((p) => p.computedStatus !== 'done');
+  }, [projects, skills]);
+
   return (
     <div className="rpg-dashboard">
       <RadarChart categoryStrengths={categoryStrengths} />
@@ -84,6 +96,33 @@ export default function RpgDashboard({ skills, tasks, categories }) {
         progress2={progress2}
         weakestCategory={weakestCategory}
       />
+      {activeProjects.length > 0 && (
+        <div className="rpg-projects">
+          <h4 className="rpg-projects-title">Aktive Projekte</h4>
+          <div className="rpg-projects-list">
+            {activeProjects.map((proj) => {
+              const cfg = PROJECT_STATUS_CONFIG[proj.computedStatus];
+              return (
+                <div key={proj.id} className="rpg-project-item">
+                  <span className="rpg-project-icon">{proj.icon}</span>
+                  <div className="rpg-project-info">
+                    <span className="rpg-project-name">{proj.name}</span>
+                    <div className="rpg-project-bar">
+                      <div
+                        className="rpg-project-bar-fill"
+                        style={{ width: `${proj.progress.percent}%`, background: cfg.color }}
+                      />
+                    </div>
+                  </div>
+                  <span className="rpg-project-percent" style={{ color: cfg.color }}>
+                    {proj.progress.percent}%
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
       <RecentSkills skills={skills} tasks={tasks} />
     </div>
   );

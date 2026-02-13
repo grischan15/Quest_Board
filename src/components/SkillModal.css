@@ -94,3 +94,50 @@
   font-size: 0.7rem;
   color: #999;
 }
+
+/* Project references in SkillModal */
+.skill-modal-projects {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.skill-modal-project-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: #f8f8f6;
+  border-radius: 6px;
+  font-size: 0.82rem;
+}
+
+.skill-modal-project-met {
+  color: #2d8a4e;
+}
+
+.skill-modal-project-unmet {
+  color: #888;
+}
+
+.skill-modal-project-icon {
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.skill-modal-project-name {
+  flex: 1;
+  font-weight: 500;
+  min-width: 0;
+}
+
+.skill-modal-project-req {
+  font-size: 0.72rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.skill-modal-project-status {
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}

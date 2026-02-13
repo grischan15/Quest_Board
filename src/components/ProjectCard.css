@@ -1,0 +1,248 @@
+.project-card {
+  background: #fff;
+  border: 1px solid #f0f0ee;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.project-card:hover {
+  border-color: var(--proj-color, #ddd);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* --- Full mode (SkillTree) --- */
+.project-card-full {
+  padding: 14px 16px;
+}
+
+.project-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.project-card-icon-lg {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.project-card-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.project-card-name {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #25313a;
+}
+
+.project-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.project-card-desc {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+.project-card-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.project-card-bar {
+  flex: 1;
+  height: 6px;
+  background: #e0e0de;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.project-card-bar-lg {
+  height: 8px;
+  border-radius: 4px;
+}
+
+.project-card-bar-fill {
+  height: 100%;
+  background: var(--proj-color, #2d8a4e);
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.project-card-percent {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--proj-color, #888);
+  flex-shrink: 0;
+  min-width: 32px;
+  text-align: right;
+}
+
+.project-card-reqs {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.project-card-req {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  padding: 2px 0;
+}
+
+.project-card-req-met {
+  color: #2d8a4e;
+}
+
+.project-card-req-unmet {
+  color: #999;
+}
+
+.project-card-req-icon {
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.project-card-req-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-card-req-level {
+  font-size: 0.68rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* --- Compact mode (Dashboard) --- */
+.project-card-compact {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.project-card-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.project-card-compact-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.project-card-compact-info .project-card-name {
+  font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-card-compact-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-card-compact-text {
+  font-size: 0.68rem;
+  color: #999;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.project-card-status-icon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* --- Grid for SkillTree --- */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.project-section {
+  margin-bottom: 24px;
+}
+
+.project-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.project-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #25313a;
+  margin: 0;
+}
+
+.project-add-btn {
+  background: #c60a0f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+  min-height: 36px;
+}
+
+.project-add-btn:hover {
+  background: #a80810;
+}
+
+.project-empty {
+  font-size: 0.84rem;
+  color: #999;
+  padding: 20px;
+  text-align: center;
+  background: #f8f8f6;
+  border-radius: 10px;
+}
+
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .project-card {
+    transition: none;
+  }
+  .project-card-bar-fill {
+    transition: none;
+  }
+  .project-add-btn {
+    transition: none;
+  }
+}

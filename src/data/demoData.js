@@ -111,6 +111,71 @@ function getLinkedSkills(questType, rng) {
   return pickN(skills, count, rng);
 }
 
+export function generateDemoProjects() {
+  const now = new Date().toISOString();
+  return [
+    {
+      id: 'proj-demo-1',
+      name: 'NeuroForge Quest Board',
+      description: 'Das Quest Board das du gerade benutzt – React + Vite + localStorage',
+      icon: '\uD83C\uDFAF',
+      requirements: [
+        { skillId: 'fe-01', requiredLevel: 3 },
+        { skillId: 'fe-03', requiredLevel: 3 },
+        { skillId: 'arch-04', requiredLevel: 3 },
+        { skillId: 'dev-01', requiredLevel: 3 },
+      ],
+      status: 'done',
+      createdAt: '2025-01-10T10:00:00.000Z',
+      completedAt: '2025-03-15T14:00:00.000Z',
+    },
+    {
+      id: 'proj-demo-2',
+      name: 'Eisenhower LITE',
+      description: 'Standalone Eisenhower-Matrix App mit Cloud-Sync',
+      icon: '\uD83D\uDCCB',
+      requirements: [
+        { skillId: 'fe-06', requiredLevel: 3 },
+        { skillId: 'fe-05', requiredLevel: 2 },
+        { skillId: 'arch-06', requiredLevel: 2 },
+        { skillId: 'fe-07', requiredLevel: 2 },
+      ],
+      status: 'active',
+      createdAt: now,
+      completedAt: null,
+    },
+    {
+      id: 'proj-demo-3',
+      name: 'Identity Cards',
+      description: 'Digitale Visitenkarten mit QR-Code und Backend-API',
+      icon: '\uD83D\uDCF1',
+      requirements: [
+        { skillId: 'be-01', requiredLevel: 2 },
+        { skillId: 'be-03', requiredLevel: 3 },
+        { skillId: 'fe-08', requiredLevel: 2 },
+      ],
+      status: 'active',
+      createdAt: now,
+      completedAt: null,
+    },
+    {
+      id: 'proj-demo-4',
+      name: 'Automation Pipeline',
+      description: 'n8n + GitHub Actions CI/CD fuer alle Projekte',
+      icon: '\u2699\uFE0F',
+      requirements: [
+        { skillId: 'auto-01', requiredLevel: 3 },
+        { skillId: 'auto-02', requiredLevel: 3 },
+        { skillId: 'auto-05', requiredLevel: 2 },
+        { skillId: 'be-04', requiredLevel: 2 },
+      ],
+      status: 'active',
+      createdAt: now,
+      completedAt: null,
+    },
+  ];
+}
+
 export function generateDemoData() {
   const rng = seededRandom(42);
   const tasks = [];

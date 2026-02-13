@@ -7,6 +7,7 @@ import TaskModal from './components/TaskModal';
 import SkillCheckModal from './components/SkillCheckModal';
 import SkillModal from './components/SkillModal';
 import CategoryModal from './components/CategoryModal';
+import ProjectModal from './components/ProjectModal';
 import DeleteModal from './components/DeleteModal';
 import ImportModal from './components/ImportModal';
 import ExportModal from './components/ExportModal';
@@ -31,6 +32,8 @@ export default function App() {
   const [deleteCategoryTarget, setDeleteCategoryTarget] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showSkillImport, setShowSkillImport] = useState(false);
+  const [projectModal, setProjectModal] = useState(null);
+  const [deleteProjectTarget, setDeleteProjectTarget] = useState(null);
 
   const board = useQuestBoard();
 
@@ -210,6 +213,40 @@ export default function App() {
     [board]
   );
 
+  // --- Project handlers ---
+  const handleAddProject = useCallback(() => {
+    setProjectModal({ mode: 'create' });
+  }, []);
+
+  const handleEditProject = useCallback((project) => {
+    setProjectModal({ mode: 'edit', project });
+  }, []);
+
+  const handleSaveProject = useCallback(
+    ({ name, description, icon, requirements }) => {
+      if (projectModal.mode === 'create') {
+        board.createProject(name, description, icon, requirements);
+      } else if (projectModal.mode === 'edit') {
+        board.updateProject(projectModal.project.id, { name, description, icon, requirements });
+      }
+      setProjectModal(null);
+    },
+    [projectModal, board]
+  );
+
+  const handleRequestDeleteProject = useCallback((project) => {
+    setProjectModal(null);
+    setDeleteProjectTarget(project);
+  }, []);
+
+  const handleConfirmDeleteProject = useCallback(
+    (id) => {
+      board.deleteProject(id);
+      setDeleteProjectTarget(null);
+    },
+    [board]
+  );
+
   const categoryHasSkills = (categoryId) => {
     return board.skills.some((s) => s.category === categoryId);
   };
@@ -267,16 +304,25 @@ export default function App() {
             skills={board.skills}
             tasks={board.tasks}
             categories={board.categories}
+            projects={board.projects}
             onEditSkill={handleEditSkill}
             onAddSkill={handleAddSkill}
             onEditCategory={handleEditCategory}
             onAddCategory={handleAddCategory}
+            onAddProject={handleAddProject}
+            onEditProject={handleEditProject}
             onImportSkills={() => setShowSkillImport(true)}
             onToggleDashboard={board.toggleCategoryDashboard}
           />
         )}
 
-        {activeTab === 'dashboard' && <PersonalDashboard tasks={board.tasks} />}
+        {activeTab === 'dashboard' && (
+          <PersonalDashboard
+            tasks={board.tasks}
+            skills={board.skills}
+            projects={board.projects}
+          />
+        )}
 
         {activeTab === 'help' && <HelpPage />}
       </main>
@@ -297,6 +343,7 @@ export default function App() {
           task={skillCheckTask}
           skills={board.skills}
           categories={board.categories}
+          projects={board.projects}
           onSave={handleSkillCheckSave}
           onClose={() => setSkillCheckTask(null)}
         />
@@ -307,6 +354,7 @@ export default function App() {
           skill={skillModal.mode === 'edit' ? skillModal.skill : null}
           categoryId={skillModal.categoryId}
           categories={board.categories}
+          projects={board.projects}
           onSave={handleSaveSkill}
           onDelete={skillModal.mode === 'edit' && skillModal.skill && !skillModal.skill.predefined ? handleRequestDeleteSkill : null}
           onToggleHidden={skillModal.mode === 'edit' ? handleToggleSkillHidden : null}
@@ -354,6 +402,26 @@ export default function App() {
           itemLabel="Kategorie"
           onConfirm={handleConfirmDeleteCategory}
           onClose={() => setDeleteCategoryTarget(null)}
+        />
+      )}
+
+      {projectModal && (
+        <ProjectModal
+          project={projectModal.mode === 'edit' ? projectModal.project : null}
+          skills={board.skills}
+          categories={board.categories}
+          onSave={handleSaveProject}
+          onDelete={projectModal.mode === 'edit' ? handleRequestDeleteProject : null}
+          onClose={() => setProjectModal(null)}
+        />
+      )}
+
+      {deleteProjectTarget && (
+        <DeleteModal
+          task={deleteProjectTarget}
+          itemLabel="Projekt"
+          onConfirm={handleConfirmDeleteProject}
+          onClose={() => setDeleteProjectTarget(null)}
         />
       )}
 

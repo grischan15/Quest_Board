@@ -94,6 +94,58 @@
   background: rgba(230, 168, 23, 0.1);
 }
 
+/* Project Impact */
+.skill-check-project-impact {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: #f8f8f6;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.skill-check-impact-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #25313a;
+}
+
+.skill-check-impact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.skill-check-impact-ready {
+  background: rgba(33, 150, 243, 0.08);
+}
+
+.skill-check-impact-icon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.skill-check-impact-name {
+  flex: 1;
+  min-width: 0;
+  color: #444;
+}
+
+.skill-check-impact-progress {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #2d8a4e;
+  flex-shrink: 0;
+}
+
+.skill-check-impact-ready .skill-check-impact-progress {
+  color: #2196F3;
+}
+
 .skill-check-actions {
   display: flex;
   justify-content: flex-end;

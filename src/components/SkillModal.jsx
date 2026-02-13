@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import Modal from './Modal';
 import { getLevelLabel, getXpForNextLevel, getLevel, LEVEL_THRESHOLDS } from '../data/questTypes';
+import { getProjectsForSkill } from '../data/projectHelpers';
 import './SkillModal.css';
 
-export default function SkillModal({ skill, categoryId, categories, onSave, onDelete, onToggleHidden, onClose }) {
+export default function SkillModal({ skill, categoryId, categories, projects, onSave, onDelete, onToggleHidden, onClose }) {
   const isEdit = !!skill;
   const [name, setName] = useState(skill?.name || '');
   const [category, setCategory] = useState(skill?.category || categoryId || categories[0]?.id || '');
@@ -123,6 +124,34 @@ export default function SkillModal({ skill, categoryId, categories, onSave, onDe
             </div>
           </div>
         )}
+
+        {isEdit && skill && projects && (() => {
+          const relatedProjects = getProjectsForSkill(skill.id, projects);
+          if (relatedProjects.length === 0) return null;
+          return (
+            <div className="form-group">
+              <label className="form-label">Wird ben&ouml;tigt von</label>
+              <div className="skill-modal-projects">
+                {relatedProjects.map((proj) => {
+                  const req = proj.requirements.find((r) => r.skillId === skill.id);
+                  const met = (editLevel) >= (req?.requiredLevel || 0);
+                  return (
+                    <div key={proj.id} className={`skill-modal-project-item ${met ? 'skill-modal-project-met' : 'skill-modal-project-unmet'}`}>
+                      <span className="skill-modal-project-icon">{proj.icon}</span>
+                      <span className="skill-modal-project-name">{proj.name}</span>
+                      <span className="skill-modal-project-req">
+                        Lv.{req?.requiredLevel} ben&ouml;tigt
+                      </span>
+                      <span className="skill-modal-project-status">
+                        {met ? '\u2705' : '\u26AA'}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
 
         <div className="form-actions">
           <div className="form-actions-left">

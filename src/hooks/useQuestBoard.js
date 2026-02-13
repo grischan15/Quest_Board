@@ -3,10 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { useLocalStorage } from './useLocalStorage';
 import { initialSkills, initialCategories } from '../data/skillsData';
 import { getLevel } from '../data/questTypes';
-import { generateDemoData } from '../data/demoData';
+import { generateDemoData, generateDemoProjects } from '../data/demoData';
 
 const STORAGE_KEY = 'questboard';
-const SCHEMA_VERSION = 13;
+const SCHEMA_VERSION = 14;
 
 export const DEFAULT_SETTINGS = {
   wipLimits: {
@@ -23,6 +23,7 @@ const defaultState = {
   tasks: [],
   skills: initialSkills.map((s) => ({ ...s, hidden: false })),
   categories: initialCategories,
+  projects: [],
   settings: { ...DEFAULT_SETTINGS },
   isDemo: false,
 };
@@ -34,6 +35,7 @@ function getInitialState() {
   return {
     ...defaultState,
     tasks: generateDemoData(),
+    projects: generateDemoProjects(),
     isDemo: true,
   };
 }
@@ -192,6 +194,10 @@ function migrateState(state) {
   if (migrated.isDemo === undefined) {
     migrated.isDemo = false;
   }
+  // V13 -> V14: add projects array
+  if (!migrated.projects) {
+    migrated.projects = [];
+  }
   return migrated;
 }
 
@@ -221,6 +227,7 @@ export function useQuestBoard() {
   const tasks = state.tasks || [];
   const skills = state.skills || initialSkills;
   const categories = state.categories || initialCategories;
+  const projects = state.projects || [];
   const settings = state.settings || DEFAULT_SETTINGS;
   const isDemo = state.isDemo || false;
 
@@ -264,13 +271,24 @@ export function useQuestBoard() {
     });
   }, [setRawState]);
 
-  // Clear demo data: remove all tasks, keep skills/categories/settings
+  const updateProjects = useCallback((updater) => {
+    setRawState((prev) => {
+      const migrated = migrateState(prev);
+      return {
+        ...migrated,
+        projects: typeof updater === 'function' ? updater(migrated.projects || []) : updater,
+      };
+    });
+  }, [setRawState]);
+
+  // Clear demo data: remove all tasks + projects, keep skills/categories/settings
   const clearDemoData = useCallback(() => {
     setRawState((prev) => {
       const migrated = migrateState(prev);
       return {
         ...migrated,
         tasks: [],
+        projects: [],
         isDemo: false,
       };
     });
@@ -624,6 +642,46 @@ export function useQuestBoard() {
     });
   }, [updateCategories]);
 
+  // --- Project CRUD (new in v14) ---
+
+  const createProject = useCallback((name, description, icon, requirements) => {
+    const now = new Date().toISOString();
+    const newProject = {
+      id: `proj-${uuidv4()}`,
+      name,
+      description: description || '',
+      icon: icon || '\uD83C\uDFAF',
+      requirements: requirements || [],
+      status: 'active',
+      createdAt: now,
+      completedAt: null,
+    };
+    updateProjects((prev) => [...prev, newProject]);
+    return newProject;
+  }, [updateProjects]);
+
+  const updateProject = useCallback((id, updates) => {
+    updateProjects((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, ...updates } : p))
+    );
+  }, [updateProjects]);
+
+  const deleteProject = useCallback((id) => {
+    updateProjects((prev) => prev.filter((p) => p.id !== id));
+  }, [updateProjects]);
+
+  const toggleProjectStatus = useCallback((id) => {
+    updateProjects((prev) =>
+      prev.map((p) => {
+        if (p.id !== id) return p;
+        if (p.status === 'done') {
+          return { ...p, status: 'active', completedAt: null };
+        }
+        return { ...p, status: 'done', completedAt: new Date().toISOString() };
+      })
+    );
+  }, [updateProjects]);
+
   // Filtered getters
   const eisenhowerTasks = tasks.filter((t) => t.location === 'eisenhower');
   const kanbanTasks = tasks.filter((t) => t.location === 'kanban');
@@ -677,6 +735,7 @@ export function useQuestBoard() {
       tasks: tasks,
       skills: skills,
       categories: categories,
+      projects: projects,
       settings: settings,
       isDemo: false,
     };
@@ -687,7 +746,7 @@ export function useQuestBoard() {
     a.download = `neuroforge-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-  }, [tasks, skills, categories, settings]);
+  }, [tasks, skills, categories, projects, settings]);
 
   // Restore from exported JSON (BUG-001 fix: merge instead of replace)
   const restoreData = useCallback((data) => {
@@ -709,6 +768,7 @@ export function useQuestBoard() {
       ...migrated,
       skills: mergedSkills,
       categories: mergedCategories,
+      projects: migrated.projects || [],
       settings: migrated.settings || DEFAULT_SETTINGS,
       isDemo: false,
     });
@@ -719,6 +779,7 @@ export function useQuestBoard() {
     tasks,
     skills,
     categories,
+    projects,
     settings,
     isDemo,
     eisenhowerTasks,
@@ -749,6 +810,11 @@ export function useQuestBoard() {
     deleteCategory,
     toggleCategoryDashboard,
     updateCategories,
+    createProject,
+    updateProject,
+    deleteProject,
+    toggleProjectStatus,
+    updateProjects,
     updateSettings,
     exportData,
     restoreData,

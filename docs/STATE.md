@@ -9,7 +9,7 @@
 ## AKTUELLER STATUS
 
 ```
-████████████████████ Phase: v3.0 Block C – Kanban UX, Eisenhower Bugfix, Level-Klarheit
+████████████████████ Phase: v3.5 Block C – Projekte als Unlock-Ziele
 ```
 
 **Was ist fertig:**
@@ -21,7 +21,7 @@
 - [x] Tech-Stack entschieden: Vite + React + dnd-kit + localStorage
 - [x] Vite + React Projekt aufgesetzt
 - [x] Dependencies installiert (@dnd-kit/core, @dnd-kit/sortable, uuid)
-- [x] Datenmodell & localStorage Persistenz (useQuestBoard Hook, Schema v13)
+- [x] Datenmodell & localStorage Persistenz (useQuestBoard Hook, Schema v14)
 - [x] Skill-Matrix Daten (38 Skills, 6 Kategorien, mit createdAt/learnedAt/level/xpCurrent/showInDashboard)
 - [x] Header mit Tab-Navigation (Backlog, Kanban, Skills, Dashboard, Hilfe) + P3 Logo + "NeuroForge" Branding + Import/Export + Settings
 - [x] Eisenhower-Ansicht mit 4 Quadranten + Unsortiert-Bereich + Drag & Drop + Energie-Filter
@@ -137,7 +137,22 @@
 - [x] **CharacterCard Level-Erklaerung** – "Durchschnitt deiner Kategorie-Staerken" + Fortschrittsbalken fuer naechste 2 Ganzzahl-Level + Hebel-Tipp (schwaechste Kategorie)
 - [x] **Level-Anzeige dynamisch** – Erreichte Level werden uebersprungen, zeigt immer die naechsten 2 noch nicht erreichten Level
 
-**Naechster Schritt (v3.5 Block C – Projekte):** Siehe [ROADMAP.md](ROADMAP.md)
+**v3.5 Block C – Projekte als Unlock-Ziele (13.02.2026):**
+- [x] **Schema v14** – `projects: []` im State, Migration v13→v14
+- [x] **projectHelpers.js** – Pure computed Funktionen: getProjectStatus, getProjectProgress, getProjectsForSkill, getRelevantQuests, PROJECT_STATUS_CONFIG
+- [x] **Projekt-Datenmodell** – id, name, description, icon, requirements [{skillId, requiredLevel}], status (active/done), createdAt, completedAt
+- [x] **ProjectModal** – CRUD UI mit Requirements-Picker (Skill-Dropdown grouped by category + Level-Buttons 1-5 + met/unmet Indikator)
+- [x] **ProjectCard** – Full mode (SkillTree: Icon + Name + Status-Badge + Progress-Bar + Requirement-Liste) + Compact mode (Dashboard: Icon + Name + Progress-Bar + "3/5 Skills")
+- [x] **SkillTree Integration** – Projekte-Sektion UEBER den Skill-Kategorien mit ProjectCard-Grid + "+ Projekt" Button
+- [x] **PersonalDashboard** – "Projekt-Fortschritt" Sektion mit kompakten ProjectCard-Tiles (vor Energiekurve)
+- [x] **SkillCheckModal** – Projekt-Impact nach Skill-Auswahl ("Bringt dich naeher an: Projekt X") + Spezial-Highlight wenn Projekt "ready" wird
+- [x] **SkillModal** – "Wird benoetigt von:" Sektion (Projekt-Icon + Name + Level-Anforderung + met/unmet)
+- [x] **RpgDashboard** – "Aktive Projekte" Liste unter CharacterCard mit Mini-Progress-Bars
+- [x] **Demo-Projekte** – 4 Beispiel-Projekte (1x done, 1x active, 2x locked) beim ersten Start
+- [x] **Export/Import/Restore** – projects Array in Export, Restore, clearDemoData
+- [x] **4 Status-Typen** – done (manuell), ready (computed: alle Requirements erfuellt), active (manuell), locked (computed: Requirements nicht erfuellt)
+
+**Naechster Schritt:** Siehe [ROADMAP.md](ROADMAP.md)
 
 ---
 
@@ -160,21 +175,23 @@ Quest_Board/
 │   ├── data/
 │   │   ├── skillsData.js          <- 38 Skills, 6 Kategorien (mit showInDashboard), initialCategories
 │   │   ├── questTypes.js          <- QUEST_TYPES + DURATIONS + XP_VALUES + Level-Helpers + RPG_ATTRIBUTES
-│   │   └── demoData.js            <- generateDemoData() – ~50 Beispiel-Quests fuer ersten Start
+│   │   ├── demoData.js            <- generateDemoData() + generateDemoProjects() – Demo-Quests + Demo-Projekte
+│   │   └── projectHelpers.js      <- Pure computed Helpers (Status, Progress, ForSkill, RelevantQuests, CONFIG)
 │   ├── hooks/
 │   │   ├── useLocalStorage.js     <- localStorage Wrapper (supports function initialValue)
 │   │   ├── useDashboardData.js    <- Dashboard-Datenaufbereitung (Heatmap, LineChart, EnergyCurve)
-│   │   └── useQuestBoard.js       <- Haupt-State-Management (Schema v13, Settings, importSkills, clearDemoData, fastLaneAt)
+│   │   └── useQuestBoard.js       <- Haupt-State-Management (Schema v14, Settings, importSkills, clearDemoData, Project CRUD)
 │   ├── components/
 │   │   ├── Header.jsx/css         <- Navigation + Tabs (Kanban/Backlog/Skills/Dashboard/Hilfe) + NeuroForge Branding + Settings + Import/Export
 │   │   ├── Eisenhower.jsx/css     <- 4-Quadranten Backlog + Unsortiert + Energie-Filter
 │   │   ├── Kanban.jsx/css         <- Mini-Backlog (Q2+Q1 als separate Kaesten) + Normal + Fast Lane (Wildcard-Counter) + Shared Done + WIP-Limits + Drag-Blockade
-│   │   ├── SkillTree.jsx/css      <- 2-Spalten: Skills (Level+XP) links + RPG Dashboard rechts + Auge-Toggle
-│   │   ├── RpgDashboard.jsx/css  <- Container: RadarChart + CharacterCard + RecentSkills
+│   │   ├── SkillTree.jsx/css      <- 2-Spalten: Projekte + Skills (Level+XP) links + RPG Dashboard rechts + Auge-Toggle
+│   │   ├── ProjectCard.jsx/css   <- Projekt-Karte (Full + Compact Mode) mit Status-Badge + Progress-Bar + Requirements
+│   │   ├── RpgDashboard.jsx/css  <- Container: RadarChart + CharacterCard + Aktive Projekte + RecentSkills
 │   │   ├── RadarChart.jsx/css    <- SVG Spinnendiagramm (1-6 Achsen, Gradient-Fill)
 │   │   ├── CharacterCard.jsx/css <- RPG Attribut-Balken (STR/INT/DEX/WIS/CHA/CON) + Level-Erklaerung + naechste Level + Hebel-Tipp
 │   │   ├── RecentSkills.jsx/css  <- Kuerzlich gelernte Skills (Woche + Monat)
-│   │   ├── PersonalDashboard.jsx/css <- Dashboard-Tab mit Heatmap, LineChart, EnergyCurve
+│   │   ├── PersonalDashboard.jsx/css <- Dashboard-Tab mit Projekt-Fortschritt, Heatmap, LineChart, EnergyCurve
 │   │   ├── Heatmap.jsx/css         <- GitHub-Style Heatmap (Tageszeiten x Wochentage)
 │   │   ├── LineChart.jsx/css       <- SVG-Liniendiagramm (Quest-Typen ueber Zeit)
 │   │   ├── EnergyCurve.jsx/css     <- Persoenliche Energiekurve aus echten Daten
@@ -184,9 +201,10 @@ Quest_Board/
 │   │   ├── DroppableContainer.jsx <- DnD Wrapper
 │   │   ├── Modal.jsx/css          <- Basis-Modal (scrollbar auf kleinen Bildschirmen)
 │   │   ├── TaskModal.jsx/css      <- Quest Erstellen/Bearbeiten + Due Date + Quest-Typ + Duration + XP + Skill-Picker
-│   │   ├── SkillModal.jsx/css     <- Skill Erstellen/Bearbeiten/Ausblenden + Level/XP editierbar
+│   │   ├── SkillModal.jsx/css     <- Skill Erstellen/Bearbeiten/Ausblenden + Level/XP editierbar + "Wird benoetigt von" Projekte
 │   │   ├── CategoryModal.jsx/css  <- Kategorie Erstellen/Bearbeiten + Emoji-Picker
-│   │   ├── SkillCheckModal.jsx/css <- Done -> Skills + XP-Vergabe + Konfetti + Level-Up Preview
+│   │   ├── ProjectModal.jsx/css   <- Projekt Erstellen/Bearbeiten + Requirements-Picker (Skill + Level)
+│   │   ├── SkillCheckModal.jsx/css <- Done -> Skills + XP-Vergabe + Konfetti + Level-Up Preview + Projekt-Impact
 │   │   ├── ImportModal.jsx/css    <- Task-Import (Text + CSV/JSON mit Spaltendoku + Restore)
 │   │   ├── SkillImportModal.jsx/css <- Skill-Import (Text + CSV/JSON mit Spaltendoku)
 │   │   ├── ExportModal.jsx/css    <- Daten-Export mit Beschreibung
@@ -219,6 +237,7 @@ Quest_Board/
 | v11 | startedAt/completedAt Timestamps auf Tasks, Backfill-Migration aus History (v3.0 Block B Personal Dashboard) |
 | v12 | linkedSkills auf Tasks, isDemo Flag auf State, Demo-Daten beim ersten Start (v3.0 Block B.2) |
 | v13 | fastLaneAt Timestamp auf Tasks, Wildcard-Zaehlung nach Fast-Lane-Eintritt statt Kanban-Start (v3.0 Block C) |
+| v14 | projects Array im State, Projekt-Datenmodell (id, name, description, icon, requirements, status, createdAt, completedAt), Project CRUD, Demo-Projekte (v3.5 Block C) |
 
 ---
 

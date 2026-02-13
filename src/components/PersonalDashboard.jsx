@@ -3,9 +3,11 @@ import { useDashboardData } from '../hooks/useDashboardData';
 import Heatmap from './Heatmap';
 import LineChart from './LineChart';
 import EnergyCurve from './EnergyCurve';
+import ProjectCard from './ProjectCard';
+import { getProjectStatus } from '../data/projectHelpers';
 import './PersonalDashboard.css';
 
-export default function PersonalDashboard({ tasks }) {
+export default function PersonalDashboard({ tasks, skills, projects }) {
   const [viewMode, setViewMode] = useState('weeks');
   const { heatmapData, lineChartData, energyCurveData, hasDoneTasks } = useDashboardData(tasks, viewMode);
 
@@ -27,10 +29,32 @@ export default function PersonalDashboard({ tasks }) {
     );
   }
 
+  const activeProjects = (projects || []).filter((p) => {
+    const status = getProjectStatus(p, skills || []);
+    return status !== 'done';
+  });
+
   return (
     <div className="dashboard-wrapper">
       <div className="dashboard-content">
         <h2 className="dashboard-title">Dein Dashboard</h2>
+
+        {activeProjects.length > 0 && (
+          <section className="dashboard-section">
+            <h3 className="dashboard-section-title">Projekt-Fortschritt</h3>
+            <p className="dashboard-section-desc">Deine aktiven Projekte und ihr Fortschritt</p>
+            <div className="dashboard-projects-grid">
+              {activeProjects.map((proj) => (
+                <ProjectCard
+                  key={proj.id}
+                  project={proj}
+                  skills={skills || []}
+                  compact
+                />
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="dashboard-section">
           <h3 className="dashboard-section-title">Deine Energiekurve</h3>

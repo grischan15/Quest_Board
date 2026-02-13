@@ -247,16 +247,41 @@ Umgesetzt am 13.02.2026, Schema v12 → v13:
 
 ---
 
+## ✅ ERLEDIGT (v3.5 Block C – Projekte als Unlock-Ziele)
+
+Umgesetzt am 13.02.2026, Schema v13 → v14:
+
+- [x] **Schema v14** – `projects: []` im State, Migration v13→v14
+- [x] **projectHelpers.js** – Pure computed Helpers: getProjectStatus (locked/ready/active/done), getProjectProgress, getProjectsForSkill, getRelevantQuests, PROJECT_STATUS_CONFIG
+- [x] **Projekt-Datenmodell** – `{id, name, description, icon, requirements: [{skillId, requiredLevel}], status, createdAt, completedAt}`
+- [x] **Project CRUD** – createProject, updateProject, deleteProject, toggleProjectStatus in useQuestBoard
+- [x] **ProjectModal** – CRUD UI: Name, Beschreibung, Emoji-Picker, Requirements-Picker (Skill-Dropdown grouped by category + Level-Buttons 1-5 + met/unmet Indikator)
+- [x] **ProjectCard** – Full mode (SkillTree) mit Icon + Name + Status-Badge + Progress-Bar + Requirement-Liste (met/unmet) + Compact mode (Dashboard) mit Icon + Name + Progress-Bar + "3/5 Skills"
+- [x] **SkillTree** – Projekte-Sektion ueber Skill-Kategorien mit ProjectCard-Grid (auto-fill minmax 280px) + "+ Projekt" Button + Empty State
+- [x] **PersonalDashboard** – "Projekt-Fortschritt" Sektion (vor Energiekurve) mit kompakten ProjectCard-Tiles
+- [x] **SkillCheckModal** – Projekt-Impact: "Bringt dich naeher an: Projekt X (3/5 Skills)" + Spezial-Highlight wenn Projekt dadurch "ready" wird
+- [x] **SkillModal** – "Wird benoetigt von:" Sektion (read-only, Projekt-Icon + Name + Lv.X benoetigt + met/unmet)
+- [x] **RpgDashboard** – "Aktive Projekte" Liste unter CharacterCard mit Mini-Progress-Bars + Status-Farben
+- [x] **Demo-Projekte** – 4 Beispiel-Projekte: "NeuroForge Quest Board" (done), "Eisenhower LITE" (active), "Identity Cards" (locked), "Automation Pipeline" (locked)
+- [x] **Export/Import** – projects in exportData, restoreData, clearDemoData
+
+**Dateien:** NEU: `projectHelpers.js`, `ProjectModal.jsx/.css`, `ProjectCard.jsx/.css` (6 Dateien) + GEAENDERT: `useQuestBoard.js`, `demoData.js`, `App.jsx`, `SkillTree.jsx`, `PersonalDashboard.jsx/.css`, `SkillCheckModal.jsx/.css`, `SkillModal.jsx/.css`, `RpgDashboard.jsx/.css`
+
+---
+
 ## MITTELFRISTIG (v3.5+ – Projekte & Vorlagen)
 
 ### Block C: Projekte & KI
-- [ ] **Schritt 6:** Projekte als Unlock-Ziele im Skill-Tree
+- [x] **Schritt 6:** Projekte als Unlock-Ziele im Skill-Tree ✅ (v3.5 Block C)
 - [ ] **Schritt 7:** KI-Import-Template (Prompt + JSON-Schema)
 
 ### Block D: Vorlagen-System
 - [ ] **Skill-Set Templates** – Vordefinierte Vorlagen ("Softwareentwicklung", "Physik Klasse 10", "Sprachen lernen" etc.)
 - [ ] **Template-Auswahl** – Bei erstem Start oder ueber Settings waehlbar
 - [ ] **Community Templates** – Spaeter: Templates teilen/importieren
+
+### Block E: Import/Export Konsolidierung
+- [ ] **Import/Export Moeglichkeiten pruefen** – Aktuelle Import/Export-Logik auf Konsistenz und Vollstaendigkeit pruefen (Tasks, Skills, Categories, Projects, Settings). Redundanzen identifizieren, ggf. einheitliches Format, Validierung und Fehlerbehandlung konsolidieren.
 
 ### Sonstiges
 - [ ] Browser-Testing & Feinschliff
@@ -313,6 +338,8 @@ Umgesetzt am 13.02.2026, Schema v12 → v13:
 | **13.02.2026** | **Demo-Daten Strategie** | **Erster Start laedt automatisch ~50 realistische Quests (40 done + 10 aktiv). Dashboard sofort nutzbar. Loeschbar ueber Banner oder Settings. Export enthaelt nie isDemo=true.** |
 | **13.02.2026** | **v3.0 Block C shipped** | **Kanban UX ueberarbeitet: Wildcard-Counter in Fast Lane Label, WIP-Limits nur im Normal Flow, Mini-Backlog als 2 Kaesten (Q2 oben/Q1 unten). Eisenhower unsorted Bug gefixt. CharacterCard mit Level-Erklaerung + dynamischen naechsten Levels + Hebel-Tipp. Schema v13 (fastLaneAt).** |
 | **13.02.2026** | **Wildcard-Zaehlung Bugfix** | **getWildcardsUsedToday zaehlte nach startedAt (Kanban-Eintritt) statt Fast-Lane-Eintritt. Neues Feld fastLaneAt korrigiert die Tageszaehlung.** |
+| **13.02.2026** | **Projekte: Ansatz A (rein computed)** | **Projekte definieren Skill-Requirements, Status (locked/ready/active/done) wird rein computed. Kein projectId auf Quests. Fortschritt = wie viele Required Skills das Required Level erreicht haben.** |
+| **13.02.2026** | **v3.5 Block C shipped** | **Projekte als Unlock-Ziele: ProjectModal mit Requirements-Picker, ProjectCard (Full + Compact), Integration in SkillTree + Dashboard + SkillCheckModal + SkillModal + RpgDashboard. Schema v14 (projects Array). 4 Demo-Projekte.** |
 
 ---
 
