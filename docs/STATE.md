@@ -9,7 +9,7 @@
 ## AKTUELLER STATUS
 
 ```
-████████████████████ Phase: v3.5 Block C – Projekte als Unlock-Ziele
+████████████████████ Phase: v3.5 Block D – KI Setup Guide (komplett)
 ```
 
 **Was ist fertig:**
@@ -160,6 +160,9 @@
 - [x] **3 Beispiel-Vorlagen** – Webentwicklung, KI & Prompting, Physik Klasse 10 (jeweils mit Lernziel-Beschreibung)
 - [x] **KI-JSON-Import** – Parst die generierte JSON, loest SKILL_INDEX-Referenzen auf, importiert Categories + Skills + Projects + Tasks
 - [x] **Prompt kopieren/herunterladen** – Clipboard + .md Download, auch fuer Beispiel-Vorlagen (Prompt + Lernziel)
+- [x] **dueDate-Bug gefixt** – AI-Import-Handler reicht jetzt dueDate an importTasks durch
+- [x] **Prompt-Template ueberarbeitet** – Vollstaendige Feld-Tabellen fuer alle 4 Entitaeten, dueDate-Strategie, Eisenhower-Erklaerungen, Quest-Typ/Dauer/XP-Tabellen, Qualitaetskriterien, komplettes Mini-Beispiel (Git)
+- [x] **Hilfe-Seite** – Neue Sektion "KI Setup: Lernpfad generieren" erklaert 3-Schritte-Workflow, zeigt was generiert wird, listet die 3 Beispiel-Vorlagen
 
 **Naechster Schritt:** Siehe [ROADMAP.md](ROADMAP.md)
 

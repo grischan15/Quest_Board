@@ -281,7 +281,12 @@ Umgesetzt am 13.02.2026, kein Schema-Change:
 - [x] **KI-JSON-Import** – Textarea + Datei-Upload, JSON-Validierung, Vorschau (Anzahl Categories/Skills/Projects/Tasks), SKILL_INDEX-Referenz-Aufloesung, Import in Board (importSkills + createProject + importTasks)
 - [x] **Responsive Design** – Mobile-optimiert, prefers-reduced-motion Support
 
-**Dateien:** NEU: `AiSetupGuide.jsx/.css`, `aiPromptTemplate.js` (3 Dateien) + GEAENDERT: `Header.jsx`, `App.jsx`
+**Nachbesserungen (gleicher Block):**
+- [x] **dueDate-Bug gefixt** – `handleAiImportJson` reichte dueDate nicht an importTasks durch. Gefixt: `dueDate: t.dueDate || null` im Task-Mapping
+- [x] **Prompt-Template komplett ueberarbeitet** – Vollstaendige Feld-Tabellen fuer alle 4 Entitaeten (Categories 6 Felder, Skills 5, Projects 7, Tasks 8 inkl. dueDate), Eisenhower-Quadranten mit Covey-Erklaerung, Quest-Typ/Dauer/XP-Tabellen mit empfohlener Verteilung, Projekt-Progressionskurve, 9 Qualitaetskriterien, komplettes Mini-Beispiel (Git: 1 Kategorie, 3 Skills, 1 Projekt, 4 Quests mit dueDate)
+- [x] **Hilfe-Seite** – Neue Sektion "KI Setup: Lernpfad generieren" (3-Schritte-Workflow, 4 generierte Entitaeten, 3 Beispiel-Vorlagen, Tipp-Callout)
+
+**Dateien:** NEU: `AiSetupGuide.jsx/.css`, `aiPromptTemplate.js` (3 Dateien) + GEAENDERT: `Header.jsx`, `App.jsx`, `HelpPage.jsx`
 
 ---
 
@@ -357,6 +362,7 @@ Umgesetzt am 13.02.2026, kein Schema-Change:
 | **13.02.2026** | **Projekte: Ansatz A (rein computed)** | **Projekte definieren Skill-Requirements, Status (locked/ready/active/done) wird rein computed. Kein projectId auf Quests. Fortschritt = wie viele Required Skills das Required Level erreicht haben.** |
 | **13.02.2026** | **v3.5 Block C shipped** | **Projekte als Unlock-Ziele: ProjectModal mit Requirements-Picker, ProjectCard (Full + Compact), Integration in SkillTree + Dashboard + SkillCheckModal + SkillModal + RpgDashboard. Schema v14 (projects Array). 4 Demo-Projekte.** |
 | **13.02.2026** | **v3.5 Block D shipped** | **KI Setup Guide: Neuer Tab mit Prompt-Template (Markdown), 3 Beispiel-Vorlagen (Webdev, KI, Physik), JSON-Import mit SKILL_INDEX-Aufloesung. User kann jeden Lernpfad per KI generieren lassen.** |
+| **13.02.2026** | **Prompt-Template ueberarbeitet** | **Kritischer Review: dueDate fehlte, Kontext zu klein fuer zuverlaessige KI-Generierung. Komplett neu geschrieben mit vollstaendigen Feld-Tabellen, Verteilungsempfehlungen, Mini-Beispiel. Hilfe-Seite um KI-Setup-Sektion erweitert.** |
 
 ---
 

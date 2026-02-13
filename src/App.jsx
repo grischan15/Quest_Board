@@ -305,6 +305,7 @@ export default function App() {
           questType: t.questType || null,
           duration: t.duration || null,
           xp: t.xp || null,
+          dueDate: t.dueDate || null,
           linkedSkills: (t.linkedSkills || [])
             .map((ref) => skillIdMap.get(ref) || ref)
             .filter((id) => id && !id.startsWith('__idx_')),

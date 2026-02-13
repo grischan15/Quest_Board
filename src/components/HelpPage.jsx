@@ -132,6 +132,7 @@ const SECTIONS = [
   { id: 'colors', title: 'Farb-Code der Quest-Karten', defaultOpen: false },
   { id: 'fastlane', title: 'Fast Lane (Wildcards)', defaultOpen: false },
   { id: 'universal', title: 'Universal einsetzbar', defaultOpen: false },
+  { id: 'ki-setup', title: 'KI Setup: Lernpfad generieren', defaultOpen: false },
   { id: 'shortcuts', title: 'Tastenkombinationen', defaultOpen: false },
 ];
 
@@ -992,7 +993,128 @@ export default function HelpPage() {
           </p>
         </CollapsibleSection>
 
-        {/* ━━━ 12. TASTENKOMBINATIONEN ━━━ */}
+        {/* ━━━ 12. KI SETUP ━━━ */}
+        <CollapsibleSection
+          id="ki-setup"
+          title="KI Setup: Lernpfad generieren"
+          summary="Lass dir von ChatGPT oder Claude einen kompletten Skill-Tree erstellen."
+          open={openSections['ki-setup']}
+          onToggle={toggleSection}
+        >
+          <p className="help-text">
+            Im Tab <strong>&quot;KI Setup&quot;</strong> findest du ein Werkzeug,
+            mit dem du dir von einer KI (ChatGPT, Claude, Gemini &hellip;)
+            einen kompletten Lernpfad generieren lassen kannst &ndash;
+            inklusive Kategorien, Skills, Projekte und Quests.
+          </p>
+
+          <h4 className="help-subsection-title">So funktioniert es</h4>
+          <div className="help-steps">
+            <div className="help-step">
+              <span className="help-step-num">1</span>
+              <div>
+                <strong>Prompt kopieren</strong> &ndash;
+                Im KI Setup Tab findest du ein fertiges Anforderungsdokument (Markdown).
+                Kopiere es in die Zwischenablage oder lade es als <code>.md</code> herunter.
+              </div>
+            </div>
+            <div className="help-step">
+              <span className="help-step-num">2</span>
+              <div>
+                <strong>KI fragen</strong> &ndash;
+                F&uuml;ge den Prompt in ChatGPT, Claude oder eine andere KI ein.
+                Beschreibe dazu dein Lernziel, z.&thinsp;B.
+                <em>&quot;Ich will Webentwicklung lernen&quot;</em> oder
+                <em>&quot;Physik Klasse 10 Pr&uuml;fungsvorbereitung&quot;</em>.
+                Die KI generiert eine passende JSON-Datei.
+              </div>
+            </div>
+            <div className="help-step">
+              <span className="help-step-num">3</span>
+              <div>
+                <strong>JSON importieren</strong> &ndash;
+                F&uuml;ge die generierte JSON im KI Setup Tab ein oder lade sie als Datei hoch.
+                NeuroForge pr&uuml;ft die Daten, zeigt eine Vorschau und importiert
+                alles auf Knopfdruck &ndash; Kategorien, Skills, Projekte und Quests.
+              </div>
+            </div>
+          </div>
+
+          <h4 className="help-subsection-title">Was wird generiert?</h4>
+          <div className="help-cards">
+            <div className="help-card">
+              <div className="help-card-icon">&#128193;</div>
+              <div className="help-card-title">Kategorien</div>
+              <div className="help-card-desc">
+                Themengebiete mit Icon, z.&thinsp;B. &quot;Frontend&quot;,
+                &quot;Mechanik&quot; oder &quot;Grammatik&quot;.
+              </div>
+            </div>
+            <div className="help-card">
+              <div className="help-card-icon">&#127795;</div>
+              <div className="help-card-title">Skills</div>
+              <div className="help-card-desc">
+                Konkrete F&auml;higkeiten pro Kategorie,
+                z.&thinsp;B. &quot;HTML Grundlagen&quot; oder &quot;Newtonsche Gesetze&quot;.
+              </div>
+            </div>
+            <div className="help-card">
+              <div className="help-card-icon">&#127942;</div>
+              <div className="help-card-title">Projekte</div>
+              <div className="help-card-desc">
+                Unlock-Ziele mit Skill-Anforderungen,
+                z.&thinsp;B. &quot;Portfolio-Seite bauen&quot; (braucht HTML Lv.3 + CSS Lv.2).
+              </div>
+            </div>
+            <div className="help-card">
+              <div className="help-card-icon">&#9889;</div>
+              <div className="help-card-title">Quests</div>
+              <div className="help-card-desc">
+                15&ndash;45 Min Aufgaben mit Typ, XP, F&auml;lligkeit
+                und verkn&uuml;pften Skills &ndash; sofort im Kanban startbar.
+              </div>
+            </div>
+          </div>
+
+          <h4 className="help-subsection-title">3 fertige Beispiele</h4>
+          <p className="help-text">
+            Du musst kein eigenes Lernziel formulieren &ndash;
+            der KI Setup Tab enth&auml;lt drei fertige Vorlagen zum
+            Ausprobieren:
+          </p>
+          <div className="help-context-grid">
+            <div className="help-context-card">
+              <div className="help-context-icon">&#128187;</div>
+              <div className="help-context-title">Webentwicklung Einstieg</div>
+              <div className="help-context-desc">
+                HTML, CSS, JavaScript, erste eigene Seite bauen.
+              </div>
+            </div>
+            <div className="help-context-card">
+              <div className="help-context-icon">&#129302;</div>
+              <div className="help-context-title">KI & Prompting Basics</div>
+              <div className="help-context-desc">
+                Prompt Engineering, KI-Werkzeuge, Reflexion.
+              </div>
+            </div>
+            <div className="help-context-card">
+              <div className="help-context-icon">&#9881;</div>
+              <div className="help-context-title">Physik Klasse 10</div>
+              <div className="help-context-desc">
+                Mechanik, Energie, Elektrizit&auml;t, Pr&uuml;fungsvorbereitung.
+              </div>
+            </div>
+          </div>
+
+          <div className="help-callout">
+            <strong>Tipp:</strong> Du kannst die Vorlagen auch als Startpunkt nehmen
+            und die KI bitten, sie an dein Niveau anzupassen &ndash;
+            z.&thinsp;B. <em>&quot;Mach die Quests einfacher, ich bin Anf&auml;nger&quot;</em>
+            oder <em>&quot;F&uuml;ge noch Projekte f&uuml;r Fortgeschrittene hinzu&quot;</em>.
+          </div>
+        </CollapsibleSection>
+
+        {/* ━━━ 13. TASTENKOMBINATIONEN ━━━ */}
         <CollapsibleSection
           id="shortcuts"
           title="Tastenkombinationen"
