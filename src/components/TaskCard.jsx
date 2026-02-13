@@ -180,6 +180,11 @@ export default function TaskCard({
             Starten &rarr;
           </button>
         )}
+        {!isDone && task.linkedSkills && task.linkedSkills.length > 0 && (
+          <span className="task-linked-skills-badge">
+            &#127795; {task.linkedSkills.length}
+          </span>
+        )}
         {isDone && task.skillsLearned.length > 0 && (
           <span className="task-skills-badge">
             &#10003; {task.skillsLearned.length} Skills

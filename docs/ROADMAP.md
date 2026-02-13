@@ -195,13 +195,41 @@ Umgesetzt am 13.02.2026, Schema v9 → v10:
 
 ---
 
-## MITTELFRISTIG (v3.0 – RPG Dashboard & Analytics)
+## ✅ ERLEDIGT (v3.0 Block B – Personal Dashboard)
 
-### Block B: Personal Dashboard (neuer Tab)
-- [ ] **Heatmap-Tabelle** – Zeilen: Tageszeiten (2h-Blöcke 06-22), Spalten: Wochentage (Mo-So). Farbe = Anzahl abgeschlossene Quests (GitHub-Contribution-Style)
-- [ ] **Liniendiagramm** – X: Zeitraum (Wochen/Monate), Y: Quest-Anzahl. Farbige Linien pro Quest-Typ + dicke schwarze Gesamtsumme. Dynamisch skaliert
-- [ ] **startedAt/completedAt Timestamps** – Timestamps auf Tasks für zeitbasierte Auswertung (Schema-Change)
-- [ ] **Persönliche Energiekurve** – Aus echten Daten berechnet, ersetzt das statische Diagramm der Hilfe-Seite
+Umgesetzt am 13.02.2026, Schema v10 → v11:
+
+- [x] **Schema v11** – `startedAt`/`completedAt` Timestamps auf Tasks, Migration backfill aus History
+- [x] **PersonalDashboard** – Neuer Tab mit 3 Visualisierungen + useDashboardData Hook
+- [x] **Heatmap** – GitHub-Contribution-Style, Zeilen: Tageszeiten (2h-Bloecke 04-00), Spalten: Wochentage (Mo-So), kompakte flache Zellen
+- [x] **LineChart** – SVG-Liniendiagramm, Wochen/Monate Toggle, farbige Linien pro Quest-Typ + Gesamtlinie
+- [x] **EnergyCurve** – Persoenliche Energiekurve aus echten Done-Daten (ab 04:00) + farbige Quest-Typ-Balken pro Zeitslot + Legende
+- [x] **Dashboard-Layout** – Energiekurve oben (wichtigstes Chart), dann Fortschritt, dann Heatmap
+- [x] **Scrollbar-Design** – 10px breit, kontrastreiche Farben (#9a9a8e), Firefox-Support
+- [x] **Hilfe-Seite** – Callout-Box zur persoenlichen Energiekurve (Planung adaptieren)
+
+**Dateien:** NEU: `PersonalDashboard.jsx/.css`, `Heatmap.jsx/.css`, `LineChart.jsx/.css`, `EnergyCurve.jsx/.css`, `useDashboardData.js` + GEAENDERT: `useQuestBoard.js`, `Header.jsx`, `HelpPage.jsx/.css`, `App.jsx`, `index.css`
+
+---
+
+## ✅ ERLEDIGT (v3.0 Block B.2 – Quest-Skill Linking + Demo-Daten)
+
+Umgesetzt am 13.02.2026, Schema v11 → v12:
+
+- [x] **Schema v12** – `linkedSkills: []` auf Tasks, `isDemo` Flag auf State
+- [x] **Demo-Daten** – ~50 Beispiel-Quests beim ersten Start (generateDemoData()), gelber Banner, loeschbar ueber Banner oder Settings
+- [x] **Quest-Skill Linking** – Klappbarer Skill-Picker im TaskModal (Kategorien + Checkbox-Grid)
+- [x] **SkillCheckModal Vorauswahl** – linkedSkills werden als Vorauswahl gesetzt
+- [x] **TaskCard Badge** – linkedSkills-Count Badge auf nicht-Done Karten
+- [x] **DemoBanner** – Warmer gelber Banner mit "Eigene Daten starten" Button
+- [x] **Settings Demo-Delete** – Roter "Demo-Daten loeschen" Button im SettingsModal
+- [x] **clearDemoData()** – Loescht alle Tasks, behaelt Skills/Kategorien/Settings
+
+**Dateien:** NEU: `demoData.js`, `DemoBanner.jsx/.css` + GEAENDERT: `useQuestBoard.js`, `useLocalStorage.js`, `TaskModal.jsx/.css`, `SkillCheckModal.jsx`, `TaskCard.jsx/.css`, `SettingsModal.jsx/.css`, `HelpPage.jsx`, `App.jsx`
+
+---
+
+## MITTELFRISTIG (v3.5+ – Projekte & Vorlagen)
 
 ### Block C: Projekte & KI
 - [ ] **Schritt 6:** Projekte als Unlock-Ziele im Skill-Tree
@@ -209,8 +237,8 @@ Umgesetzt am 13.02.2026, Schema v9 → v10:
 
 ### Block D: Vorlagen-System
 - [ ] **Skill-Set Templates** – Vordefinierte Vorlagen ("Softwareentwicklung", "Physik Klasse 10", "Sprachen lernen" etc.)
-- [ ] **Template-Auswahl** – Bei erstem Start oder über Settings wählbar
-- [ ] **Community Templates** – Später: Templates teilen/importieren
+- [ ] **Template-Auswahl** – Bei erstem Start oder ueber Settings waehlbar
+- [ ] **Community Templates** – Spaeter: Templates teilen/importieren
 
 ### Sonstiges
 - [ ] Browser-Testing & Feinschliff
@@ -262,6 +290,9 @@ Umgesetzt am 13.02.2026, Schema v9 → v10:
 | **13.02.2026** | **v2.5 shipped** | **NeuroForge Rebrand, universelle Quest-Typen (Schema v9), 15-Min Sprint, Hilfe-Seite mit Energie-SVG + Schul-Beispiel, Skill Import: Kategorie-Dropdown + Auto-Create, Kanban als Default + Mini-Backlog (Covey 80/20), Farb-Code + Kanban-Flow Hilfe, Spalten-Subtitles.** |
 | **13.02.2026** | **Kanban als Hauptansicht** | **Fokus-Prinzip: Kanban zeigt die aktive Arbeit. Backlog (Q1+Q2) links sichtbar, kein Tab-Wechsel nötig. Covey: ~80% Q1 dringende Arbeit + ~20% Q2 Säge schärfen.** |
 | **13.02.2026** | **v3.0 Block A shipped** | **RPG Dashboard im Skill-Tree: Radar-Chart (SVG), CharacterCard (STR/INT/DEX/WIS/CHA/CON), RecentSkills. Schema v10 (showInDashboard). Done-Panels ersetzt. Skills links, Dashboard rechts (Lesefluss).** |
+| **13.02.2026** | **v3.0 Block B shipped** | **Personal Dashboard Tab: Heatmap (GitHub-Style), LineChart (Quest-Typen ueber Zeit), EnergyCurve (persoenlich aus Daten). Schema v11 (startedAt/completedAt Timestamps).** |
+| **13.02.2026** | **v3.0 Block B.2 shipped** | **Quest-Skill Linking + Demo-Daten. Schema v12 (linkedSkills, isDemo). ~50 Beispiel-Quests beim ersten Start. Skill-Picker im TaskModal. Vorauswahl im SkillCheckModal. DemoBanner + Settings Demo-Delete.** |
+| **13.02.2026** | **Demo-Daten Strategie** | **Erster Start laedt automatisch ~50 realistische Quests (40 done + 10 aktiv). Dashboard sofort nutzbar. Loeschbar ueber Banner oder Settings. Export enthaelt nie isDemo=true.** |
 
 ---
 

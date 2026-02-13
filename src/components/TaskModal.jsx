@@ -11,7 +11,7 @@ const quadrantOptions = [
   { id: 'unsorted', label: 'Unsortiert (sp\u00e4ter zuordnen)' },
 ];
 
-export default function TaskModal({ task, onSave, onDelete, onClose }) {
+export default function TaskModal({ task, skills, categories, onSave, onDelete, onClose }) {
   const isEdit = !!task;
   const [title, setTitle] = useState(task?.title || '');
   const [description, setDescription] = useState(task?.description || '');
@@ -20,6 +20,8 @@ export default function TaskModal({ task, onSave, onDelete, onClose }) {
   const [questType, setQuestType] = useState(task?.questType || null);
   const [duration, setDuration] = useState(task?.duration || null);
   const [xp, setXp] = useState(task?.xp || null);
+  const [linkedSkills, setLinkedSkills] = useState(task?.linkedSkills || []);
+  const [skillsExpanded, setSkillsExpanded] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -37,8 +39,28 @@ export default function TaskModal({ task, onSave, onDelete, onClose }) {
       questType,
       duration,
       xp,
+      linkedSkills,
     });
   }
+
+  function toggleLinkedSkill(skillId) {
+    setLinkedSkills((prev) =>
+      prev.includes(skillId)
+        ? prev.filter((id) => id !== skillId)
+        : [...prev, skillId]
+    );
+  }
+
+  const visibleSkills = (skills || []).filter((s) => !s.hidden);
+  const sortedCategories = [...(categories || [])].sort((a, b) => a.order - b.order);
+  const categoryData = sortedCategories
+    .map((cat) => ({
+      id: cat.id,
+      label: cat.label,
+      icon: cat.icon,
+      skills: visibleSkills.filter((s) => s.category === cat.id),
+    }))
+    .filter((cat) => cat.skills.length > 0);
 
   function handleKeyDown(e) {
     if (e.key === 'Enter' && !e.shiftKey && e.target.tagName !== 'TEXTAREA') {
@@ -158,6 +180,44 @@ export default function TaskModal({ task, onSave, onDelete, onClose }) {
             ))}
           </div>
         </div>
+
+        {categoryData.length > 0 && (
+          <div className="form-group">
+            <button
+              type="button"
+              className="skill-link-toggle"
+              onClick={() => setSkillsExpanded(!skillsExpanded)}
+            >
+              Skills verknuepfen <span className="form-optional">(optional{linkedSkills.length > 0 ? ` \u00B7 ${linkedSkills.length} gewaehlt` : ''})</span>
+              {linkedSkills.length > 0 && <span className="skill-link-count">{linkedSkills.length}</span>}
+              <span className={`skill-link-toggle-arrow ${skillsExpanded ? 'open' : ''}`}>&#9660;</span>
+            </button>
+            {skillsExpanded && (
+              <div className="skill-link-picker">
+                {categoryData.map((cat) => (
+                  <div key={cat.id} className="skill-link-category">
+                    <div className="skill-link-cat-label">{cat.icon} {cat.label}</div>
+                    <div className="skill-link-items">
+                      {cat.skills.map((skill) => (
+                        <label
+                          key={skill.id}
+                          className={`skill-link-item ${linkedSkills.includes(skill.id) ? 'selected' : ''}`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={linkedSkills.includes(skill.id)}
+                            onChange={() => toggleLinkedSkill(skill.id)}
+                          />
+                          {skill.name}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {(!isEdit || task?.location === 'eisenhower') && (
           <div className="form-group">

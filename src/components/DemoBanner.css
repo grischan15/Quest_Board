@@ -1,0 +1,38 @@
+.demo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: #fdf6e3;
+  border-bottom: 1px solid #e8dfc0;
+  font-size: 0.84rem;
+  color: #6b5c28;
+}
+
+.demo-banner-text {
+  font-weight: 500;
+}
+
+.demo-banner-btn {
+  padding: 5px 14px;
+  background: #25313a;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.demo-banner-btn:hover {
+  background: #3a4a56;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-banner-btn {
+    transition: none;
+  }
+}

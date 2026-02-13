@@ -9,7 +9,7 @@
 ## AKTUELLER STATUS
 
 ```
-████████████████████ Phase: v3.0 Block A – RPG Dashboard im Skill-Tree
+████████████████████ Phase: v3.0 Block B.2 – Quest-Skill Linking + Demo-Daten
 ```
 
 **Was ist fertig:**
@@ -21,7 +21,7 @@
 - [x] Tech-Stack entschieden: Vite + React + dnd-kit + localStorage
 - [x] Vite + React Projekt aufgesetzt
 - [x] Dependencies installiert (@dnd-kit/core, @dnd-kit/sortable, uuid)
-- [x] Datenmodell & localStorage Persistenz (useQuestBoard Hook, Schema v10)
+- [x] Datenmodell & localStorage Persistenz (useQuestBoard Hook, Schema v12)
 - [x] Skill-Matrix Daten (38 Skills, 6 Kategorien, mit createdAt/learnedAt/level/xpCurrent/showInDashboard)
 - [x] Header mit Tab-Navigation (Backlog, Kanban, Skills, Hilfe) + P3 Logo + "NeuroForge" Branding + Import/Export + Settings
 - [x] Eisenhower-Ansicht mit 4 Quadranten + Unsortiert-Bereich + Drag & Drop + Energie-Filter
@@ -41,7 +41,7 @@
 - [x] Erstellungsdatum auf Tasks angezeigt
 - [x] Faelligkeitsdatum ("Zu erledigen bis") mit Ueberfaellig/Bald-faellig Styling
 - [x] Historie-Tracking auf Tasks (fuer spaetere Auswertungen)
-- [x] Schema-Versionierung mit Migration (v1 → v2 → v3 → v4 → v5 → v6 → v7 → v8)
+- [x] Schema-Versionierung mit Migration (v1 → v2 → v3 → v4 → v5 → v6 → v7 → v8 → v9 → v10 → v11 → v12)
 - [x] P3 Design System (Farben, Fonts, Quadranten-Farben)
 - [x] Neurodivergenz-UI: sanfte Farben, prefers-reduced-motion, Dopamin-Feedback
 - [x] Dynamic base path (dev: `/`, production: `/Quest_Board/`)
@@ -107,7 +107,27 @@
 - [x] **Kategorie-Staerke Formel** – `(levelSum / (skillCount * 5)) * 100`, 0-100% Skala fuer Radar
 - [x] **Responsive** – Unter 900px: 1 Spalte (Skills oben, Dashboard unten)
 
-**Naechster Schritt (v3.0 Block B):** Siehe [ROADMAP.md](ROADMAP.md)
+**v3.0 Block B – Personal Dashboard (13.02.2026):**
+- [x] **Schema v11** – `startedAt`/`completedAt` Timestamps auf Tasks, Migration backfill aus History
+- [x] **PersonalDashboard** – Neuer Tab "Dashboard" mit 3 Visualisierungen + useDashboardData Hook
+- [x] **Heatmap** – GitHub-Contribution-Style, Zeilen: Tageszeiten (2h-Bloecke 04-00), Spalten: Wochentage, kompakte flache Zellen
+- [x] **LineChart** – SVG-Liniendiagramm, Wochen/Monate Toggle, farbige Linien pro Quest-Typ + Gesamtlinie
+- [x] **EnergyCurve** – Persoenliche Energiekurve aus echten Done-Daten (ab 04:00) + farbige Quest-Typ-Balken + Legende
+- [x] **Dashboard-Layout** – Energiekurve oben (wichtigstes Chart), dann Fortschritt, dann Heatmap
+- [x] **Scrollbar-Design** – 10px breit, kontrastreiche Farben, Firefox-Support (global in index.css)
+- [x] **Hilfe-Seite** – Callout-Box: persoenliche Energiekurve erklaert, Hinweis zur Planung adaptieren
+
+**v3.0 Block B.2 – Quest-Skill Linking + Demo-Daten (13.02.2026):**
+- [x] **Schema v12** – `linkedSkills: []` auf Tasks, `isDemo` Flag auf State
+- [x] **Demo-Daten** – ~50 Beispiel-Quests beim ersten Start, gelber Banner, loeschbar
+- [x] **Quest-Skill Linking** – Klappbarer Skill-Picker im TaskModal (Kategorien + Checkbox-Grid)
+- [x] **SkillCheckModal Vorauswahl** – linkedSkills werden als Vorauswahl gesetzt
+- [x] **TaskCard Badge** – linkedSkills-Count Badge auf nicht-Done Karten
+- [x] **DemoBanner** – Warmer gelber Banner mit "Eigene Daten starten" Button
+- [x] **Settings Demo-Delete** – Roter "Demo-Daten loeschen" Button im SettingsModal
+- [x] **clearDemoData()** – Loescht alle Tasks, behaelt Skills/Kategorien/Settings
+
+**Naechster Schritt (v3.5 Block C – Projekte):** Siehe [ROADMAP.md](ROADMAP.md)
 
 ---
 
@@ -129,10 +149,12 @@ Quest_Board/
 │   │   └── P3_Logo_RZ_WortBild_mClaim_hell.svg
 │   ├── data/
 │   │   ├── skillsData.js          <- 38 Skills, 6 Kategorien (mit showInDashboard), initialCategories
-│   │   └── questTypes.js          <- QUEST_TYPES + DURATIONS + XP_VALUES + Level-Helpers + RPG_ATTRIBUTES
+│   │   ├── questTypes.js          <- QUEST_TYPES + DURATIONS + XP_VALUES + Level-Helpers + RPG_ATTRIBUTES
+│   │   └── demoData.js            <- generateDemoData() – ~50 Beispiel-Quests fuer ersten Start
 │   ├── hooks/
-│   │   ├── useLocalStorage.js     <- localStorage Wrapper
-│   │   └── useQuestBoard.js       <- Haupt-State-Management (Schema v10, Settings, importSkills, toggleCategoryDashboard)
+│   │   ├── useLocalStorage.js     <- localStorage Wrapper (supports function initialValue)
+│   │   ├── useDashboardData.js    <- Dashboard-Datenaufbereitung (Heatmap, LineChart, EnergyCurve)
+│   │   └── useQuestBoard.js       <- Haupt-State-Management (Schema v12, Settings, importSkills, clearDemoData)
 │   ├── components/
 │   │   ├── Header.jsx/css         <- Navigation + Tabs (Kanban/Backlog/Skills/Hilfe) + NeuroForge Branding + Wildcard-Counter + Settings + Import/Export
 │   │   ├── Eisenhower.jsx/css     <- 4-Quadranten Backlog + Unsortiert + Energie-Filter
@@ -142,18 +164,23 @@ Quest_Board/
 │   │   ├── RadarChart.jsx/css    <- SVG Spinnendiagramm (1-6 Achsen, Gradient-Fill)
 │   │   ├── CharacterCard.jsx/css <- RPG Attribut-Balken (STR/INT/DEX/WIS/CHA/CON)
 │   │   ├── RecentSkills.jsx/css  <- Kuerzlich gelernte Skills (Woche + Monat)
-│   │   ├── HelpPage.jsx/css       <- Hilfe-Seite (Konzept, Workflow, XP, Energie-SVG, Universal-Kontexte, Neurodivergenz)
-│   │   ├── TaskCard.jsx/css       <- Karte mit Datum, Due Date, Fast Lane, Quest-Typ, Duration, XP
+│   │   ├── PersonalDashboard.jsx/css <- Dashboard-Tab mit Heatmap, LineChart, EnergyCurve
+│   │   ├── Heatmap.jsx/css         <- GitHub-Style Heatmap (Tageszeiten x Wochentage)
+│   │   ├── LineChart.jsx/css       <- SVG-Liniendiagramm (Quest-Typen ueber Zeit)
+│   │   ├── EnergyCurve.jsx/css     <- Persoenliche Energiekurve aus echten Daten
+│   │   ├── DemoBanner.jsx/css      <- Gelber Banner fuer Demo-Modus
+│   │   ├── HelpPage.jsx/css       <- Hilfe-Seite (Konzept, Workflow, XP, Energie-SVG, Universal-Kontexte, Demo-Daten, Neurodivergenz)
+│   │   ├── TaskCard.jsx/css       <- Karte mit Datum, Due Date, Fast Lane, Quest-Typ, Duration, XP, linkedSkills Badge
 │   │   ├── DroppableContainer.jsx <- DnD Wrapper
 │   │   ├── Modal.jsx/css          <- Basis-Modal (scrollbar auf kleinen Bildschirmen)
-│   │   ├── TaskModal.jsx/css      <- Quest Erstellen/Bearbeiten + Due Date + Quest-Typ + Duration + XP
+│   │   ├── TaskModal.jsx/css      <- Quest Erstellen/Bearbeiten + Due Date + Quest-Typ + Duration + XP + Skill-Picker
 │   │   ├── SkillModal.jsx/css     <- Skill Erstellen/Bearbeiten/Ausblenden + Level/XP editierbar
 │   │   ├── CategoryModal.jsx/css  <- Kategorie Erstellen/Bearbeiten + Emoji-Picker
 │   │   ├── SkillCheckModal.jsx/css <- Done -> Skills + XP-Vergabe + Konfetti + Level-Up Preview
 │   │   ├── ImportModal.jsx/css    <- Task-Import (Text + CSV/JSON mit Spaltendoku + Restore)
 │   │   ├── SkillImportModal.jsx/css <- Skill-Import (Text + CSV/JSON mit Spaltendoku)
 │   │   ├── ExportModal.jsx/css    <- Daten-Export mit Beschreibung
-│   │   ├── SettingsModal.jsx/css  <- WIP-Limits + Wildcard-Settings + Reset
+│   │   ├── SettingsModal.jsx/css  <- WIP-Limits + Wildcard-Settings + Reset + Demo-Daten loeschen
 │   │   └── DeleteModal.jsx/css    <- Loeschbestaetigung (Quest, Skill, Kategorie)
 │   ├── App.jsx/css
 │   ├── main.jsx
@@ -179,6 +206,8 @@ Quest_Board/
 | v8 | settings Objekt (wipLimits + maxWildcardsPerDay) im State (Block C Kanban-Limits) |
 | v9 | Quest-Typ IDs umbenannt: code→focus, learn→input, design→create, config→routine, write→reflect (v2.5 NeuroForge) |
 | v10 | showInDashboard Flag auf Categories (max 6), toggleCategoryDashboard(), RPG Dashboard (v3.0 Block A) |
+| v11 | startedAt/completedAt Timestamps auf Tasks, Backfill-Migration aus History (v3.0 Block B Personal Dashboard) |
+| v12 | linkedSkills auf Tasks, isDemo Flag auf State, Demo-Daten beim ersten Start (v3.0 Block B.2) |
 
 ---
 

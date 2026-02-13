@@ -12,7 +12,9 @@ import ImportModal from './components/ImportModal';
 import ExportModal from './components/ExportModal';
 import SettingsModal from './components/SettingsModal';
 import SkillImportModal from './components/SkillImportModal';
+import PersonalDashboard from './components/PersonalDashboard';
 import HelpPage from './components/HelpPage';
+import DemoBanner from './components/DemoBanner';
 import { useQuestBoard } from './hooks/useQuestBoard';
 import './App.css';
 
@@ -41,11 +43,11 @@ export default function App() {
   }, []);
 
   const handleSaveTask = useCallback(
-    ({ title, description, quadrant, dueDate, questType, duration, xp }) => {
+    ({ title, description, quadrant, dueDate, questType, duration, xp, linkedSkills }) => {
       if (taskModal.mode === 'create') {
-        board.createTask(title, description, quadrant, dueDate, questType, duration, xp);
+        board.createTask(title, description, quadrant, dueDate, questType, duration, xp, linkedSkills);
       } else if (taskModal.mode === 'edit') {
-        const updates = { title, description, dueDate, questType, duration, xp };
+        const updates = { title, description, dueDate, questType, duration, xp, linkedSkills };
         if (taskModal.task.location === 'eisenhower') {
           updates.quadrant = quadrant;
         }
@@ -225,6 +227,10 @@ export default function App() {
         onSettingsClick={() => setShowSettings(true)}
       />
 
+      {board.isDemo && (
+        <DemoBanner onClearDemo={board.clearDemoData} />
+      )}
+
       <main className="app-main">
         {activeTab === 'eisenhower' && (
           <Eisenhower
@@ -272,12 +278,16 @@ export default function App() {
           />
         )}
 
+        {activeTab === 'dashboard' && <PersonalDashboard tasks={board.tasks} />}
+
         {activeTab === 'help' && <HelpPage />}
       </main>
 
       {taskModal && (
         <TaskModal
           task={taskModal.mode === 'edit' ? taskModal.task : null}
+          skills={board.skills}
+          categories={board.categories}
           onSave={handleSaveTask}
           onDelete={taskModal.mode === 'edit' ? handleRequestDelete : null}
           onClose={() => setTaskModal(null)}
@@ -380,6 +390,11 @@ export default function App() {
       {showSettings && (
         <SettingsModal
           settings={board.settings}
+          isDemo={board.isDemo}
+          onClearDemo={() => {
+            board.clearDemoData();
+            setShowSettings(false);
+          }}
           onSave={(newSettings) => {
             board.updateSettings(newSettings);
             setShowSettings(false);

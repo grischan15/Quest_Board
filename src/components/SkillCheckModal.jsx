@@ -4,7 +4,7 @@ import { getLevel, getLevelLabel, getXpForNextLevel } from '../data/questTypes';
 import './SkillCheckModal.css';
 
 export default function SkillCheckModal({ task, skills, categories, onSave, onClose }) {
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState(task.linkedSkills || []);
   const [showConfetti, setShowConfetti] = useState(false);
 
   const taskXp = task.xp || 0;

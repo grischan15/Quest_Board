@@ -5,7 +5,7 @@ import './SettingsModal.css';
 
 const workColumns = KANBAN_COLUMNS.filter((c) => c.id !== 'done');
 
-export default function SettingsModal({ settings, onSave, onClose }) {
+export default function SettingsModal({ settings, isDemo, onClearDemo, onSave, onClose }) {
   const [wipLimits, setWipLimits] = useState({ ...settings.wipLimits });
   const [maxWildcardsPerDay, setMaxWildcardsPerDay] = useState(settings.maxWildcardsPerDay);
 
@@ -70,6 +70,22 @@ export default function SettingsModal({ settings, onSave, onClose }) {
             />
           </div>
         </div>
+
+        {isDemo && (
+          <div className="settings-section settings-section-demo">
+            <div className="settings-section-title">Demo-Daten</div>
+            <div className="settings-section-hint">
+              Du verwendest aktuell Demo-Daten. Loesche sie, um mit eigenen Quests zu starten.
+            </div>
+            <button
+              type="button"
+              className="settings-demo-delete"
+              onClick={onClearDemo}
+            >
+              Demo-Daten loeschen
+            </button>
+          </div>
+        )}
 
         <div className="form-actions">
           <div className="form-actions-left">

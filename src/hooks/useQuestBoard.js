@@ -3,9 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { useLocalStorage } from './useLocalStorage';
 import { initialSkills, initialCategories } from '../data/skillsData';
 import { getLevel } from '../data/questTypes';
+import { generateDemoData } from '../data/demoData';
 
 const STORAGE_KEY = 'questboard';
-const SCHEMA_VERSION = 10;
+const SCHEMA_VERSION = 12;
 
 export const DEFAULT_SETTINGS = {
   wipLimits: {
@@ -23,7 +24,19 @@ const defaultState = {
   skills: initialSkills.map((s) => ({ ...s, hidden: false })),
   categories: initialCategories,
   settings: { ...DEFAULT_SETTINGS },
+  isDemo: false,
 };
+
+function getInitialState() {
+  const existing = window.localStorage.getItem(STORAGE_KEY);
+  if (existing) return JSON.parse(existing);
+  // First start: load demo data
+  return {
+    ...defaultState,
+    tasks: generateDemoData(),
+    isDemo: true,
+  };
+}
 
 // Merge backup skills with predefined skills (BUG-001 fix)
 function mergeSkillsWithPredefined(backupSkills) {
@@ -109,6 +122,23 @@ function migrateState(state) {
       if (task.questType && questTypeMap[task.questType]) {
         task.questType = questTypeMap[task.questType];
       }
+      // V11 -> V12: add linkedSkills
+      if (task.linkedSkills === undefined) {
+        task.linkedSkills = [];
+      }
+      // V10 -> V11: backfill startedAt/completedAt from history
+      if (!task.startedAt && task.history) {
+        const startEntry = task.history.find((h) => h.action === 'started');
+        if (startEntry) {
+          task.startedAt = startEntry.timestamp;
+        }
+      }
+      if (!task.completedAt && task.history) {
+        const doneEntries = task.history.filter((h) => h.to && h.to.includes('done'));
+        if (doneEntries.length > 0) {
+          task.completedAt = doneEntries[doneEntries.length - 1].timestamp;
+        }
+      }
       return task;
     }),
     // V3 -> V4: add createdAt/learnedAt to skills
@@ -149,6 +179,10 @@ function migrateState(state) {
   if (!migrated.settings) {
     migrated.settings = { ...DEFAULT_SETTINGS };
   }
+  // V11 -> V12: add isDemo flag
+  if (migrated.isDemo === undefined) {
+    migrated.isDemo = false;
+  }
   return migrated;
 }
 
@@ -168,7 +202,7 @@ export const KANBAN_COLUMNS = [
 ];
 
 export function useQuestBoard() {
-  const [rawState, setRawState] = useLocalStorage(STORAGE_KEY, defaultState);
+  const [rawState, setRawState] = useLocalStorage(STORAGE_KEY, getInitialState);
   const state = migrateState(rawState);
 
   if (rawState.version !== state.version) {
@@ -179,6 +213,7 @@ export function useQuestBoard() {
   const skills = state.skills || initialSkills;
   const categories = state.categories || initialCategories;
   const settings = state.settings || DEFAULT_SETTINGS;
+  const isDemo = state.isDemo || false;
 
   const updateTasks = useCallback((updater) => {
     setRawState((prev) => {
@@ -220,8 +255,20 @@ export function useQuestBoard() {
     });
   }, [setRawState]);
 
+  // Clear demo data: remove all tasks, keep skills/categories/settings
+  const clearDemoData = useCallback(() => {
+    setRawState((prev) => {
+      const migrated = migrateState(prev);
+      return {
+        ...migrated,
+        tasks: [],
+        isDemo: false,
+      };
+    });
+  }, [setRawState]);
+
   // Task CRUD
-  const createTask = useCallback((title, description, quadrant, dueDate, questType, duration, xp) => {
+  const createTask = useCallback((title, description, quadrant, dueDate, questType, duration, xp, linkedSkills) => {
     const now = new Date().toISOString();
     const newTask = {
       id: uuidv4(),
@@ -232,6 +279,7 @@ export function useQuestBoard() {
       kanbanColumn: null,
       fastLane: false,
       skillsLearned: [],
+      linkedSkills: linkedSkills || [],
       createdAt: now,
       startedAt: null,
       completedAt: null,
@@ -258,6 +306,7 @@ export function useQuestBoard() {
       kanbanColumn: null,
       fastLane: false,
       skillsLearned: [],
+      linkedSkills: t.linkedSkills || [],
       createdAt: now,
       startedAt: null,
       completedAt: null,
@@ -616,6 +665,7 @@ export function useQuestBoard() {
       skills: skills,
       categories: categories,
       settings: settings,
+      isDemo: false,
     };
     const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -647,6 +697,7 @@ export function useQuestBoard() {
       skills: mergedSkills,
       categories: mergedCategories,
       settings: migrated.settings || DEFAULT_SETTINGS,
+      isDemo: false,
     });
     return true;
   }, [setRawState]);
@@ -656,12 +707,14 @@ export function useQuestBoard() {
     skills,
     categories,
     settings,
+    isDemo,
     eisenhowerTasks,
     kanbanTasks,
     getQuadrantTasks,
     getColumnTasks,
     getDoneTasksGrouped,
     getWildcardsUsedToday,
+    clearDemoData,
     createTask,
     importTasks,
     updateTask,

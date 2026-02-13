@@ -5,6 +5,7 @@ const tabs = [
   { id: 'kanban', label: 'Kanban', icon: '\uD83C\uDFC3' },
   { id: 'eisenhower', label: 'Backlog', icon: '\uD83D\uDCCB' },
   { id: 'skills', label: 'Skills', icon: '\uD83C\uDF33' },
+  { id: 'dashboard', label: 'Dashboard', icon: '\uD83D\uDCC8' },
   { id: 'help', label: 'Hilfe', icon: '\u2753' },
 ];
 

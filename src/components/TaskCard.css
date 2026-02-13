@@ -177,6 +177,12 @@
   font-weight: 600;
 }
 
+.task-linked-skills-badge {
+  font-size: 0.75rem;
+  color: #7c6f3e;
+  font-weight: 600;
+}
+
 /* Quest-Typ Badge */
 .task-card-quest-type {
   font-size: 0.68rem;

@@ -487,11 +487,24 @@ export default function HelpPage() {
               &#9997;&#65039; Reflect &ndash; Abend-Ausklang
             </span>
           </div>
-          <p className="help-text help-text-hint">
-            Tipp: Dein pers&ouml;nlicher Rhythmus kann anders aussehen!
-            Das Dashboard (kommt bald) wird aus deinen echten Daten eine
-            individuelle Energiekurve berechnen.
-          </p>
+          <div className="help-callout">
+            <strong>Dein Rhythmus ist anders? Genau darum geht es!</strong>
+            <p className="help-text" style={{ margin: '6px 0 0' }}>
+              Das Diagramm oben zeigt einen <em>typischen</em> Tagesverlauf.
+              Aber jeder Mensch tickt anders &ndash; besonders neurodivergente Gehirne.
+            </p>
+            <p className="help-text" style={{ margin: '6px 0 0' }}>
+              Im <strong>Dashboard-Tab</strong> findest du <strong>deine persoenliche Energiekurve</strong>,
+              automatisch berechnet aus deinen echten Quest-Abschluessen.
+              Schau dir an, wann du am produktivsten bist &ndash; und plane
+              deine Focus-Quests gezielt in diese Zeitfenster.
+              Routine-Quests legst du in die Tiefphasen.
+            </p>
+            <p className="help-text" style={{ margin: '6px 0 0' }}>
+              Je mehr Quests du abschliesst, desto genauer wird deine Kurve.
+              So lernst du deinen eigenen Rhythmus kennen und arbeitest <em>mit</em> deinem Gehirn statt dagegen.
+            </p>
+          </div>
         </section>
 
         <section className="help-section">
@@ -723,6 +736,31 @@ export default function HelpPage() {
         </section>
 
         <section className="help-section">
+          <h3 className="help-section-title">Demo-Daten</h3>
+          <p className="help-text">
+            Beim ersten Start l&auml;dt NeuroForge automatisch ~50 Beispiel-Quests,
+            damit du Dashboard, Heatmap und Charts sofort ausprobieren kannst.
+          </p>
+          <div className="help-steps">
+            <div className="help-step">
+              <span className="help-step-num">1</span>
+              <div>
+                <strong>Gelber Banner</strong> &ndash; Klicke auf &quot;Eigene Daten starten&quot;
+                im Banner oben. Alle Demo-Quests werden gel&ouml;scht, deine Skills und
+                Kategorien bleiben erhalten.
+              </div>
+            </div>
+            <div className="help-step">
+              <span className="help-step-num">2</span>
+              <div>
+                <strong>Settings</strong> &ndash; &Ouml;ffne die Einstellungen (Zahnrad-Icon)
+                und klicke auf &quot;Demo-Daten l&ouml;schen&quot;.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="help-section">
           <h3 className="help-section-title">Tastenkombinationen</h3>
           <div className="help-shortcuts">
             <div className="help-shortcut">
@@ -737,7 +775,7 @@ export default function HelpPage() {
         </section>
 
         <div className="help-footer">
-          NeuroForge v2.5 &middot; Deine Quest-Schmiede &middot; P3 Performance Partners
+          NeuroForge v3.0 &middot; Deine Quest-Schmiede &middot; P3 Performance Partners
         </div>
       </div>
     </div>

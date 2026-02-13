@@ -61,8 +61,31 @@
   color: #444;
 }
 
+.settings-section-demo {
+  border-top: 1px solid #f0e0e0;
+  padding-top: 12px;
+}
+
+.settings-demo-delete {
+  padding: 8px 16px;
+  background: #c60a0f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.settings-demo-delete:hover {
+  background: #a00810;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .settings-reset {
+  .settings-reset,
+  .settings-demo-delete {
     transition: none;
   }
 }
