@@ -25,6 +25,72 @@
   margin-top: 1px;
 }
 
+.character-level-hint {
+  font-size: 0.6rem;
+  color: #aaa;
+  margin-top: 2px;
+}
+
+.character-next-levels {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e8e6e1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.character-next-level {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.character-next-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #25313a;
+  min-width: 52px;
+  white-space: nowrap;
+}
+
+.character-next-bar {
+  flex: 1;
+  height: 5px;
+  background: #e0e0de;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.character-next-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.character-next-fill-far {
+  background: #aaa;
+}
+
+.character-next-pct {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #888;
+  min-width: 28px;
+  text-align: right;
+}
+
+.character-lever-tip {
+  font-size: 0.6rem;
+  color: #888;
+  padding-top: 2px;
+}
+
+.character-lever-tip strong {
+  color: #25313a;
+}
+
 .character-attributes {
   display: flex;
   flex-direction: column;
@@ -104,7 +170,8 @@
 .skill-level-bg-5 { background: #c60a0f; }
 
 @media (prefers-reduced-motion: reduce) {
-  .character-attr-fill {
+  .character-attr-fill,
+  .character-next-fill {
     transition: none;
   }
 }

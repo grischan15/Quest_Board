@@ -9,7 +9,7 @@
 ## AKTUELLER STATUS
 
 ```
-████████████████████ Phase: v3.0 Block B.2 – Quest-Skill Linking + Demo-Daten
+████████████████████ Phase: v3.0 Block C – Kanban UX, Eisenhower Bugfix, Level-Klarheit
 ```
 
 **Was ist fertig:**
@@ -21,9 +21,9 @@
 - [x] Tech-Stack entschieden: Vite + React + dnd-kit + localStorage
 - [x] Vite + React Projekt aufgesetzt
 - [x] Dependencies installiert (@dnd-kit/core, @dnd-kit/sortable, uuid)
-- [x] Datenmodell & localStorage Persistenz (useQuestBoard Hook, Schema v12)
+- [x] Datenmodell & localStorage Persistenz (useQuestBoard Hook, Schema v13)
 - [x] Skill-Matrix Daten (38 Skills, 6 Kategorien, mit createdAt/learnedAt/level/xpCurrent/showInDashboard)
-- [x] Header mit Tab-Navigation (Backlog, Kanban, Skills, Hilfe) + P3 Logo + "NeuroForge" Branding + Import/Export + Settings
+- [x] Header mit Tab-Navigation (Backlog, Kanban, Skills, Dashboard, Hilfe) + P3 Logo + "NeuroForge" Branding + Import/Export + Settings
 - [x] Eisenhower-Ansicht mit 4 Quadranten + Unsortiert-Bereich + Drag & Drop + Energie-Filter
 - [x] Kanban-Ansicht: Normal Flow + Fast Lane + WIP-Limits + Wildcard-Counter
 - [x] Kanban-Spalten: Vorbereiten, Entwickeln, Testing Intern, Testing Extern
@@ -127,6 +127,16 @@
 - [x] **Settings Demo-Delete** – Roter "Demo-Daten loeschen" Button im SettingsModal
 - [x] **clearDemoData()** – Loescht alle Tasks, behaelt Skills/Kategorien/Settings
 
+**v3.0 Block C – Kanban UX, Eisenhower Bugfix, Level-Klarheit (13.02.2026):**
+- [x] **Schema v13** – `fastLaneAt` Timestamp auf Tasks, Migration backfill aus History
+- [x] **Eisenhower Bug gefixt** – Unsortierte Quests waren nicht sichtbar (CSS flex-direction + max-height + overflow-y)
+- [x] **Wildcard-Counter aus Header entfernt** – Stattdessen im Fast Lane Label: "WILDCARD" + "⚡ Fast Lane · 1/2"
+- [x] **Wildcard-Zaehlung gefixt** – Zaehlt jetzt nach `fastLaneAt` statt `startedAt` (korrekte Tageszaehlung)
+- [x] **WIP-Limits aus Fast Lane entfernt** – Fast Lane Spalten zeigen nur Anzahl, kein Limit
+- [x] **Mini-Backlog als 2 separate Kaesten** – Q2 ("Saege schaerfen") oben mit gruener Borderlinie + Motivationstext, Q1 ("Dringend") unten mit roter Borderlinie
+- [x] **CharacterCard Level-Erklaerung** – "Durchschnitt deiner Kategorie-Staerken" + Fortschrittsbalken fuer naechste 2 Ganzzahl-Level + Hebel-Tipp (schwaechste Kategorie)
+- [x] **Level-Anzeige dynamisch** – Erreichte Level werden uebersprungen, zeigt immer die naechsten 2 noch nicht erreichten Level
+
 **Naechster Schritt (v3.5 Block C – Projekte):** Siehe [ROADMAP.md](ROADMAP.md)
 
 ---
@@ -154,15 +164,15 @@ Quest_Board/
 │   ├── hooks/
 │   │   ├── useLocalStorage.js     <- localStorage Wrapper (supports function initialValue)
 │   │   ├── useDashboardData.js    <- Dashboard-Datenaufbereitung (Heatmap, LineChart, EnergyCurve)
-│   │   └── useQuestBoard.js       <- Haupt-State-Management (Schema v12, Settings, importSkills, clearDemoData)
+│   │   └── useQuestBoard.js       <- Haupt-State-Management (Schema v13, Settings, importSkills, clearDemoData, fastLaneAt)
 │   ├── components/
-│   │   ├── Header.jsx/css         <- Navigation + Tabs (Kanban/Backlog/Skills/Hilfe) + NeuroForge Branding + Wildcard-Counter + Settings + Import/Export
+│   │   ├── Header.jsx/css         <- Navigation + Tabs (Kanban/Backlog/Skills/Dashboard/Hilfe) + NeuroForge Branding + Settings + Import/Export
 │   │   ├── Eisenhower.jsx/css     <- 4-Quadranten Backlog + Unsortiert + Energie-Filter
-│   │   ├── Kanban.jsx/css         <- Mini-Backlog (Q1+Q2 Covey) + Normal + Fast Lane + Shared Done + WIP-Limits + Drag-Blockade
+│   │   ├── Kanban.jsx/css         <- Mini-Backlog (Q2+Q1 als separate Kaesten) + Normal + Fast Lane (Wildcard-Counter) + Shared Done + WIP-Limits + Drag-Blockade
 │   │   ├── SkillTree.jsx/css      <- 2-Spalten: Skills (Level+XP) links + RPG Dashboard rechts + Auge-Toggle
 │   │   ├── RpgDashboard.jsx/css  <- Container: RadarChart + CharacterCard + RecentSkills
 │   │   ├── RadarChart.jsx/css    <- SVG Spinnendiagramm (1-6 Achsen, Gradient-Fill)
-│   │   ├── CharacterCard.jsx/css <- RPG Attribut-Balken (STR/INT/DEX/WIS/CHA/CON)
+│   │   ├── CharacterCard.jsx/css <- RPG Attribut-Balken (STR/INT/DEX/WIS/CHA/CON) + Level-Erklaerung + naechste Level + Hebel-Tipp
 │   │   ├── RecentSkills.jsx/css  <- Kuerzlich gelernte Skills (Woche + Monat)
 │   │   ├── PersonalDashboard.jsx/css <- Dashboard-Tab mit Heatmap, LineChart, EnergyCurve
 │   │   ├── Heatmap.jsx/css         <- GitHub-Style Heatmap (Tageszeiten x Wochentage)
@@ -208,6 +218,7 @@ Quest_Board/
 | v10 | showInDashboard Flag auf Categories (max 6), toggleCategoryDashboard(), RPG Dashboard (v3.0 Block A) |
 | v11 | startedAt/completedAt Timestamps auf Tasks, Backfill-Migration aus History (v3.0 Block B Personal Dashboard) |
 | v12 | linkedSkills auf Tasks, isDemo Flag auf State, Demo-Daten beim ersten Start (v3.0 Block B.2) |
+| v13 | fastLaneAt Timestamp auf Tasks, Wildcard-Zaehlung nach Fast-Lane-Eintritt statt Kanban-Start (v3.0 Block C) |
 
 ---
 

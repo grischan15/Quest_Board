@@ -170,6 +170,7 @@ export function generateDemoData() {
     // Started between created and completed
     const startedDaysOffset = Math.floor(rng() * createdDaysOffset);
     const startedAt = generateTimestamp(actualDaysAgo + startedDaysOffset, 10, Math.floor(rng() * 60));
+    const isFastLane = rng() > 0.85;
 
     tasks.push({
       id,
@@ -178,7 +179,8 @@ export function generateDemoData() {
       location: 'kanban',
       quadrant: null,
       kanbanColumn: 'done',
-      fastLane: rng() > 0.85, // 15% were fast lane
+      fastLane: isFastLane, // 15% were fast lane
+      fastLaneAt: isFastLane ? startedAt : null,
       skillsLearned,
       linkedSkills,
       createdAt,
@@ -242,6 +244,7 @@ export function generateDemoData() {
       quadrant: isKanban ? null : q.quadrant,
       kanbanColumn: q.kanban,
       fastLane: false,
+      fastLaneAt: null,
       skillsLearned: [],
       linkedSkills,
       createdAt,

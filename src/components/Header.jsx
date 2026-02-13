@@ -15,12 +15,8 @@ export default function Header({
   onNewQuest,
   onImport,
   onExport,
-  wildcardsUsed,
-  maxWildcardsPerDay,
   onSettingsClick,
 }) {
-  const wcFull = wildcardsUsed != null && maxWildcardsPerDay != null && wildcardsUsed >= maxWildcardsPerDay;
-
   return (
     <header className="header">
       <div className="header-left">
@@ -39,11 +35,6 @@ export default function Header({
           </button>
         ))}
       </nav>
-      {activeTab === 'kanban' && wildcardsUsed != null && (
-        <div className={`header-wildcard-counter${wcFull ? ' wc-full' : ''}`}>
-          &#9889; {wildcardsUsed}/{maxWildcardsPerDay} Wildcards
-        </div>
-      )}
       <div className="header-actions">
         <button className="import-btn" onClick={onSettingsClick} title="Einstellungen">
           &#9881;

@@ -229,6 +229,24 @@ Umgesetzt am 13.02.2026, Schema v11 → v12:
 
 ---
 
+## ✅ ERLEDIGT (v3.0 Block C – Kanban UX, Eisenhower Bugfix, Level-Klarheit)
+
+Umgesetzt am 13.02.2026, Schema v12 → v13:
+
+- [x] **Schema v13** – `fastLaneAt` Timestamp auf Tasks, Migration backfill aus History/startedAt
+- [x] **Eisenhower Bug gefixt** – Unsortierte Quests nicht sichtbar wegen CSS flex-wrap + width-Constraint. Fix: flex-direction column + width 100% + max-height 300px + overflow-y auto
+- [x] **Wildcard-Counter verschoben** – Aus Header entfernt, im Fast Lane Label: grosses "WILDCARD" + kleine Zeile "⚡ Fast Lane · 1/2"
+- [x] **Wildcard-Zaehlung gefixt** – Zaehlt nach `fastLaneAt` statt `startedAt` (Tasks die gestern gestartet und heute in Fast Lane geschoben wurden, werden jetzt korrekt gezaehlt)
+- [x] **WIP-Limits aus Fast Lane entfernt** – Fast Lane Spalten zeigen nur Task-Anzahl, kein Limit (da Wildcard-Tageslimit ohnehin begrenzt)
+- [x] **Mini-Backlog als 2 separate Kaesten** – Q2 oben (gruene Borderlinie, Motivation "Investiere 20% in dich selbst") + Q1 unten (rote Borderlinie), Ratio-Bar am Ende
+- [x] **CharacterCard Level-Erklaerung** – Hint "Durchschnitt deiner Kategorie-Staerken", Fortschrittsbalken fuer naechste 2 Ganzzahl-Level (z.B. Lv. 1.0 → 45%, Lv. 2.0 → 22%), Hebel-Tipp (schwaechste Kategorie = groesster Hebel)
+- [x] **Level-Anzeige dynamisch** – Erreichte Ganzzahl-Level werden uebersprungen (bei Lv. 1.0 zeigt es → 2.0 und → 3.0)
+- [x] **Hilfe-Seite Umbau** – Story-driven Layout mit klappbaren Sektionen + Sticky Sidebar TOC (vorheriger Commit)
+
+**Dateien:** GEAENDERT: `Eisenhower.css`, `Header.jsx/.css`, `Kanban.jsx/.css`, `CharacterCard.jsx/.css`, `RpgDashboard.jsx`, `useQuestBoard.js`, `demoData.js`, `App.jsx`
+
+---
+
 ## MITTELFRISTIG (v3.5+ – Projekte & Vorlagen)
 
 ### Block C: Projekte & KI
@@ -293,6 +311,8 @@ Umgesetzt am 13.02.2026, Schema v11 → v12:
 | **13.02.2026** | **v3.0 Block B shipped** | **Personal Dashboard Tab: Heatmap (GitHub-Style), LineChart (Quest-Typen ueber Zeit), EnergyCurve (persoenlich aus Daten). Schema v11 (startedAt/completedAt Timestamps).** |
 | **13.02.2026** | **v3.0 Block B.2 shipped** | **Quest-Skill Linking + Demo-Daten. Schema v12 (linkedSkills, isDemo). ~50 Beispiel-Quests beim ersten Start. Skill-Picker im TaskModal. Vorauswahl im SkillCheckModal. DemoBanner + Settings Demo-Delete.** |
 | **13.02.2026** | **Demo-Daten Strategie** | **Erster Start laedt automatisch ~50 realistische Quests (40 done + 10 aktiv). Dashboard sofort nutzbar. Loeschbar ueber Banner oder Settings. Export enthaelt nie isDemo=true.** |
+| **13.02.2026** | **v3.0 Block C shipped** | **Kanban UX ueberarbeitet: Wildcard-Counter in Fast Lane Label, WIP-Limits nur im Normal Flow, Mini-Backlog als 2 Kaesten (Q2 oben/Q1 unten). Eisenhower unsorted Bug gefixt. CharacterCard mit Level-Erklaerung + dynamischen naechsten Levels + Hebel-Tipp. Schema v13 (fastLaneAt).** |
+| **13.02.2026** | **Wildcard-Zaehlung Bugfix** | **getWildcardsUsedToday zaehlte nach startedAt (Kanban-Eintritt) statt Fast-Lane-Eintritt. Neues Feld fastLaneAt korrigiert die Tageszaehlung.** |
 
 ---
 

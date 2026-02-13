@@ -6,7 +6,7 @@ import { RPG_ATTRIBUTES } from '../data/questTypes';
 import './RpgDashboard.css';
 
 export default function RpgDashboard({ skills, tasks, categories }) {
-  const { categoryStrengths, totalLevel, totalXP } = useMemo(() => {
+  const { categoryStrengths, totalLevel, totalXP, nextLevel1, nextLevel2, progress1, progress2, weakestCategory } = useMemo(() => {
     const visibleSkills = skills.filter((s) => !s.hidden);
     const dashboardCats = [...categories]
       .filter((c) => c.showInDashboard)
@@ -37,7 +37,28 @@ export default function RpgDashboard({ skills, tasks, categories }) {
       : 0;
     const tLevel = Math.round((avgStrength / 100) * 5 * 10) / 10;
 
-    return { categoryStrengths: strengths, totalLevel: tLevel, totalXP: tXP };
+    // Next integer levels + progress (skip already reached levels)
+    const nextLevel1 = (Number.isInteger(tLevel) && tLevel > 0) ? tLevel + 1 : (Math.ceil(tLevel) || 1);
+    const nextLevel2 = nextLevel1 + 1;
+    const strengthForLevel = (lvl) => (lvl / 5) * 100;
+    const progress1 = Math.min(100, avgStrength / strengthForLevel(nextLevel1) * 100);
+    const progress2 = Math.min(100, avgStrength / strengthForLevel(nextLevel2) * 100);
+
+    // Weakest category = biggest lever
+    const weakestCat = strengths.length > 0
+      ? strengths.reduce((min, s) => s.strength < min.strength ? s : min, strengths[0])
+      : null;
+
+    return {
+      categoryStrengths: strengths,
+      totalLevel: tLevel,
+      totalXP: tXP,
+      nextLevel1,
+      nextLevel2,
+      progress1,
+      progress2,
+      weakestCategory: weakestCat,
+    };
   }, [skills, categories]);
 
   if (categoryStrengths.length === 0) {
@@ -57,6 +78,11 @@ export default function RpgDashboard({ skills, tasks, categories }) {
         categoryStrengths={categoryStrengths}
         totalLevel={totalLevel}
         totalXP={totalXP}
+        nextLevel1={nextLevel1}
+        nextLevel2={nextLevel2}
+        progress1={progress1}
+        progress2={progress2}
+        weakestCategory={weakestCategory}
       />
       <RecentSkills skills={skills} tasks={tasks} />
     </div>

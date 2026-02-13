@@ -148,9 +148,11 @@
 
 .unsorted-tasks {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
-  min-height: 30px;
+  min-height: 60px;
+  max-height: 300px;
+  overflow-y: auto;
   padding: 4px;
   border-radius: 8px;
   transition: background 0.15s;
@@ -161,8 +163,7 @@
 }
 
 .unsorted-tasks .task-card {
-  width: calc(25% - 6px);
-  min-width: 200px;
+  width: 100%;
 }
 
 .drag-overlay {

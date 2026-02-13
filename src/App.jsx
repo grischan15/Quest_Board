@@ -222,8 +222,6 @@ export default function App() {
         onNewQuest={handleNewQuest}
         onImport={() => setShowImport(true)}
         onExport={() => setShowExport(true)}
-        wildcardsUsed={board.getWildcardsUsedToday()}
-        maxWildcardsPerDay={board.settings.maxWildcardsPerDay}
         onSettingsClick={() => setShowSettings(true)}
       />
 

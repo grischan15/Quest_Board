@@ -6,7 +6,7 @@ import { getLevel } from '../data/questTypes';
 import { generateDemoData } from '../data/demoData';
 
 const STORAGE_KEY = 'questboard';
-const SCHEMA_VERSION = 12;
+const SCHEMA_VERSION = 13;
 
 export const DEFAULT_SETTINGS = {
   wipLimits: {
@@ -125,6 +125,15 @@ function migrateState(state) {
       // V11 -> V12: add linkedSkills
       if (task.linkedSkills === undefined) {
         task.linkedSkills = [];
+      }
+      // V12 -> V13: add fastLaneAt
+      if (task.fastLaneAt === undefined) {
+        if (task.fastLane && task.history) {
+          const flEntry = task.history.find((h) => h.action === 'fast-lane');
+          task.fastLaneAt = flEntry ? flEntry.timestamp : task.startedAt || null;
+        } else {
+          task.fastLaneAt = null;
+        }
       }
       // V10 -> V11: backfill startedAt/completedAt from history
       if (!task.startedAt && task.history) {
@@ -278,6 +287,7 @@ export function useQuestBoard() {
       quadrant: quadrant || 'unsorted',
       kanbanColumn: null,
       fastLane: false,
+      fastLaneAt: null,
       skillsLearned: [],
       linkedSkills: linkedSkills || [],
       createdAt: now,
@@ -305,6 +315,7 @@ export function useQuestBoard() {
       quadrant: t.quadrant || 'unsorted',
       kanbanColumn: null,
       fastLane: false,
+      fastLaneAt: null,
       skillsLearned: [],
       linkedSkills: t.linkedSkills || [],
       createdAt: now,
@@ -363,6 +374,7 @@ export function useQuestBoard() {
           quadrant: quadrant || 'q1',
           kanbanColumn: null,
           fastLane: false,
+          fastLaneAt: null,
           startedAt: null,
           order: Date.now(),
         };
@@ -395,8 +407,9 @@ export function useQuestBoard() {
         }
         if (fastLane !== undefined) {
           // Fast lane is one-way: can only be set to true, never back to false
-          if (fastLane === true || t.fastLane === false) {
-            result.fastLane = fastLane;
+          if (fastLane === true && !t.fastLane) {
+            result.fastLane = true;
+            result.fastLaneAt = new Date().toISOString();
           }
         }
         return result;
@@ -412,7 +425,7 @@ export function useQuestBoard() {
         // Can only enable fast lane, never disable
         if (t.fastLane) return t;
         const updated = addHistoryEntry(t, 'fast-lane', 'normal', 'fast');
-        return { ...updated, fastLane: true };
+        return { ...updated, fastLane: true, fastLaneAt: new Date().toISOString() };
       })
     );
   }, [updateTasks]);
@@ -648,11 +661,11 @@ export function useQuestBoard() {
     };
   };
 
-  // Wildcard counter: how many fast lane tasks were started today
+  // Wildcard counter: how many tasks entered fast lane today
   const getWildcardsUsedToday = useCallback(() => {
     const today = new Date().toDateString();
     return kanbanTasks.filter(
-      (t) => t.fastLane && t.startedAt && new Date(t.startedAt).toDateString() === today
+      (t) => t.fastLane && t.fastLaneAt && new Date(t.fastLaneAt).toDateString() === today
     ).length;
   }, [kanbanTasks]);
 

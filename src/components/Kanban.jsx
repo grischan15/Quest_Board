@@ -75,7 +75,7 @@ function KanbanRow({
     <div className="kanban-row-columns">
       {workColumns.map((col) => {
         const tasks = getColumnTasks(col.id, isFastLane);
-        const limit = wipLimits?.[col.id];
+        const limit = isFastLane ? null : wipLimits?.[col.id];
         const isFull = limit != null && tasks.length >= limit;
         return (
           <div key={col.id} className={`kanban-column${isFull ? ' kanban-column-full' : ''}`}>
@@ -121,51 +121,16 @@ function MiniBacklog({ q1Tasks, q2Tasks, onStart, onEdit }) {
 
   return (
     <div className="kanban-mini-backlog">
-      <div className="mini-backlog-header">
-        <span className="mini-backlog-title">Backlog</span>
-        <span className="mini-backlog-count">{total}</span>
-      </div>
-
-      {total === 0 && (
-        <div className="mini-backlog-empty">Backlog leer</div>
-      )}
-
-      {totalQ1 > 0 && (
-        <div className="mini-backlog-section">
-          <div className="mini-backlog-section-header mini-backlog-q1">
-            <span>Q1 &ndash; Dringend</span>
-            <span className="mini-backlog-percent">~80%</span>
-          </div>
-          <div className="mini-backlog-list">
-            {q1Tasks.slice(0, 6).map((task) => (
-              <div key={task.id} className="mini-backlog-item">
-                <div
-                  className="mini-backlog-item-title"
-                  onClick={() => onEdit?.(task)}
-                >
-                  {task.title}
-                </div>
-                <button
-                  className="mini-backlog-start-btn"
-                  onClick={() => onStart?.(task.id)}
-                >
-                  &#9654;
-                </button>
-              </div>
-            ))}
-            {totalQ1 > 6 && (
-              <div className="mini-backlog-more">+{totalQ1 - 6} weitere</div>
-            )}
-          </div>
+      {/* Q2 Box – oben */}
+      <div className="mini-backlog-box mini-backlog-box-q2">
+        <div className="mini-backlog-section-header mini-backlog-q2">
+          <span>Q2 &ndash; S&auml;ge sch&auml;rfen</span>
+          <span className="mini-backlog-count">{totalQ2}</span>
         </div>
-      )}
-
-      {totalQ2 > 0 && (
-        <div className="mini-backlog-section">
-          <div className="mini-backlog-section-header mini-backlog-q2">
-            <span>Q2 &ndash; S&auml;ge sch&auml;rfen</span>
-            <span className="mini-backlog-percent">~20%</span>
-          </div>
+        <div className="mini-backlog-motivation">Investiere 20% in dich selbst</div>
+        {totalQ2 === 0 ? (
+          <div className="mini-backlog-empty">Keine Q2 Quests</div>
+        ) : (
           <div className="mini-backlog-list">
             {q2Tasks.slice(0, 4).map((task) => (
               <div key={task.id} className="mini-backlog-item mini-backlog-item-q2">
@@ -187,23 +152,57 @@ function MiniBacklog({ q1Tasks, q2Tasks, onStart, onEdit }) {
               <div className="mini-backlog-more">+{totalQ2 - 4} weitere</div>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
+      {/* Q1 Box – unten */}
+      <div className="mini-backlog-box mini-backlog-box-q1">
+        <div className="mini-backlog-section-header mini-backlog-q1">
+          <span>Q1 &ndash; Dringend</span>
+          <span className="mini-backlog-count">{totalQ1}</span>
+        </div>
+        {totalQ1 === 0 ? (
+          <div className="mini-backlog-empty">Keine Q1 Quests</div>
+        ) : (
+          <div className="mini-backlog-list">
+            {q1Tasks.slice(0, 6).map((task) => (
+              <div key={task.id} className="mini-backlog-item">
+                <div
+                  className="mini-backlog-item-title"
+                  onClick={() => onEdit?.(task)}
+                >
+                  {task.title}
+                </div>
+                <button
+                  className="mini-backlog-start-btn"
+                  onClick={() => onStart?.(task.id)}
+                >
+                  &#9654;
+                </button>
+              </div>
+            ))}
+            {totalQ1 > 6 && (
+              <div className="mini-backlog-more">+{totalQ1 - 6} weitere</div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Ratio-Bar am Ende */}
       {total > 0 && (
         <div className="mini-backlog-ratio">
           <div className="mini-backlog-ratio-bar">
             <div
-              className="mini-backlog-ratio-q1"
-              style={{ width: `${100 - q2Percent}%` }}
-            />
-            <div
               className="mini-backlog-ratio-q2"
               style={{ width: `${q2Percent}%` }}
             />
+            <div
+              className="mini-backlog-ratio-q1"
+              style={{ width: `${100 - q2Percent}%` }}
+            />
           </div>
           <div className="mini-backlog-ratio-label">
-            Q1: {totalQ1} &middot; Q2: {totalQ2}
+            Q2: {totalQ2} &middot; Q1: {totalQ1}
           </div>
         </div>
       )}
@@ -237,6 +236,7 @@ export default function Kanban({
 
   const activeTask = kanbanTasks.find((t) => t.id === activeId);
   const doneGroups = getDoneTasksGrouped();
+  const wildcardsUsed = getWildcardsUsedToday ? getWildcardsUsedToday() : 0;
 
   function findTaskDropTarget(overId) {
     // Shared done
@@ -355,7 +355,13 @@ export default function Kanban({
               {/* Fast Lane */}
               <div className="kanban-row kanban-row-fast">
                 <div className="kanban-row-label fast-lane-label">
-                  &#9889; Fast Lane
+                  <span className="fast-lane-title">WILDCARD</span>
+                  <span className="fast-lane-sub">
+                    &#9889; Fast Lane &middot;{' '}
+                    <span className={wildcardsUsed >= maxWildcardsPerDay ? 'wc-full' : ''}>
+                      {wildcardsUsed}/{maxWildcardsPerDay}
+                    </span>
+                  </span>
                 </div>
                 <KanbanRow
                   prefix="fast"
