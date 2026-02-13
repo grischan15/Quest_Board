@@ -9,6 +9,7 @@ import {
 import { useState } from 'react';
 import DroppableContainer from './DroppableContainer';
 import TaskCard from './TaskCard';
+import { QUEST_TYPES } from '../data/questTypes';
 import './Eisenhower.css';
 
 const quadrants = [
@@ -29,14 +30,18 @@ export default function Eisenhower({
   onNewQuest,
 }) {
   const [activeId, setActiveId] = useState(null);
+  const [filterType, setFilterType] = useState(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
 
   const allTasks = allZones.flatMap((q) => getQuadrantTasks(q.id));
+  const hasAnyType = allTasks.some((t) => t.questType);
   const unsortedTasks = getQuadrantTasks('unsorted');
   const activeTask = allTasks.find((t) => t.id === activeId);
+
+  const filterTask = (task) => !filterType || task.questType === filterType;
 
   function handleDragStart(event) {
     setActiveId(event.active.id);
@@ -81,9 +86,34 @@ export default function Eisenhower({
           onDragEnd={handleDragEnd}
         >
           <div className="eisenhower-layout">
+            {hasAnyType && (
+              <div className="energy-filter-bar">
+                <button
+                  className={`energy-filter-btn${filterType === null ? ' energy-filter-active' : ''}`}
+                  onClick={() => setFilterType(null)}
+                >
+                  Alle
+                </button>
+                {QUEST_TYPES.map((qt) => (
+                  <button
+                    key={qt.id}
+                    className={`energy-filter-btn${filterType === qt.id ? ' energy-filter-active' : ''}`}
+                    style={{
+                      '--filter-color': qt.color,
+                      borderColor: filterType === qt.id ? qt.color : undefined,
+                      background: filterType === qt.id ? `${qt.color}10` : undefined,
+                    }}
+                    onClick={() => setFilterType(filterType === qt.id ? null : qt.id)}
+                  >
+                    <span className="energy-filter-icon">{qt.icon}</span>
+                    {qt.label}
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="eisenhower-grid">
               {quadrants.map((q) => {
-                const tasks = getQuadrantTasks(q.id);
+                const tasks = getQuadrantTasks(q.id).filter(filterTask);
                 return (
                   <div
                     key={q.id}
@@ -133,10 +163,10 @@ export default function Eisenhower({
                 </div>
                 <DroppableContainer
                   id="unsorted"
-                  items={unsortedTasks.map((t) => t.id)}
+                  items={unsortedTasks.filter(filterTask).map((t) => t.id)}
                   className="unsorted-tasks"
                 >
-                  {unsortedTasks.map((task) => (
+                  {unsortedTasks.filter(filterTask).map((task) => (
                     <TaskCard
                       key={task.id}
                       task={task}

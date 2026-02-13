@@ -1,6 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useState } from 'react';
+import { getQuestType, getDuration } from '../data/questTypes';
 import './TaskCard.css';
 
 function formatDate(dateStr) {
@@ -49,11 +50,18 @@ export default function TaskCard({
 
   const isDone = task.kanbanColumn === 'done';
   const wasFastLane = task.fastLane;
+  const qt = getQuestType(task.questType);
+  const dur = getDuration(task.duration);
+
+  const cardStyle = {
+    ...style,
+    ...(qt ? { borderTop: `3px solid ${qt.color}` } : {}),
+  };
 
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      style={cardStyle}
       className={`task-card ${task.fastLane && !isDone ? 'task-card-fastlane' : ''} ${
         isDone ? 'task-card-done' : ''
       } ${isDone && wasFastLane ? 'task-card-was-fastlane' : ''}`}
@@ -141,6 +149,21 @@ export default function TaskCard({
             }`}
           >
             Bis: {formatDate(task.dueDate)}
+          </span>
+        )}
+        {qt && (
+          <span className={`task-card-quest-type quest-type-${qt.id}`}>
+            {qt.icon} {qt.label}
+          </span>
+        )}
+        {dur && (
+          <span className="task-card-duration">
+            {dur.subtitle}
+          </span>
+        )}
+        {task.xp && (
+          <span className="task-card-xp">
+            {task.xp} XP
           </span>
         )}
       </div>

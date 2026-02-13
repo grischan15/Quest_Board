@@ -1,12 +1,15 @@
 import Modal from './Modal';
 import './DeleteModal.css';
 
-export default function DeleteModal({ task, onConfirm, onClose }) {
+export default function DeleteModal({ task, itemLabel, onConfirm, onClose }) {
+  const label = itemLabel || 'Quest';
+  const displayName = task.title || task.name || task.label;
+
   return (
-    <Modal title="Quest l&ouml;schen?" onClose={onClose}>
+    <Modal title={`${label} l\u00f6schen?`} onClose={onClose}>
       <div className="delete-modal">
         <p className="delete-msg">
-          "<strong>{task.title}</strong>" wird unwiderruflich gel&ouml;scht.
+          "<strong>{displayName}</strong>" wird unwiderruflich gel&ouml;scht.
         </p>
         <div className="delete-actions">
           <button className="form-btn form-btn-cancel" onClick={onClose}>

@@ -1,7 +1,7 @@
-# ROADMAP: Quest Board
+# ROADMAP: NeuroForge
 ## Wohin geht die Reise?
 
-**Zuletzt aktualisiert:** 12. Februar 2026
+**Zuletzt aktualisiert:** 13. Februar 2026
 
 ---
 
@@ -12,7 +12,7 @@
 > Definiert das komplette Hybrid-System mit:
 > - Abgrenzungsregeln: Quest vs Skill vs Projekt
 > - XP-System (30/50/80) und Skill-Level (0-5)
-> - Quest-Typen mit Energie-Kategorien (Code/Learn/Design/Config/Write)
+> - Quest-Typen mit Energie-Kategorien (Focus/Input/Create/Routine/Reflect)
 > - WIP-Limits, Fast Lane Regeln, Wildcard-Tageslimit
 > - Intake-Flow für neue Ideen + KI-Import-Template
 > - Inkrementelle Umsetzungs-Roadmap (9 Schritte)
@@ -25,67 +25,194 @@
 
 ### BUG-001: Backup-Restore überschreibt neue predefined Skills
 
-**Status:** Offen  
-**Entdeckt:** 12.02.2026  
-**Priorität:** Hoch (blockiert sauberen Workflow)
+**Status:** ✅ Behoben (12.02.2026)
+**Entdeckt:** 12.02.2026
+**Behoben in:** Schema v5 – `mergeSkillsWithPredefined()` + `mergeCategoriesWithPredefined()` in `useQuestBoard.js`
 
-**Problem:**  
-Wenn ein Backup wiederhergestellt wird (Import → Wiederherstellen → JSON), überschreibt die Restore-Funktion **alle** Skills komplett mit den Daten aus dem Backup. Neue predefined Skills aus `skillsData.js`, die nach dem Backup-Zeitpunkt hinzugefügt wurden, gehen dabei verloren.
+**Lösung:** Restore nutzt jetzt Merge statt Replace. Predefined Skills/Kategorien bleiben immer erhalten, Backup-Daten werden zusammengeführt. Custom Skills aus dem Backup werden übernommen.
 
-**Reproduktion:**
-1. App hat Skills aus `skillsData.js` (z.B. 38 Skills inkl. dev-08, dev-09, dev-10)
-2. User hat ein älteres Backup (z.B. mit nur 35 Skills, ohne dev-08/09/10)
-3. User stellt Backup wieder her → Wiederherstellen-Tab → JSON hochladen
-4. **Ergebnis:** Skill Tree zeigt nur die 35 alten Skills, die 3 neuen fehlen
-5. **Erwartet:** Skill Tree zeigt 38 Skills – alte Task-Daten wiederhergestellt + neue predefined Skills ergänzt
+---
 
-**Root Cause:**  
-Die Restore-Logik setzt `localStorage` Skills 1:1 auf die Backup-Daten, ohne gegen `initialSkills` aus `skillsData.js` zu mergen.
+## ✅ ERLEDIGT (v1.5 – Skill-Editor & Bugfix)
 
-**Lösungsansatz:**  
-Beim Restore einen Merge durchführen:
+Umgesetzt am 12.02.2026, Schema v4 → v5:
 
-```
-Restore-Logik (Pseudocode):
-1. Lade Backup-Skills (aus JSON)
-2. Lade aktuelle predefined Skills (aus skillsData.js → initialSkills)
-3. Für jeden predefined Skill:
-   a. Existiert er im Backup? → Backup-Version übernehmen (behält status, learnedAt etc.)
-   b. Existiert er NICHT im Backup? → Als neuen 'open' Skill hinzufügen
-4. Für jeden NICHT-predefined Skill im Backup (custom/user-created):
-   → Übernehmen wie er ist
-5. Ergebnis in localStorage speichern
-```
+- [x] **BUG-001 fixen** – Restore-Merge statt Overwrite
+- [x] **Skill-Editor** – Skills manuell hinzufügen, bearbeiten, ausblenden (predefined) / löschen (custom)
+- [x] **Eigene Skill-Kategorien** – Erstellen, bearbeiten, löschen (wenn leer) + Emoji-Picker
+- [x] **Schema v5** – `categories` Array im State, `hidden` Flag auf Skills, Migration v4→v5
+- [x] **ImportModal** – Restore-Warnung aktualisiert (Merge statt Replace), Kategorie-Anzahl in Vorschau
 
-**Betroffene Datei(en):**  
-Vermutlich die Import/Restore-Logik – muss im Code lokalisiert werden (wahrscheinlich in einer Komponente wie `ImportModal` oder `BackupRestore` oder direkt im `useStorage` Hook).
+**Dateien:** `skillsData.js`, `useQuestBoard.js`, `SkillTree.jsx/.css`, `SkillCheckModal.jsx`, `App.jsx`, `ImportModal.jsx`, `DeleteModal.jsx` + NEU: `SkillModal.jsx/.css`, `CategoryModal.jsx/.css`
 
-**Wichtig:** Dieser Bug betrifft auch das geplante Feature "Skill-Editor" – wenn User eigene Skills erstellen können, muss der Merge auch custom Skills korrekt behandeln.
+---
+
+## ✅ ERLEDIGT (v2.0 Block A – Quest-Typ + Duration)
+
+Umgesetzt am 12.02.2026, Schema v5 → v6:
+
+- [x] **Quest-Typ Feld** – 5 Energie-Kategorien (Code/Learn/Design/Config/Write) als klickbare Buttons im TaskModal
+- [x] **Duration-Feld** – Kurz (~30 Min) / Lang (~45 Min) als klickbare Buttons im TaskModal
+- [x] **TaskCard Anzeige** – Farbiger Top-Border pro Quest-Typ + Quest-Typ Badge + Duration Badge im Meta-Bereich
+- [x] **Schema v6** – Migration setzt `questType: null, duration: null` auf bestehende Tasks
+- [x] **questTypes.js** – Zentrale Config (QUEST_TYPES + DURATIONS + Helper-Funktionen)
+
+**Dateien:** NEU: `questTypes.js` + GEAENDERT: `useQuestBoard.js`, `TaskModal.jsx/.css`, `TaskCard.jsx/.css`, `App.jsx`
+
+---
+
+## ✅ ERLEDIGT (v2.0 Block B – XP + Skill-Level)
+
+Umgesetzt am 12.02.2026, Schema v6 → v7:
+
+- [x] **XP-System** – 3 XP-Stufen (30 Rezeptiv / 50 Reproduktiv / 80 Produktiv) als klickbare Buttons im TaskModal
+- [x] **Skill-Level** – Level 0-5 (Locked/Novice/Apprentice/Journeyman/Expert/Master) statt binaer open/learned
+- [x] **Migration** – `learned` → Level 3 / 250 XP, `open` → Level 0 / 0 XP
+- [x] **assignSkills mit XP** – Addiert Task-XP auf Skills, berechnet Level neu, mindestens 1 XP pro Zuordnung
+- [x] **SkillTree** – Sterne pro Level + XP-Progress-Bar + Level-Labels (6 Farbvarianten) + XP-Totals
+- [x] **SkillCheckModal** – Zeigt Quest-XP, Level/XP-Vorschau pro Skill, Level-Up Highlight (gold)
+- [x] **SkillModal** – Level/XP read-only Info im Edit-Mode, Status-Toggle nur bei Create
+- [x] **TaskCard** – XP-Badge im Meta-Bereich (gruen)
+- [x] **Schema v7** – `xp` auf Tasks, `level` + `xpCurrent` auf Skills
+
+**Level-Schwellen:** 0→1: 1XP, 1→2: 100XP, 2→3: 250XP, 3→4: 500XP, 4→5: 800XP
+
+**Dateien:** GEAENDERT: `questTypes.js`, `skillsData.js`, `useQuestBoard.js`, `TaskModal.jsx/.css`, `TaskCard.jsx/.css`, `SkillTree.jsx/.css`, `SkillCheckModal.jsx/.css`, `SkillModal.jsx/.css`, `App.jsx`
+
+**Hinweis:** Nach Schema-Migration muss der Browser-Cache (localStorage) geloescht werden, da alte Datenstrukturen ohne level/xpCurrent den SkillTree crashen koennen.
+
+---
+
+## ✅ ERLEDIGT (v2.0 Block C – WIP + Wildcard-Limits)
+
+Umgesetzt am 13.02.2026, Schema v7 → v8:
+
+- [x] **WIP-Limits** – Kanban-Spalten-Header zeigt "2/3" Counter, rot wenn voll, Drag blockiert bei Limit
+- [x] **Wildcard-Tageslimit** – Header zeigt "⚡ 1/2 Wildcards" auf Kanban-Tab, rot wenn aufgebraucht
+- [x] **SettingsModal** – WIP-Limits pro Spalte (1-10) + Max Wildcards pro Tag (1-5) konfigurierbar
+- [x] **Schema v8** – `settings` Objekt mit `wipLimits` + `maxWildcardsPerDay`, Migration v7→v8
+- [x] **Export/Import** – Settings werden mit exportiert und beim Restore uebernommen
+
+**Dateien:** GEAENDERT: `useQuestBoard.js`, `Kanban.jsx/.css`, `Header.jsx/.css`, `App.jsx` + NEU: `SettingsModal.jsx/.css`
+
+---
+
+## ✅ ERLEDIGT (v2.0 Block D – Energie-Filter)
+
+Umgesetzt am 13.02.2026, kein Schema-Change:
+
+- [x] **Energie-Filter** – Filter-Leiste ueber dem Eisenhower-Board mit Quest-Typ Chips
+- [x] **Toggle-Verhalten** – Klick aktiviert Filter, erneuter Klick zeigt alle
+- [x] **Sichtbarkeit** – Nur sichtbar wenn mindestens 1 Quest einen Typ gesetzt hat
+- [x] **Filtert** – Quadranten + Unsortiert-Bereich
+
+**Dateien:** GEAENDERT: `Eisenhower.jsx/.css`
+
+---
+
+## ✅ ERLEDIGT (v2.1 – QoL-Verbesserungen)
+
+Umgesetzt am 13.02.2026, kein Schema-Change:
+
+- [x] **Modal-Scroll Fix** – Modals scrollen auf kleinen Bildschirmen statt abgeschnitten zu werden (max-height + overflow-y auf Modal.css)
+- [x] **Skill Level/XP editierbar** – XP-Eingabefeld im SkillModal mit automatischer Level-Berechnung + Schwellen-Referenz (Lv.1: 1 · Lv.2: 100 · Lv.3: 250 · Lv.4: 500 · Lv.5: 800)
+- [x] **Task-Import erweitert** – Alle 7 Spalten dokumentiert (title, description, quadrant, dueDate, questType, duration, xp), CSV/JSON Parser erweitert, Spalten-Info-Grid im Modal
+- [x] **Skill-Import** – Eigenes SkillImportModal auf der SkillTree-Seite (Schnell-Eingabe + CSV/JSON mit Spaltendokumentation: name, category, status, level, xp)
+- [x] **Hilfe-Seite** – Neuer Tab "Hilfe" mit Erklaerung des Quest-Skill-Projekt-Konzepts, Workflow (4 Schritte), XP/Level-Tabellen, Quest-Typen, Fast Lane, Neurodivergenz-Designprinzipien (6 Bereiche)
+- [x] **importSkills()** – Neue Bulk-Import-Funktion fuer Skills im useQuestBoard Hook
+
+**Dateien:** GEAENDERT: `Modal.css`, `SkillModal.jsx/.css`, `ImportModal.jsx/.css`, `SkillTree.jsx/.css`, `App.jsx`, `useQuestBoard.js`, `Header.jsx` + NEU: `SkillImportModal.jsx/.css`, `HelpPage.jsx/.css`
+
+---
+
+## ✅ ERLEDIGT (v2.5 – NeuroForge Rebrand & Beautification)
+
+Umgesetzt am 13.02.2026, Schema v8 → v9:
+
+- [x] **Rebrand zu "NeuroForge – Deine Quest-Schmiede"** – Header, HelpPage, index.html, Export-Dateiname
+- [x] **Quest-Typen universell** – Code→Focus, Learn→Input, Design→Create, Config→Routine, Write→Reflect. Schema v9 Migration.
+- [x] **15-Min Sprint Quest** – Neue Duration "Sprint (~15 Min)" neben Kurz und Lang
+- [x] **Hilfe-Seite komplett überarbeitet** – Universelle Quest-Typ-Beschreibungen mit zwei Kontexten (Coding + Schule), Energie-Tagesverlauf SVG-Diagramm, "Universal einsetzbar"-Sektion (Software, Physik Kl.10, Sprachen), Duration-Tabelle mit Sprint
+- [x] **Skill Import: Kategorie-Dropdown** – Schnell-Eingabe hat jetzt Dropdown zur Kategorie-Auswahl
+- [x] **Skill Import: Auto-Create Categories** – Unbekannte Kategorie-IDs aus CSV/JSON werden automatisch als neue Kategorien angelegt
+- [x] **Kanban als Default-Tab** – Kanban ist jetzt die Hauptansicht (erster Tab), Backlog wird zum zweiten Tab
+- [x] **Mini-Backlog im Kanban** – Links im Kanban: Q1 (Dringend, ~80%) + Q2 (Säge schärfen, ~20%) mit Start-Button. Covey 80/20-Prinzip visuell sichtbar
+- [x] **Kanban-Spalten Subtitles** – Universelle Zweitbeschreibung: Sammeln & Planen / Aktiv bearbeiten / Selbst prüfen / Fremd prüfen
+- [x] **Hilfe: Farb-Code Erkläung** – Visuelle Demo-Karten für Quest-Typ-Farben, Fast Lane Doppelrahmen, Done-Markierung, Fälligkeits-Farben
+- [x] **Hilfe: Kanban-Flow Erklärung** – Spalten-Erklärung mit Coding + Schul-Beispielen, Retrieval Practice Didaktik-Hinweis
+
+**Dateien:** `questTypes.js`, `useQuestBoard.js` (Schema v9), `Header.jsx/.css`, `HelpPage.jsx/.css`, `TaskCard.css`, `SkillImportModal.jsx/.css`, `ImportModal.jsx`, `Kanban.jsx/.css`, `App.jsx`, `index.html`
 
 ---
 
 ## KURZFRISTIG (v2.0 – Gamification)
 
-Umsetzung gemäß [Konzept v1.0](Quest_Skill_Projekt_Konzept_v1_0.md), Abschnitt 9:
+Umsetzung gemäß [Konzept v1.0](Quest_Skill_Projekt_Konzept_v1_0.md), Abschnitt 9.
 
-- [ ] **BUG-001 fixen** (Restore-Merge statt Overwrite)
-- [ ] **Schritt 1:** Quest-Typ Feld + Farbcoding auf TaskCard
-- [ ] **Schritt 2:** XP-System auf Quest + Berechnung auf Skill
-- [ ] **Schritt 3:** Skill-Level statt binär (Migration v4→v5)
-- [ ] **Schritt 4:** WIP-Limits auf Kanban-Spalten
-- [ ] **Schritt 5:** Wildcard-Limit (Tageszähler + Settings)
-- [ ] **Schritt 8:** Energie-Filter im Backlog
-- [ ] **Schritt 9:** Duration-Feld + Timer-Anzeige
-- [ ] **Skill-Editor in der App** (Skills manuell hinzufügen, bearbeiten, löschen)
-- [ ] **Eigene Skill-Kategorien erstellen** (Name + Icon wählbar)
+### ✅ Block C: Kanban-Limits (Schema v7 → v8, Settings in State)
+
+WIP-Limits und Wildcard-Tageslimit für fokussiertes Arbeiten.
+
+- [x] **Schritt 4:** WIP-Limits auf Kanban-Spalten
+- [x] **Schritt 5:** Wildcard-Limit (Tageszähler + Settings)
+
+**Umgesetzt:** Schema v8 – `settings` Objekt mit `wipLimits` + `maxWildcardsPerDay`. Spalten-Header zeigt "2/3" Counter (rot wenn voll). Drag blockiert bei vollem Limit. Wildcard-Zähler im Header. SettingsModal für Konfiguration.
+
+### ✅ Block D: Energie-Filter (rein UI, kein Schema-Change)
+
+Setzt Block A (Quest-Typ) voraus.
+
+- [x] **Schritt 8:** Energie-Filter im Backlog
+
+**Umgesetzt:** Filter-Leiste ueber dem Eisenhower-Board mit Chips [Alle] [Code] [Learn] [Design] [Config] [Write]. Filtert Quadranten und Unsortiert-Bereich. Nur sichtbar wenn mindestens 1 Quest einen Typ hat. Toggle-Verhalten (nochmal klicken = zurueck zu Alle).
+
+### Empfohlene Reihenfolge
+
+```
+✅ Block A (Quest-Typ + Duration)  ← DONE
+✅ Block B (XP + Skill-Level)      ← DONE
+✅ Block C (WIP + Wildcard-Limits) ← DONE
+✅ Block D (Energie-Filter)        ← DONE
+```
 
 ---
 
-## MITTELFRISTIG (v3.0 – Projekte & KI)
+## ✅ ERLEDIGT (v3.0 Block A – RPG Dashboard im Skill-Tree)
 
+Umgesetzt am 13.02.2026, Schema v9 → v10:
+
+- [x] **Schema v10** – `showInDashboard` Flag auf Kategorien (max 6), Migration v9→v10, `toggleCategoryDashboard()` Funktion
+- [x] **RPG_ATTRIBUTES** – `['STR', 'INT', 'DEX', 'WIS', 'CHA', 'CON']` in questTypes.js
+- [x] **RadarChart (SVG)** – Spinnendiagramm (viewBox 400, RADIUS 145), N Achsen (1-6), Referenz-Polygone, Gradient-Fill Daten-Polygon, Icon + RPG-Kuerzel Labels auf weissem Kreis-Hintergrund, Edge Cases (1 Kat = Bar, 2 = Spiegel, 3-6 = N-gon)
+- [x] **CharacterCard** – Gesamt Character-Level (Durchschnitt Kategorie-Staerken skaliert 0-5) + Total XP. Pro Kategorie: RPG-Name + Icon + Label + Attribut-Balken mit Level-Farbpalette (6 Stufen)
+- [x] **RecentSkills** – Kuerzlich gelernte Skills (Woche + Monat), aggregiert pro Skill (Name, Level-Label, +XP, Datum), max 5 Eintraege
+- [x] **RpgDashboard** – Container: berechnet categoryStrengths/totalLevel/totalXP, rendert RadarChart → CharacterCard → RecentSkills vertikal, sticky + scrollbar, Empty State
+- [x] **SkillTree Layout-Umbau** – Done-Panels entfernt, Grid `1fr 420px` (Skills links, Dashboard rechts), Auge-Toggle (👁) auf Category-Header fuer showInDashboard
+- [x] **Kategorie-Staerke** – `(levelSum / (skillCount * 5)) * 100`, 0-100% Skala
+- [x] **Responsive** – `@media (max-width: 900px)` → 1 Spalte
+
+**Dateien:** NEU: `RadarChart.jsx/.css`, `CharacterCard.jsx/.css`, `RecentSkills.jsx/.css`, `RpgDashboard.jsx/.css` (8 Dateien) + GEAENDERT: `skillsData.js`, `questTypes.js`, `useQuestBoard.js`, `SkillTree.jsx/.css`, `App.jsx`
+
+---
+
+## MITTELFRISTIG (v3.0 – RPG Dashboard & Analytics)
+
+### Block B: Personal Dashboard (neuer Tab)
+- [ ] **Heatmap-Tabelle** – Zeilen: Tageszeiten (2h-Blöcke 06-22), Spalten: Wochentage (Mo-So). Farbe = Anzahl abgeschlossene Quests (GitHub-Contribution-Style)
+- [ ] **Liniendiagramm** – X: Zeitraum (Wochen/Monate), Y: Quest-Anzahl. Farbige Linien pro Quest-Typ + dicke schwarze Gesamtsumme. Dynamisch skaliert
+- [ ] **startedAt/completedAt Timestamps** – Timestamps auf Tasks für zeitbasierte Auswertung (Schema-Change)
+- [ ] **Persönliche Energiekurve** – Aus echten Daten berechnet, ersetzt das statische Diagramm der Hilfe-Seite
+
+### Block C: Projekte & KI
 - [ ] **Schritt 6:** Projekte als Unlock-Ziele im Skill-Tree
 - [ ] **Schritt 7:** KI-Import-Template (Prompt + JSON-Schema)
-- [ ] Analytics/Auswertung basierend auf Historie-Daten + XP-Verlauf
+
+### Block D: Vorlagen-System
+- [ ] **Skill-Set Templates** – Vordefinierte Vorlagen ("Softwareentwicklung", "Physik Klasse 10", "Sprachen lernen" etc.)
+- [ ] **Template-Auswahl** – Bei erstem Start oder über Settings wählbar
+- [ ] **Community Templates** – Später: Templates teilen/importieren
+
+### Sonstiges
 - [ ] Browser-Testing & Feinschliff
 
 ### Datenbank statt localStorage
@@ -123,6 +250,18 @@ Umsetzung gemäß [Konzept v1.0](Quest_Skill_Projekt_Konzept_v1_0.md), Abschnitt
 | **12.02.2026** | **Modell 3 (Hybrid-System)** | **Quest-Skill-Projekt Abgrenzung definiert. XP-Level statt binär. Single-User. Quest 30-45min. Konzept v1.0 erstellt.** |
 | **12.02.2026** | **DB bewusst aufgeschoben** | **localStorage reicht für Single-User. DB-Migration wird eigenes Projekt im System (Meta-Level).** |
 | **12.02.2026** | **Kanban-Spalten beibehalten** | **5 Spalten (Vorbereiten→Entwickeln→Testing Intern→Testing Extern→Done) sind gebaut und passen für Software-Quests.** |
+| **12.02.2026** | **v1.5 Skill-Editor shipped** | **BUG-001 gefixt, Skill-Editor + Custom Categories, Schema v5. Predefined Skills ausblendbar, Custom Skills löschbar, Emoji-Picker für Kategorien.** |
+| **12.02.2026** | **Gamification in 4 Blöcke aufgeteilt** | **A: Quest-Typ+Duration → B: XP+Level → C: WIP+Wildcards → D: Energie-Filter. Jeweils eigene Schema-Migration.** |
+| **12.02.2026** | **Block A shipped** | **Quest-Typ (5 Typen) + Duration auf Tasks. Schema v6. Farbiger Top-Border + Badges auf TaskCard. Browser-getestet.** |
+| **12.02.2026** | **Block B shipped** | **XP-System (30/50/80) + Skill-Level 0-5 (Locked→Master). Schema v7. Sterne + XP-Progress im SkillTree. Level-Up Preview im SkillCheckModal. Browser-getestet.** |
+| **13.02.2026** | **Block C shipped** | **WIP-Limits auf Kanban-Spalten + Wildcard-Tageslimit. Schema v8. SettingsModal fuer Konfiguration. Drag-Blockade bei vollem Limit.** |
+| **13.02.2026** | **Block D shipped** | **Energie-Filter im Backlog. Quest-Typ Chips ueber dem Eisenhower-Board. Kein Schema-Change. v2.0 Gamification komplett.** |
+| **13.02.2026** | **v2.1 QoL shipped** | **6 Verbesserungen: Modal-Scroll Fix, Skill XP/Level editierbar, Task-Import Spaltendoku, Skill-Import Modal, Hilfe-Seite (Neurodivergenz), importSkills() Funktion. Kein Schema-Change.** |
+| **13.02.2026** | **Rebrand zu NeuroForge** | **"NeuroForge – Deine Quest-Schmiede" statt "Quest Board". Emotionaler Name, neurodivergent-proud.** |
+| **13.02.2026** | **Quest-Typen universalisiert** | **Code→Focus, Learn→Input, Design→Create, Config→Routine, Write→Reflect. Energie-Level funktionieren jetzt für jeden Kontext (Coding, Schule, Sprachen etc.).** |
+| **13.02.2026** | **v2.5 shipped** | **NeuroForge Rebrand, universelle Quest-Typen (Schema v9), 15-Min Sprint, Hilfe-Seite mit Energie-SVG + Schul-Beispiel, Skill Import: Kategorie-Dropdown + Auto-Create, Kanban als Default + Mini-Backlog (Covey 80/20), Farb-Code + Kanban-Flow Hilfe, Spalten-Subtitles.** |
+| **13.02.2026** | **Kanban als Hauptansicht** | **Fokus-Prinzip: Kanban zeigt die aktive Arbeit. Backlog (Q1+Q2) links sichtbar, kein Tab-Wechsel nötig. Covey: ~80% Q1 dringende Arbeit + ~20% Q2 Säge schärfen.** |
+| **13.02.2026** | **v3.0 Block A shipped** | **RPG Dashboard im Skill-Tree: Radar-Chart (SVG), CharacterCard (STR/INT/DEX/WIS/CHA/CON), RecentSkills. Schema v10 (showInDashboard). Done-Panels ersetzt. Skills links, Dashboard rechts (Lesefluss).** |
 
 ---
 

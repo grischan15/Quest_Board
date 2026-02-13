@@ -1,56 +1,57 @@
 import { useState } from 'react';
-import { categoryOrder, categoryIcons } from '../data/skillsData';
+import { getLevelLabel, getXpForNextLevel, LEVEL_THRESHOLDS } from '../data/questTypes';
+import RpgDashboard from './RpgDashboard';
 import './SkillTree.css';
 
-export default function SkillTree({ skills, tasks }) {
+export default function SkillTree({ skills, tasks, categories, onEditSkill, onAddSkill, onEditCategory, onAddCategory, onImportSkills, onToggleDashboard }) {
   const [collapsed, setCollapsed] = useState({});
+  const [showHidden, setShowHidden] = useState(false);
 
-  const categories = categoryOrder.map((cat) => {
-    const catSkills = skills.filter((s) => s.category === cat);
-    const learned = catSkills.filter((s) => s.status === 'learned').length;
+  const visibleSkills = skills.filter((s) => !s.hidden);
+  const hiddenSkills = skills.filter((s) => s.hidden);
+
+  const sortedCategories = [...categories].sort((a, b) => a.order - b.order);
+
+  const categoryData = sortedCategories.map((cat) => {
+    const catSkills = visibleSkills.filter((s) => s.category === cat.id);
+    const active = catSkills.filter((s) => (s.level || 0) >= 1).length;
     const total = catSkills.length;
+    const totalXp = catSkills.reduce((sum, s) => sum + (s.xpCurrent || 0), 0);
     return {
-      id: cat,
-      label: catSkills[0]?.categoryLabel || cat,
-      icon: categoryIcons[cat] || '',
+      ...cat,
       skills: catSkills,
-      learned,
+      active,
       total,
-      percent: total > 0 ? Math.round((learned / total) * 100) : 0,
+      totalXp,
+      percent: total > 0 ? Math.round((active / total) * 100) : 0,
     };
   });
 
-  const totalLearned = skills.filter((s) => s.status === 'learned').length;
-  const totalSkills = skills.length;
-  const totalPercent = totalSkills > 0 ? Math.round((totalLearned / totalSkills) * 100) : 0;
+  const totalActive = visibleSkills.filter((s) => (s.level || 0) >= 1).length;
+  const totalSkills = visibleSkills.length;
+  const totalXp = visibleSkills.reduce((sum, s) => sum + (s.xpCurrent || 0), 0);
 
-  // Done tasks grouped by time
-  const now = new Date();
-  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-  const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const dashboardCount = categories.filter((c) => c.showInDashboard).length;
 
-  const doneTasks = tasks
-    .filter((t) => t.kanbanColumn === 'done' && t.completedAt)
-    .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
-
-  const lastWeekTasks = doneTasks.filter((t) => new Date(t.completedAt) >= weekAgo);
-  const lastMonthTasks = doneTasks.filter(
-    (t) => new Date(t.completedAt) < weekAgo && new Date(t.completedAt) >= monthAgo
-  );
-
-  function getTaskTitle(taskId) {
-    const task = tasks.find((t) => t.id === taskId);
-    return task?.title || 'Unbekannt';
+  function getStars(level) {
+    if (level <= 0) return '\u2B1C';
+    return '\u2B50'.repeat(level);
   }
 
-  function formatDate(iso) {
-    if (!iso) return null;
-    return new Date(iso).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  }
-
-  function formatDateShort(iso) {
-    if (!iso) return '';
-    return new Date(iso).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+  function getXpProgress(skill) {
+    const level = skill.level || 0;
+    const xp = skill.xpCurrent || 0;
+    if (level >= 5) return { percent: 100, current: xp, next: null };
+    const currentThreshold = LEVEL_THRESHOLDS[level] || 0;
+    const nextThreshold = getXpForNextLevel(level);
+    if (!nextThreshold) return { percent: 100, current: xp, next: null };
+    const range = nextThreshold - currentThreshold;
+    const progress = xp - currentThreshold;
+    return {
+      percent: range > 0 ? Math.min(100, Math.round((progress / range) * 100)) : 0,
+      current: xp,
+      next: nextThreshold,
+    };
   }
 
   function toggleCategory(catId) {
@@ -62,129 +63,163 @@ export default function SkillTree({ skills, tasks }) {
       <div className="skilltree-header">
         <h2 className="skilltree-title">Skill-Tree</h2>
         <div className="skilltree-total">
-          Gesamt: {totalLearned}/{totalSkills} ({totalPercent}%)
+          {totalActive}/{totalSkills} Skills aktiv &middot; {totalXp} XP gesamt
         </div>
       </div>
 
       <div className="skilltree-layout">
         {/* Skill Tree - Left */}
         <div className="skilltree-main">
-          {totalLearned === 0 && (
+          {totalActive === 0 && (
             <div className="empty-state">
-              <p>Schliesse Quests ab um Skills zu sammeln!</p>
+              <p>Schliesse Quests ab um Skills zu leveln!</p>
             </div>
           )}
 
           <div className="skilltree-categories">
-            {categories.map((cat) => (
+            {categoryData.map((cat) => (
               <div key={cat.id} className="skill-category">
-                <button
-                  className="skill-category-header"
-                  onClick={() => toggleCategory(cat.id)}
-                >
-                  <span className="skill-cat-icon">{cat.icon}</span>
-                  <span className="skill-cat-label">{cat.label}</span>
-                  <span className="skill-cat-count">
-                    {cat.learned}/{cat.total}
-                  </span>
-                  <div className="skill-progress-bar">
-                    <div
-                      className="skill-progress-fill"
-                      style={{ width: `${cat.percent}%` }}
-                    />
-                  </div>
-                  <span className="skill-cat-chevron">
-                    {collapsed[cat.id] ? '\u25B6' : '\u25BC'}
-                  </span>
-                </button>
+                <div className="skill-category-header-row">
+                  <button
+                    className="skill-category-header"
+                    onClick={() => toggleCategory(cat.id)}
+                  >
+                    <span className="skill-cat-icon">{cat.icon}</span>
+                    <span className="skill-cat-label">{cat.label}</span>
+                    <span className="skill-cat-count">
+                      {cat.active}/{cat.total} &middot; {cat.totalXp} XP
+                    </span>
+                    <div className="skill-progress-bar">
+                      <div
+                        className="skill-progress-fill"
+                        style={{ width: `${cat.percent}%` }}
+                      />
+                    </div>
+                    <span className="skill-cat-chevron">
+                      {collapsed[cat.id] ? '\u25B6' : '\u25BC'}
+                    </span>
+                  </button>
+                  {onToggleDashboard && (
+                    <button
+                      className={`skill-eye-icon ${cat.showInDashboard ? 'skill-eye-active' : 'skill-eye-inactive'}`}
+                      onClick={(e) => { e.stopPropagation(); onToggleDashboard(cat.id); }}
+                      title={cat.showInDashboard ? 'Aus Dashboard entfernen' : (dashboardCount >= 6 ? 'Max. 6 Kategorien im Dashboard' : 'Im Dashboard anzeigen')}
+                      disabled={!cat.showInDashboard && dashboardCount >= 6}
+                    >
+                      {cat.showInDashboard ? '\uD83D\uDC41' : '\uD83D\uDC41\u200D\uD83D\uDDE8'}
+                    </button>
+                  )}
+                  {onEditCategory && (
+                    <button
+                      className="skill-edit-icon"
+                      onClick={(e) => { e.stopPropagation(); onEditCategory(cat); }}
+                      title="Kategorie bearbeiten"
+                    >
+                      {'\u270E'}
+                    </button>
+                  )}
+                </div>
 
                 {!collapsed[cat.id] && (
                   <div className="skill-list">
-                    {cat.skills.map((skill) => (
-                      <div
-                        key={skill.id}
-                        className={`skill-item ${
-                          skill.status === 'learned' ? 'skill-learned' : 'skill-open'
-                        }`}
-                      >
-                        <span className="skill-status-icon">
-                          {skill.status === 'learned' ? '\u2705' : '\u2B1C'}
-                        </span>
-                        <div className="skill-info">
-                          <span className="skill-name">{skill.name}</span>
-                          <div className="skill-dates">
-                            {skill.createdAt && (
-                              <span className="skill-date">Angelegt: {formatDate(skill.createdAt)}</span>
-                            )}
-                            {skill.learnedAt && (
-                              <span className="skill-date skill-date-learned">Gelernt: {formatDate(skill.learnedAt)}</span>
-                            )}
+                    {cat.skills.map((skill) => {
+                      const level = skill.level || 0;
+                      const xpProg = getXpProgress(skill);
+                      return (
+                        <div
+                          key={skill.id}
+                          className={`skill-item ${
+                            level >= 1 ? 'skill-learned' : 'skill-open'
+                          } ${onEditSkill ? 'skill-item-clickable' : ''}`}
+                          onClick={onEditSkill ? () => onEditSkill(skill) : undefined}
+                        >
+                          <span className="skill-level-stars">
+                            {getStars(level)}
+                          </span>
+                          <div className="skill-info">
+                            <div className="skill-name-row">
+                              <span className="skill-name">{skill.name}</span>
+                              <span className={`skill-level-label skill-level-${level}`}>
+                                {getLevelLabel(level)}
+                              </span>
+                            </div>
+                            <div className="skill-xp-row">
+                              <div className="skill-xp-bar">
+                                <div
+                                  className="skill-xp-fill"
+                                  style={{ width: `${xpProg.percent}%` }}
+                                />
+                              </div>
+                              <span className="skill-xp-text">
+                                {xpProg.current}{xpProg.next !== null ? `/${xpProg.next}` : ''} XP
+                              </span>
+                            </div>
                           </div>
                         </div>
-                        {skill.learnedFrom.length > 0 && (
-                          <span className="skill-source">
-                            ({skill.learnedFrom.map(getTaskTitle).join(', ')})
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
+                    {onAddSkill && (
+                      <button
+                        className="skill-add-btn"
+                        onClick={() => onAddSkill(cat.id)}
+                      >
+                        + Skill
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
             ))}
+
+            <div className="skilltree-actions">
+              {onAddCategory && (
+                <button className="category-add-btn" onClick={onAddCategory}>
+                  + Neue Kategorie
+                </button>
+              )}
+              {onImportSkills && (
+                <button className="skill-import-btn" onClick={onImportSkills}>
+                  Skills importieren
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* Hidden Skills Section */}
+          {hiddenSkills.length > 0 && (
+            <div className="hidden-skills-section">
+              <button
+                className="hidden-skills-toggle"
+                onClick={() => setShowHidden((prev) => !prev)}
+              >
+                <span>Ausgeblendete Skills ({hiddenSkills.length})</span>
+                <span className="skill-cat-chevron">{showHidden ? '\u25BC' : '\u25B6'}</span>
+              </button>
+              {showHidden && (
+                <div className="hidden-skills-list">
+                  {hiddenSkills.map((skill) => (
+                    <div
+                      key={skill.id}
+                      className={`skill-item skill-item-hidden ${onEditSkill ? 'skill-item-clickable' : ''}`}
+                      onClick={onEditSkill ? () => onEditSkill(skill) : undefined}
+                    >
+                      <span className="skill-status-icon">{'\uD83D\uDEAB'}</span>
+                      <div className="skill-info">
+                        <span className="skill-name">{skill.name}</span>
+                        <span className="skill-date">
+                          {categories.find((c) => c.id === skill.category)?.label || skill.categoryLabel}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Letzter Monat - Middle */}
-        <div className="done-panel done-panel-month">
-          <div className="done-panel-header">
-            <div className="done-panel-title">Letzter Monat</div>
-            <div className="done-panel-subtitle">erledigt</div>
-            <div className="done-panel-count">{lastMonthTasks.length}</div>
-          </div>
-          <div className="done-panel-list">
-            {lastMonthTasks.length === 0 ? (
-              <div className="done-panel-empty">Noch keine Quests diesen Monat erledigt</div>
-            ) : (
-              lastMonthTasks.map((task) => (
-                <div key={task.id} className={`done-panel-item ${task.fastLane ? 'done-panel-item-fast' : ''}`}>
-                  <span className="done-panel-check">{'\u2713'}</span>
-                  <div className="done-panel-item-info">
-                    <span className="done-panel-item-title">{task.title}</span>
-                    <span className="done-panel-item-date">{formatDateShort(task.completedAt)}</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Letzte Woche - Right (most prominent) */}
-        <div className="done-panel done-panel-week">
-          <div className="done-panel-header">
-            <div className="done-panel-title">Letzte Woche</div>
-            <div className="done-panel-subtitle">erledigt</div>
-            <div className="done-panel-count done-panel-count-week">{lastWeekTasks.length}</div>
-          </div>
-          <div className="done-panel-list">
-            {lastWeekTasks.length === 0 ? (
-              <div className="done-panel-empty">Noch keine Quests diese Woche erledigt</div>
-            ) : (
-              lastWeekTasks.map((task) => (
-                <div key={task.id} className={`done-panel-item done-panel-item-recent ${task.fastLane ? 'done-panel-item-fast' : ''}`}>
-                  <span className="done-panel-check">{'\u2713'}</span>
-                  <div className="done-panel-item-info">
-                    <span className="done-panel-item-title">{task.title}</span>
-                    <span className="done-panel-item-date">{formatDateShort(task.completedAt)}</span>
-                  </div>
-                  {task.skillsLearned.length > 0 && (
-                    <span className="done-panel-skills">+{task.skillsLearned.length} Skills</span>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        {/* RPG Dashboard - Right */}
+        <RpgDashboard skills={skills} tasks={tasks} categories={categories} />
       </div>
     </div>
   );

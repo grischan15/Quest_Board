@@ -2,17 +2,29 @@ import p3Logo from '../assets/P3_Logo_RZ_WortBild_mClaim_hell.svg';
 import './Header.css';
 
 const tabs = [
-  { id: 'eisenhower', label: 'Backlog', icon: '\uD83D\uDCCB' },
   { id: 'kanban', label: 'Kanban', icon: '\uD83C\uDFC3' },
+  { id: 'eisenhower', label: 'Backlog', icon: '\uD83D\uDCCB' },
   { id: 'skills', label: 'Skills', icon: '\uD83C\uDF33' },
+  { id: 'help', label: 'Hilfe', icon: '\u2753' },
 ];
 
-export default function Header({ activeTab, onTabChange, onNewQuest, onImport, onExport }) {
+export default function Header({
+  activeTab,
+  onTabChange,
+  onNewQuest,
+  onImport,
+  onExport,
+  wildcardsUsed,
+  maxWildcardsPerDay,
+  onSettingsClick,
+}) {
+  const wcFull = wildcardsUsed != null && maxWildcardsPerDay != null && wildcardsUsed >= maxWildcardsPerDay;
+
   return (
     <header className="header">
       <div className="header-left">
         <img src={p3Logo} alt="P3" className="header-p3-logo" />
-        <h1 className="header-logo">Quest Board</h1>
+        <h1 className="header-logo">NeuroForge<span className="header-subtitle">Deine Quest-Schmiede</span></h1>
       </div>
       <nav className="header-tabs">
         {tabs.map((tab) => (
@@ -26,7 +38,15 @@ export default function Header({ activeTab, onTabChange, onNewQuest, onImport, o
           </button>
         ))}
       </nav>
+      {activeTab === 'kanban' && wildcardsUsed != null && (
+        <div className={`header-wildcard-counter${wcFull ? ' wc-full' : ''}`}>
+          &#9889; {wildcardsUsed}/{maxWildcardsPerDay} Wildcards
+        </div>
+      )}
       <div className="header-actions">
+        <button className="import-btn" onClick={onSettingsClick} title="Einstellungen">
+          &#9881;
+        </button>
         <button className="import-btn" onClick={onExport}>
           Export
         </button>

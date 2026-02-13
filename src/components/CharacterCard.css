@@ -1,0 +1,110 @@
+.character-card {
+  background: #f8f8f6;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.character-card-header {
+  text-align: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e8e6e1;
+}
+
+.character-level {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #25313a;
+  line-height: 1.2;
+}
+
+.character-xp {
+  font-size: 0.72rem;
+  color: #888;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.character-attributes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.character-attr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.character-attr-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  min-width: 0;
+  flex-shrink: 0;
+  width: 140px;
+}
+
+.character-attr-rpg {
+  font-weight: 800;
+  font-size: 0.68rem;
+  color: #25313a;
+  min-width: 26px;
+  letter-spacing: 0.04em;
+}
+
+.character-attr-icon {
+  font-size: 0.78rem;
+}
+
+.character-attr-name {
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.character-attr-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.character-attr-bar {
+  flex: 1;
+  height: 6px;
+  background: #e0e0de;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.character-attr-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.character-attr-value {
+  font-size: 0.68rem;
+  font-weight: 700;
+  min-width: 22px;
+  text-align: right;
+}
+
+/* Reuse existing level color palette */
+.skill-level-bg-0 { background: #e0e0de; }
+.skill-level-bg-1 { background: #aaa; }
+.skill-level-bg-2 { background: #2196F3; }
+.skill-level-bg-3 { background: #4CAF50; }
+.skill-level-bg-4 { background: #FF9800; }
+.skill-level-bg-5 { background: #c60a0f; }
+
+@media (prefers-reduced-motion: reduce) {
+  .character-attr-fill {
+    transition: none;
+  }
+}

@@ -34,6 +34,9 @@ export default function ImportModal({ onImport, onRestore, onClose }) {
         else if (h === 'beschreibung' || h === 'description') task.description = values[i];
         else if (h === 'quadrant') task.quadrant = values[i];
         else if (h === 'bis' || h === 'duedate' || h === 'due_date' || h === 'due') task.dueDate = values[i];
+        else if (h === 'typ' || h === 'questtype' || h === 'quest_type' || h === 'type') task.questType = values[i];
+        else if (h === 'dauer' || h === 'duration') task.duration = values[i];
+        else if (h === 'xp') task.xp = parseInt(values[i]) || null;
       });
       return task;
     }).filter((t) => t.title);
@@ -49,6 +52,9 @@ export default function ImportModal({ onImport, onRestore, onClose }) {
           description: t.description || t.beschreibung || '',
           quadrant: t.quadrant || null,
           dueDate: t.dueDate || t.due_date || t.bis || null,
+          questType: t.questType || t.quest_type || t.typ || null,
+          duration: t.duration || t.dauer || null,
+          xp: t.xp ? parseInt(t.xp) : null,
         }))
         .filter((t) => t.title);
     } catch {
@@ -162,8 +168,27 @@ export default function ImportModal({ onImport, onRestore, onClose }) {
         {activeTab === 'file' && (
           <div className="import-section">
             <p className="import-hint">
-              CSV (Spalten: Titel, Beschreibung, Quadrant, Bis) oder JSON.
+              CSV oder JSON Datei mit Quest-Daten. Nur <strong>title</strong> ist Pflicht.
             </p>
+            <div className="import-columns-info">
+              <div className="import-columns-title">Erkannte Spalten:</div>
+              <div className="import-columns-grid">
+                <span className="import-col-name">title / titel</span>
+                <span className="import-col-desc">Quest-Titel (Pflicht)</span>
+                <span className="import-col-name">description</span>
+                <span className="import-col-desc">Beschreibung</span>
+                <span className="import-col-name">quadrant</span>
+                <span className="import-col-desc">q1 / q2 / q3 / q4</span>
+                <span className="import-col-name">dueDate / bis</span>
+                <span className="import-col-desc">F&auml;lligkeit (YYYY-MM-DD)</span>
+                <span className="import-col-name">questType / typ</span>
+                <span className="import-col-desc">focus / input / create / routine / reflect</span>
+                <span className="import-col-name">duration / dauer</span>
+                <span className="import-col-desc">sprint (~15 Min) / short (~30 Min) / long (~45 Min)</span>
+                <span className="import-col-name">xp</span>
+                <span className="import-col-desc">30 / 50 / 80</span>
+              </div>
+            </div>
             <div className="import-file-area">
               <input
                 ref={fileRef}
@@ -190,8 +215,9 @@ export default function ImportModal({ onImport, onRestore, onClose }) {
               Skills wiederherzustellen.
             </p>
             <div className="restore-warning">
-              Achtung: Beim Wiederherstellen werden alle aktuellen Daten
-              (Tasks und Skills) durch die Daten aus der Backup-Datei ersetzt!
+              Achtung: Tasks werden durch die Backup-Daten ersetzt.
+              Skills und Kategorien werden zusammengef&uuml;hrt &ndash; neue vordefinierte
+              Skills bleiben erhalten.
             </div>
             <div className="import-file-area">
               <input
@@ -224,6 +250,11 @@ export default function ImportModal({ onImport, onRestore, onClose }) {
                   <div className="restore-stat">
                     <strong>{restoreData.skills.filter((s) => s.status === 'learned').length}</strong> / {restoreData.skills.length} Skills gelernt
                   </div>
+                  {restoreData.categories && (
+                    <div className="restore-stat">
+                      <strong>{restoreData.categories.length}</strong> Kategorien
+                    </div>
+                  )}
                   {restoreData.exportedAt && (
                     <div className="restore-stat">
                       Exportiert am: <strong>{new Date(restoreData.exportedAt).toLocaleDateString('de-DE')}</strong>
@@ -250,6 +281,8 @@ export default function ImportModal({ onImport, onRestore, onClose }) {
                 <div key={i} className="import-preview-item">
                   <span className="import-preview-title">{t.title}</span>
                   {t.quadrant && <span className="import-preview-tag">{t.quadrant}</span>}
+                  {t.questType && <span className="import-preview-tag">{t.questType}</span>}
+                  {t.xp && <span className="import-preview-tag">{t.xp} XP</span>}
                   {t.dueDate && <span className="import-preview-tag">Bis: {t.dueDate}</span>}
                 </div>
               ))}

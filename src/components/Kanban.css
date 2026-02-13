@@ -4,12 +4,17 @@
   overflow: hidden;
 }
 
-/* Main layout: work area (left) + shared done (right) */
+/* Main layout: mini-backlog (optional) + work area + shared done */
 .kanban-layout {
   display: grid;
   grid-template-columns: 1fr 220px;
   gap: 10px;
   height: 100%;
+}
+
+/* When mini-backlog is present, add a column for it */
+.kanban-layout:has(.kanban-mini-backlog) {
+  grid-template-columns: 180px 1fr 220px;
 }
 
 /* Work area: normal (75%) + fast lane (25%) stacked */
@@ -99,12 +104,29 @@
   font-size: 0.85rem;
 }
 
+.kanban-col-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
 .kanban-col-label {
   font-weight: 700;
   font-size: 0.72rem;
   color: #25313a;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+}
+
+.kanban-col-subtitle {
+  font-size: 0.6rem;
+  color: #999;
+  font-weight: 400;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .kanban-col-count {
@@ -114,6 +136,15 @@
   font-weight: 700;
   padding: 1px 6px;
   border-radius: 8px;
+}
+
+.kanban-col-count.wip-full {
+  background: #c60a0f;
+  color: #fff;
+}
+
+.kanban-column-full .kanban-column-tasks {
+  background: rgba(198, 10, 15, 0.04);
 }
 
 .kanban-column-tasks {
@@ -184,4 +215,172 @@
 
 .kanban-row-fast .kanban-column-header {
   margin-bottom: 4px;
+}
+
+/* Mini-Backlog sidebar */
+.kanban-mini-backlog {
+  background: #f8f8f6;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.mini-backlog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.mini-backlog-title {
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: #25313a;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.mini-backlog-count {
+  background: #e0e0de;
+  color: #666;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+.mini-backlog-empty {
+  font-size: 0.75rem;
+  color: #aaa;
+  text-align: center;
+  padding: 16px 4px;
+}
+
+.mini-backlog-section {
+  margin-bottom: 6px;
+}
+
+.mini-backlog-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 4px 4px 3px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.mini-backlog-q1 {
+  color: #c60a0f;
+  background: rgba(198, 10, 15, 0.06);
+}
+
+.mini-backlog-q2 {
+  color: #2d8a4e;
+  background: rgba(45, 138, 78, 0.06);
+}
+
+.mini-backlog-percent {
+  font-size: 0.6rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.mini-backlog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow-y: auto;
+}
+
+.mini-backlog-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  border-radius: 5px;
+  padding: 4px 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.mini-backlog-item-q2 {
+  border-left: 2px solid rgba(45, 138, 78, 0.3);
+}
+
+.mini-backlog-item-title {
+  flex: 1;
+  font-size: 0.7rem;
+  color: #25313a;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.mini-backlog-item-title:hover {
+  color: #c60a0f;
+}
+
+.mini-backlog-start-btn {
+  background: none;
+  border: none;
+  font-size: 0.6rem;
+  color: #aaa;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.mini-backlog-start-btn:hover {
+  background: #25313a;
+  color: #fff;
+}
+
+.mini-backlog-more {
+  font-size: 0.62rem;
+  color: #999;
+  text-align: center;
+  padding: 2px;
+}
+
+/* Covey ratio bar */
+.mini-backlog-ratio {
+  margin-top: auto;
+  padding-top: 6px;
+  flex-shrink: 0;
+}
+
+.mini-backlog-ratio-bar {
+  display: flex;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  gap: 1px;
+}
+
+.mini-backlog-ratio-q1 {
+  background: #c60a0f;
+  border-radius: 2px;
+}
+
+.mini-backlog-ratio-q2 {
+  background: #2d8a4e;
+  border-radius: 2px;
+}
+
+.mini-backlog-ratio-label {
+  font-size: 0.58rem;
+  color: #999;
+  text-align: center;
+  margin-top: 3px;
 }

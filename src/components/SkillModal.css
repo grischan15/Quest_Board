@@ -1,0 +1,96 @@
+.skill-modal-hint {
+  background: #f8f8f6;
+  border-left: 3px solid #25313a;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  color: #666;
+  border-radius: 0 6px 6px 0;
+}
+
+.form-select {
+  appearance: auto;
+  cursor: pointer;
+}
+
+.form-actions-left {
+  display: flex;
+  gap: 8px;
+}
+
+.form-btn-hide {
+  background: #f0f0f0;
+  color: #666;
+  padding: 8px 12px;
+}
+
+.form-btn-hide:hover {
+  background: #e0e0e0;
+}
+
+.skill-modal-level-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #f8f8f6;
+  border-radius: 6px;
+}
+
+.skill-modal-level {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #25313a;
+}
+
+.skill-modal-xp {
+  font-size: 0.82rem;
+  color: #2d8a4e;
+  font-weight: 500;
+}
+
+.skill-modal-xp-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.skill-modal-xp-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skill-modal-xp-input {
+  width: 80px;
+  text-align: center;
+}
+
+.skill-modal-xp-input::-webkit-outer-spin-button,
+.skill-modal-xp-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.skill-modal-xp-input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.skill-modal-xp-suffix {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #2d8a4e;
+}
+
+.skill-modal-level-badge {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #25313a;
+  background: #f0f0ee;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.skill-modal-xp-thresholds {
+  font-size: 0.7rem;
+  color: #999;
+}

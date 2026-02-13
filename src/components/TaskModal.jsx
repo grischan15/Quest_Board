@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Modal from './Modal';
+import { QUEST_TYPES, DURATIONS, XP_VALUES } from '../data/questTypes';
 import './TaskModal.css';
 
 const quadrantOptions = [
@@ -16,6 +17,9 @@ export default function TaskModal({ task, onSave, onDelete, onClose }) {
   const [description, setDescription] = useState(task?.description || '');
   const [quadrant, setQuadrant] = useState(task?.quadrant || 'q1');
   const [dueDate, setDueDate] = useState(task?.dueDate || '');
+  const [questType, setQuestType] = useState(task?.questType || null);
+  const [duration, setDuration] = useState(task?.duration || null);
+  const [xp, setXp] = useState(task?.xp || null);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -30,6 +34,9 @@ export default function TaskModal({ task, onSave, onDelete, onClose }) {
       description: description.trim(),
       quadrant,
       dueDate: dueDate || null,
+      questType,
+      duration,
+      xp,
     });
   }
 
@@ -37,6 +44,18 @@ export default function TaskModal({ task, onSave, onDelete, onClose }) {
     if (e.key === 'Enter' && !e.shiftKey && e.target.tagName !== 'TEXTAREA') {
       handleSubmit(e);
     }
+  }
+
+  function toggleQuestType(id) {
+    setQuestType((prev) => (prev === id ? null : id));
+  }
+
+  function toggleDuration(id) {
+    setDuration((prev) => (prev === id ? null : id));
+  }
+
+  function toggleXp(id) {
+    setXp((prev) => (prev === id ? null : id));
   }
 
   return (
@@ -80,6 +99,64 @@ export default function TaskModal({ task, onSave, onDelete, onClose }) {
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
           />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">
+            Quest-Typ <span className="form-optional">(optional)</span>
+          </label>
+          <div className="quest-type-group">
+            {QUEST_TYPES.map((qt) => (
+              <button
+                key={qt.id}
+                type="button"
+                className={`quest-type-btn ${questType === qt.id ? 'quest-type-btn-active' : ''}`}
+                style={questType === qt.id ? { borderColor: qt.color, background: qt.color + '14' } : undefined}
+                onClick={() => toggleQuestType(qt.id)}
+              >
+                <span className="quest-type-icon">{qt.icon}</span>
+                <span className="quest-type-label">{qt.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">
+            Dauer <span className="form-optional">(optional)</span>
+          </label>
+          <div className="duration-group">
+            {DURATIONS.map((d) => (
+              <button
+                key={d.id}
+                type="button"
+                className={`duration-btn ${duration === d.id ? 'duration-btn-active' : ''}`}
+                onClick={() => toggleDuration(d.id)}
+              >
+                <span className="duration-label">{d.label}</span>
+                <span className="duration-subtitle">{d.subtitle}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">
+            XP <span className="form-optional">(optional)</span>
+          </label>
+          <div className="xp-group">
+            {XP_VALUES.map((v) => (
+              <button
+                key={v.id}
+                type="button"
+                className={`xp-btn ${xp === v.id ? 'xp-btn-active' : ''}`}
+                onClick={() => toggleXp(v.id)}
+              >
+                <span className="xp-value">{v.subtitle}</span>
+                <span className="xp-label">{v.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {(!isEdit || task?.location === 'eisenhower') && (

@@ -1,0 +1,68 @@
+.settings-section {
+  margin-bottom: 8px;
+}
+
+.settings-section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #25313a;
+  margin-bottom: 4px;
+}
+
+.settings-section-hint {
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.settings-label {
+  font-size: 0.84rem;
+  color: #444;
+}
+
+.settings-input {
+  width: 60px;
+  text-align: center;
+  padding: 6px 8px !important;
+  font-size: 0.88rem !important;
+}
+
+/* Remove spinner arrows on number inputs */
+.settings-input::-webkit-outer-spin-button,
+.settings-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.settings-input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.settings-reset {
+  font-size: 0.78rem;
+  color: #888;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  padding: 4px 0;
+  text-decoration: underline;
+  transition: color 0.15s;
+}
+
+.settings-reset:hover {
+  color: #444;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-reset {
+    transition: none;
+  }
+}

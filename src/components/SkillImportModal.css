@@ -1,0 +1,18 @@
+.skill-import-categories-hint {
+  font-size: 0.7rem;
+  color: #999;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.skill-import-auto-hint {
+  color: #4CAF50;
+  font-style: italic;
+}
+
+.skill-import-category-select {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}

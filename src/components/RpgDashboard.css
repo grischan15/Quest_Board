@@ -1,0 +1,39 @@
+.rpg-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.rpg-dashboard-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.rpg-dashboard-empty-text {
+  font-size: 0.84rem;
+  color: #aaa;
+  text-align: center;
+  padding: 24px 16px;
+  line-height: 1.6;
+}
+
+/* Scrollbar styling */
+.rpg-dashboard::-webkit-scrollbar {
+  width: 4px;
+}
+
+.rpg-dashboard::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.rpg-dashboard::-webkit-scrollbar-thumb {
+  background: #d0d0cd;
+  border-radius: 2px;
+}

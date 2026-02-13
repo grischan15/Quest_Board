@@ -5,19 +5,30 @@ import Kanban from './components/Kanban';
 import SkillTree from './components/SkillTree';
 import TaskModal from './components/TaskModal';
 import SkillCheckModal from './components/SkillCheckModal';
+import SkillModal from './components/SkillModal';
+import CategoryModal from './components/CategoryModal';
 import DeleteModal from './components/DeleteModal';
 import ImportModal from './components/ImportModal';
 import ExportModal from './components/ExportModal';
+import SettingsModal from './components/SettingsModal';
+import SkillImportModal from './components/SkillImportModal';
+import HelpPage from './components/HelpPage';
 import { useQuestBoard } from './hooks/useQuestBoard';
 import './App.css';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('eisenhower');
+  const [activeTab, setActiveTab] = useState('kanban');
   const [taskModal, setTaskModal] = useState(null);
   const [skillCheckTask, setSkillCheckTask] = useState(null);
   const [deleteTask, setDeleteTask] = useState(null);
   const [showImport, setShowImport] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const [skillModal, setSkillModal] = useState(null);
+  const [categoryModal, setCategoryModal] = useState(null);
+  const [deleteSkillTarget, setDeleteSkillTarget] = useState(null);
+  const [deleteCategoryTarget, setDeleteCategoryTarget] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showSkillImport, setShowSkillImport] = useState(false);
 
   const board = useQuestBoard();
 
@@ -30,11 +41,11 @@ export default function App() {
   }, []);
 
   const handleSaveTask = useCallback(
-    ({ title, description, quadrant, dueDate }) => {
+    ({ title, description, quadrant, dueDate, questType, duration, xp }) => {
       if (taskModal.mode === 'create') {
-        board.createTask(title, description, quadrant, dueDate);
+        board.createTask(title, description, quadrant, dueDate, questType, duration, xp);
       } else if (taskModal.mode === 'edit') {
-        const updates = { title, description, dueDate };
+        const updates = { title, description, dueDate, questType, duration, xp };
         if (taskModal.task.location === 'eisenhower') {
           updates.quadrant = quadrant;
         }
@@ -106,6 +117,101 @@ export default function App() {
     [board]
   );
 
+  // --- Skill handlers ---
+  const handleAddSkill = useCallback((categoryId) => {
+    setSkillModal({ mode: 'create', categoryId });
+  }, []);
+
+  const handleEditSkill = useCallback((skill) => {
+    setSkillModal({ mode: 'edit', skill });
+  }, []);
+
+  const handleSaveSkill = useCallback(
+    ({ name, category, status, xpCurrent, level }) => {
+      if (skillModal.mode === 'create') {
+        const newSkill = board.createSkill(name, category);
+        if (status === 'learned') {
+          board.toggleSkillStatus(newSkill.id);
+        }
+      } else if (skillModal.mode === 'edit') {
+        const updates = { name, category };
+        // Apply XP/Level changes if provided
+        if (xpCurrent !== undefined && level !== undefined) {
+          updates.xpCurrent = xpCurrent;
+          updates.level = level;
+          updates.status = level >= 1 ? 'learned' : 'open';
+          if (level >= 1 && !skillModal.skill.learnedAt) {
+            updates.learnedAt = new Date().toISOString();
+          }
+        } else if (status !== skillModal.skill.status) {
+          board.toggleSkillStatus(skillModal.skill.id);
+        }
+        board.updateSkill(skillModal.skill.id, updates);
+      }
+      setSkillModal(null);
+    },
+    [skillModal, board]
+  );
+
+  const handleToggleSkillHidden = useCallback(
+    (id) => {
+      board.toggleSkillHidden(id);
+      setSkillModal(null);
+    },
+    [board]
+  );
+
+  const handleRequestDeleteSkill = useCallback((skill) => {
+    setSkillModal(null);
+    setDeleteSkillTarget(skill);
+  }, []);
+
+  const handleConfirmDeleteSkill = useCallback(
+    (id) => {
+      board.deleteSkill(id);
+      setDeleteSkillTarget(null);
+    },
+    [board]
+  );
+
+  // --- Category handlers ---
+  const handleAddCategory = useCallback(() => {
+    setCategoryModal({ mode: 'create' });
+  }, []);
+
+  const handleEditCategory = useCallback((category) => {
+    setCategoryModal({ mode: 'edit', category });
+  }, []);
+
+  const handleSaveCategory = useCallback(
+    ({ label, icon }) => {
+      if (categoryModal.mode === 'create') {
+        board.createCategory(label, icon);
+      } else if (categoryModal.mode === 'edit') {
+        board.updateCategory(categoryModal.category.id, { label, icon });
+      }
+      setCategoryModal(null);
+    },
+    [categoryModal, board]
+  );
+
+  const handleRequestDeleteCategory = useCallback((category) => {
+    setCategoryModal(null);
+    setDeleteCategoryTarget(category);
+  }, []);
+
+  const handleConfirmDeleteCategory = useCallback(
+    (id) => {
+      board.deleteCategory(id);
+      setDeleteCategoryTarget(null);
+    },
+    [board]
+  );
+
+  const categoryHasSkills = (categoryId) => {
+    return board.skills.some((s) => s.category === categoryId);
+  };
+
   return (
     <div className="app">
       <Header
@@ -114,6 +220,9 @@ export default function App() {
         onNewQuest={handleNewQuest}
         onImport={() => setShowImport(true)}
         onExport={() => setShowExport(true)}
+        wildcardsUsed={board.getWildcardsUsedToday()}
+        maxWildcardsPerDay={board.settings.maxWildcardsPerDay}
+        onSettingsClick={() => setShowSettings(true)}
       />
 
       <main className="app-main">
@@ -133,6 +242,9 @@ export default function App() {
             getColumnTasks={board.getColumnTasks}
             getDoneTasksGrouped={board.getDoneTasksGrouped}
             kanbanTasks={board.kanbanTasks}
+            q1Tasks={board.getQuadrantTasks('q1')}
+            q2Tasks={board.getQuadrantTasks('q2')}
+            onStart={handleStartTask}
             onEdit={handleEditTask}
             onDelete={handleRequestDelete}
             onToggleFastLane={board.toggleFastLane}
@@ -140,12 +252,27 @@ export default function App() {
             moveToColumn={board.moveToColumn}
             onDone={handleDoneTask}
             onGoToBacklog={() => setActiveTab('eisenhower')}
+            wipLimits={board.settings.wipLimits}
+            getWildcardsUsedToday={board.getWildcardsUsedToday}
+            maxWildcardsPerDay={board.settings.maxWildcardsPerDay}
           />
         )}
 
         {activeTab === 'skills' && (
-          <SkillTree skills={board.skills} tasks={board.tasks} />
+          <SkillTree
+            skills={board.skills}
+            tasks={board.tasks}
+            categories={board.categories}
+            onEditSkill={handleEditSkill}
+            onAddSkill={handleAddSkill}
+            onEditCategory={handleEditCategory}
+            onAddCategory={handleAddCategory}
+            onImportSkills={() => setShowSkillImport(true)}
+            onToggleDashboard={board.toggleCategoryDashboard}
+          />
         )}
+
+        {activeTab === 'help' && <HelpPage />}
       </main>
 
       {taskModal && (
@@ -161,8 +288,38 @@ export default function App() {
         <SkillCheckModal
           task={skillCheckTask}
           skills={board.skills}
+          categories={board.categories}
           onSave={handleSkillCheckSave}
           onClose={() => setSkillCheckTask(null)}
+        />
+      )}
+
+      {skillModal && (
+        <SkillModal
+          skill={skillModal.mode === 'edit' ? skillModal.skill : null}
+          categoryId={skillModal.categoryId}
+          categories={board.categories}
+          onSave={handleSaveSkill}
+          onDelete={skillModal.mode === 'edit' && skillModal.skill && !skillModal.skill.predefined ? handleRequestDeleteSkill : null}
+          onToggleHidden={skillModal.mode === 'edit' ? handleToggleSkillHidden : null}
+          onClose={() => setSkillModal(null)}
+        />
+      )}
+
+      {categoryModal && (
+        <CategoryModal
+          category={categoryModal.mode === 'edit' ? categoryModal.category : null}
+          onSave={handleSaveCategory}
+          onDelete={
+            categoryModal.mode === 'edit' &&
+            categoryModal.category &&
+            !categoryModal.category.predefined &&
+            !categoryHasSkills(categoryModal.category.id)
+              ? handleRequestDeleteCategory
+              : null
+          }
+          hasSkills={categoryModal.mode === 'edit' && categoryModal.category ? categoryHasSkills(categoryModal.category.id) : false}
+          onClose={() => setCategoryModal(null)}
         />
       )}
 
@@ -171,6 +328,24 @@ export default function App() {
           task={deleteTask}
           onConfirm={handleConfirmDelete}
           onClose={() => setDeleteTask(null)}
+        />
+      )}
+
+      {deleteSkillTarget && (
+        <DeleteModal
+          task={deleteSkillTarget}
+          itemLabel="Skill"
+          onConfirm={handleConfirmDeleteSkill}
+          onClose={() => setDeleteSkillTarget(null)}
+        />
+      )}
+
+      {deleteCategoryTarget && (
+        <DeleteModal
+          task={deleteCategoryTarget}
+          itemLabel="Kategorie"
+          onConfirm={handleConfirmDeleteCategory}
+          onClose={() => setDeleteCategoryTarget(null)}
         />
       )}
 
@@ -188,6 +363,28 @@ export default function App() {
           skills={board.skills}
           onExport={board.exportData}
           onClose={() => setShowExport(false)}
+        />
+      )}
+
+      {showSkillImport && (
+        <SkillImportModal
+          categories={board.categories}
+          onImport={(skillList) => {
+            board.importSkills(skillList);
+            setShowSkillImport(false);
+          }}
+          onClose={() => setShowSkillImport(false)}
+        />
+      )}
+
+      {showSettings && (
+        <SettingsModal
+          settings={board.settings}
+          onSave={(newSettings) => {
+            board.updateSettings(newSettings);
+            setShowSettings(false);
+          }}
+          onClose={() => setShowSettings(false)}
         />
       )}
     </div>

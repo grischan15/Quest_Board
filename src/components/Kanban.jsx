@@ -65,6 +65,7 @@ function KanbanRow({
   prefix,
   isFastLane,
   getColumnTasks,
+  wipLimits,
   onEdit,
   onDelete,
   onToggleFastLane,
@@ -74,12 +75,19 @@ function KanbanRow({
     <div className="kanban-row-columns">
       {workColumns.map((col) => {
         const tasks = getColumnTasks(col.id, isFastLane);
+        const limit = wipLimits?.[col.id];
+        const isFull = limit != null && tasks.length >= limit;
         return (
-          <div key={col.id} className="kanban-column">
+          <div key={col.id} className={`kanban-column${isFull ? ' kanban-column-full' : ''}`}>
             <div className="kanban-column-header">
               <span className="kanban-col-icon">{col.icon}</span>
-              <span className="kanban-col-label">{col.label}</span>
-              <span className="kanban-col-count">{tasks.length}</span>
+              <div className="kanban-col-labels">
+                <span className="kanban-col-label">{col.label}</span>
+                {col.subtitle && <span className="kanban-col-subtitle">{col.subtitle}</span>}
+              </div>
+              <span className={`kanban-col-count${isFull ? ' wip-full' : ''}`}>
+                {limit != null ? `${tasks.length}/${limit}` : tasks.length}
+              </span>
             </div>
             <DroppableContainer
               id={`${prefix}-${col.id}`}
@@ -105,10 +113,111 @@ function KanbanRow({
   );
 }
 
+function MiniBacklog({ q1Tasks, q2Tasks, onStart, onEdit }) {
+  const totalQ1 = q1Tasks.length;
+  const totalQ2 = q2Tasks.length;
+  const total = totalQ1 + totalQ2;
+  const q2Percent = total > 0 ? Math.round((totalQ2 / total) * 100) : 0;
+
+  return (
+    <div className="kanban-mini-backlog">
+      <div className="mini-backlog-header">
+        <span className="mini-backlog-title">Backlog</span>
+        <span className="mini-backlog-count">{total}</span>
+      </div>
+
+      {total === 0 && (
+        <div className="mini-backlog-empty">Backlog leer</div>
+      )}
+
+      {totalQ1 > 0 && (
+        <div className="mini-backlog-section">
+          <div className="mini-backlog-section-header mini-backlog-q1">
+            <span>Q1 &ndash; Dringend</span>
+            <span className="mini-backlog-percent">~80%</span>
+          </div>
+          <div className="mini-backlog-list">
+            {q1Tasks.slice(0, 6).map((task) => (
+              <div key={task.id} className="mini-backlog-item">
+                <div
+                  className="mini-backlog-item-title"
+                  onClick={() => onEdit?.(task)}
+                >
+                  {task.title}
+                </div>
+                <button
+                  className="mini-backlog-start-btn"
+                  onClick={() => onStart?.(task.id)}
+                >
+                  &#9654;
+                </button>
+              </div>
+            ))}
+            {totalQ1 > 6 && (
+              <div className="mini-backlog-more">+{totalQ1 - 6} weitere</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {totalQ2 > 0 && (
+        <div className="mini-backlog-section">
+          <div className="mini-backlog-section-header mini-backlog-q2">
+            <span>Q2 &ndash; S&auml;ge sch&auml;rfen</span>
+            <span className="mini-backlog-percent">~20%</span>
+          </div>
+          <div className="mini-backlog-list">
+            {q2Tasks.slice(0, 4).map((task) => (
+              <div key={task.id} className="mini-backlog-item mini-backlog-item-q2">
+                <div
+                  className="mini-backlog-item-title"
+                  onClick={() => onEdit?.(task)}
+                >
+                  {task.title}
+                </div>
+                <button
+                  className="mini-backlog-start-btn"
+                  onClick={() => onStart?.(task.id)}
+                >
+                  &#9654;
+                </button>
+              </div>
+            ))}
+            {totalQ2 > 4 && (
+              <div className="mini-backlog-more">+{totalQ2 - 4} weitere</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {total > 0 && (
+        <div className="mini-backlog-ratio">
+          <div className="mini-backlog-ratio-bar">
+            <div
+              className="mini-backlog-ratio-q1"
+              style={{ width: `${100 - q2Percent}%` }}
+            />
+            <div
+              className="mini-backlog-ratio-q2"
+              style={{ width: `${q2Percent}%` }}
+            />
+          </div>
+          <div className="mini-backlog-ratio-label">
+            Q1: {totalQ1} &middot; Q2: {totalQ2}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Kanban({
   getColumnTasks,
   getDoneTasksGrouped,
   kanbanTasks,
+  q1Tasks,
+  q2Tasks,
+  onStart,
   onEdit,
   onDelete,
   onToggleFastLane,
@@ -116,6 +225,9 @@ export default function Kanban({
   moveToColumn,
   onDone,
   onGoToBacklog,
+  wipLimits,
+  getWildcardsUsedToday,
+  maxWildcardsPerDay,
 }) {
   const [activeId, setActiveId] = useState(null);
 
@@ -173,6 +285,21 @@ export default function Kanban({
 
     if (!columnChanged && !laneChanged) return;
 
+    // WIP-limit check: block moves to full columns (except done)
+    if (target.column !== 'done' && wipLimits) {
+      const targetLane = effectiveFastLane !== undefined ? effectiveFastLane : task.fastLane;
+      const currentCount = getColumnTasks(target.column, targetLane).length;
+      const limit = wipLimits[target.column];
+      // Don't count the task itself if it's already in this column (lane change)
+      const isAlreadyInColumn = task.kanbanColumn === target.column;
+      if (limit != null && (currentCount - (isAlreadyInColumn ? 1 : 0)) >= limit) return;
+    }
+
+    // Wildcard-limit check: block new Fast Lane moves if daily limit reached
+    if (effectiveFastLane === true && !task.fastLane && getWildcardsUsedToday && maxWildcardsPerDay) {
+      if (getWildcardsUsedToday() >= maxWildcardsPerDay) return;
+    }
+
     if (target.column === 'done') {
       onDone(taskId, effectiveFastLane);
     } else {
@@ -199,6 +326,16 @@ export default function Kanban({
           onDragEnd={handleDragEnd}
         >
           <div className="kanban-layout">
+            {/* Mini-Backlog: Q1 + Q2 */}
+            {(q1Tasks.length > 0 || q2Tasks.length > 0) && (
+              <MiniBacklog
+                q1Tasks={q1Tasks}
+                q2Tasks={q2Tasks}
+                onStart={onStart}
+                onEdit={onEdit}
+              />
+            )}
+
             <div className="kanban-work-area">
               {/* Normal Flow */}
               <div className="kanban-row kanban-row-normal">
@@ -207,6 +344,7 @@ export default function Kanban({
                   prefix="normal"
                   isFastLane={false}
                   getColumnTasks={getColumnTasks}
+                  wipLimits={wipLimits}
                   onEdit={onEdit}
                   onDelete={onDelete}
                   onToggleFastLane={onToggleFastLane}
@@ -223,6 +361,7 @@ export default function Kanban({
                   prefix="fast"
                   isFastLane={true}
                   getColumnTasks={getColumnTasks}
+                  wipLimits={wipLimits}
                   onEdit={onEdit}
                   onDelete={onDelete}
                   onToggleFastLane={onToggleFastLane}

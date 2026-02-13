@@ -9,6 +9,12 @@
   margin: 0 0 4px;
 }
 
+.skill-check-xp-info {
+  color: #2d8a4e;
+  font-size: 0.82rem;
+  margin: 0 0 4px;
+}
+
 .skill-check-prompt {
   color: #666;
   font-size: 0.84rem;
@@ -40,7 +46,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 8px;
+  padding: 6px 8px;
   border-radius: 4px;
   font-size: 0.82rem;
   color: #444;
@@ -53,16 +59,39 @@
 
 .skill-check-item input {
   accent-color: #2d8a4e;
+  flex-shrink: 0;
 }
 
-.skill-already-learned {
-  opacity: 0.5;
+.skill-check-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
 }
 
-.skill-already-badge {
+.skill-check-item-name {
+  font-size: 0.82rem;
+}
+
+.skill-check-item-level {
   font-size: 0.68rem;
-  color: #aaa;
-  margin-left: auto;
+  color: #999;
+}
+
+.skill-check-preview {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #2d8a4e;
+  flex-shrink: 0;
+  padding: 2px 6px;
+  background: rgba(45, 138, 78, 0.08);
+  border-radius: 4px;
+}
+
+.skill-check-levelup {
+  color: #e6a817;
+  background: rgba(230, 168, 23, 0.1);
 }
 
 .skill-check-actions {

@@ -176,3 +176,55 @@
   color: #2d8a4e;
   font-weight: 600;
 }
+
+/* Quest-Typ Badge */
+.task-card-quest-type {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.quest-type-focus {
+  color: #2196F3;
+  background: rgba(33, 150, 243, 0.1);
+}
+
+.quest-type-input {
+  color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.quest-type-create {
+  color: #9C27B0;
+  background: rgba(156, 39, 176, 0.1);
+}
+
+.quest-type-routine {
+  color: #FF9800;
+  background: rgba(255, 152, 0, 0.1);
+}
+
+.quest-type-reflect {
+  color: #00BCD4;
+  background: rgba(0, 188, 212, 0.1);
+}
+
+/* Duration Badge */
+.task-card-duration {
+  font-size: 0.68rem;
+  color: #888;
+  padding: 1px 6px;
+  background: #f0f0ee;
+  border-radius: 3px;
+}
+
+/* XP Badge */
+.task-card-xp {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #2d8a4e;
+  padding: 1px 6px;
+  background: rgba(45, 138, 78, 0.1);
+  border-radius: 3px;
+}

@@ -1,0 +1,91 @@
+.recent-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recent-skills-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recent-skills-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #25313a;
+  padding: 0 4px;
+}
+
+.recent-skills-empty {
+  font-size: 0.75rem;
+  color: #aaa;
+  text-align: center;
+  padding: 12px 8px;
+  line-height: 1.5;
+}
+
+.recent-skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.recent-skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background: #fff;
+  border-radius: 6px;
+  border-left: 3px solid #d4edda;
+  gap: 6px;
+}
+
+.recent-skill-item-week {
+  border-left-color: #2d8a4e;
+  background: #f0faf2;
+}
+
+.recent-skill-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  flex: 1;
+}
+
+.recent-skill-name {
+  font-size: 0.73rem;
+  font-weight: 500;
+  color: #25313a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-skill-level {
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.recent-skill-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.recent-skill-xp {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #2d8a4e;
+}
+
+.recent-skill-date {
+  font-size: 0.62rem;
+  color: #999;
+}
