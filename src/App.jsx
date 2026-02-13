@@ -14,6 +14,7 @@ import ExportModal from './components/ExportModal';
 import SettingsModal from './components/SettingsModal';
 import SkillImportModal from './components/SkillImportModal';
 import PersonalDashboard from './components/PersonalDashboard';
+import AiSetupGuide from './components/AiSetupGuide';
 import HelpPage from './components/HelpPage';
 import DemoBanner from './components/DemoBanner';
 import { useQuestBoard } from './hooks/useQuestBoard';
@@ -247,6 +248,73 @@ export default function App() {
     [board]
   );
 
+  // --- AI Setup import handler ---
+  const handleAiImportJson = useCallback(
+    (data) => {
+      // Import categories
+      if (data.categories && data.categories.length > 0) {
+        const newCats = data.categories.map((c, i) => ({
+          id: c.id || `ai-cat-${Date.now()}-${i}`,
+          label: c.label,
+          icon: c.icon || '\uD83D\uDCCC',
+          predefined: false,
+          order: (board.categories.length) + i,
+          showInDashboard: c.showInDashboard !== false && i < 6,
+        }));
+        board.updateCategories((prev) => [...prev, ...newCats]);
+      }
+
+      // Import skills – resolve category IDs and build index map
+      const skillIdMap = new Map();
+      if (data.skills && data.skills.length > 0) {
+        const importedSkills = board.importSkills(
+          data.skills.map((s) => ({
+            name: s.name,
+            category: s.category,
+            categoryLabel: s.categoryLabel,
+            status: s.status || 'open',
+            level: s.level || 0,
+            xpCurrent: s.xpCurrent || 0,
+          }))
+        );
+        // Build map: __idx_N -> real skill ID
+        importedSkills.forEach((skill, i) => {
+          skillIdMap.set(`__idx_${i}`, skill.id);
+        });
+      }
+
+      // Import projects – resolve skill references
+      if (data.projects && data.projects.length > 0) {
+        for (const proj of data.projects) {
+          const requirements = (proj.requirements || [])
+            .map((r) => ({
+              skillId: skillIdMap.get(r.skillId) || r.skillId,
+              requiredLevel: r.requiredLevel || 2,
+            }))
+            .filter((r) => r.skillId && !r.skillId.startsWith('__idx_'));
+          board.createProject(proj.name, proj.description, proj.icon, requirements);
+        }
+      }
+
+      // Import tasks – resolve linked skill references
+      if (data.tasks && data.tasks.length > 0) {
+        const taskList = data.tasks.map((t) => ({
+          title: t.title,
+          description: t.description || '',
+          quadrant: t.quadrant || 'q2',
+          questType: t.questType || null,
+          duration: t.duration || null,
+          xp: t.xp || null,
+          linkedSkills: (t.linkedSkills || [])
+            .map((ref) => skillIdMap.get(ref) || ref)
+            .filter((id) => id && !id.startsWith('__idx_')),
+        }));
+        board.importTasks(taskList);
+      }
+    },
+    [board]
+  );
+
   const categoryHasSkills = (categoryId) => {
     return board.skills.some((s) => s.category === categoryId);
   };
@@ -322,6 +390,10 @@ export default function App() {
             skills={board.skills}
             projects={board.projects}
           />
+        )}
+
+        {activeTab === 'ai-setup' && (
+          <AiSetupGuide onImportJson={handleAiImportJson} />
         )}
 
         {activeTab === 'help' && <HelpPage />}

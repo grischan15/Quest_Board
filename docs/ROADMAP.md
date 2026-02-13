@@ -269,11 +269,27 @@ Umgesetzt am 13.02.2026, Schema v13 → v14:
 
 ---
 
+## ✅ ERLEDIGT (v3.5 Block D – KI Setup Guide)
+
+Umgesetzt am 13.02.2026, kein Schema-Change:
+
+- [x] **Neuer Tab "KI Setup"** – Eigene Seite in der Hauptnavigation (Header: Kanban, Backlog, Skills, Dashboard, KI Setup, Hilfe)
+- [x] **AiSetupGuide-Komponente** – 3-Schritte-Erklaerung (Prompt kopieren → KI fragen → JSON importieren), Prompt-Vorschau (collapsible), Tipps-Sektion
+- [x] **KI-Prompt-Template** – Umfassendes Markdown-Anforderungsdokument in `aiPromptTemplate.js`: erklaert das NeuroForge-Datenmodell, JSON-Schema, Regeln fuer Categories/Skills/Projects/Tasks, Level-Schwellen, Qualitaetskriterien
+- [x] **3 Beispiel-Vorlagen** – "Webentwicklung Einstieg", "KI & Prompting Basics", "Physik Klasse 10" (jeweils mit konkreter Lernziel-Beschreibung + erwarteten Stats)
+- [x] **Prompt kopieren/herunterladen** – Clipboard-Copy + .md-Download, auch fuer Beispiel-Vorlagen (Prompt + Lernziel kombiniert)
+- [x] **KI-JSON-Import** – Textarea + Datei-Upload, JSON-Validierung, Vorschau (Anzahl Categories/Skills/Projects/Tasks), SKILL_INDEX-Referenz-Aufloesung, Import in Board (importSkills + createProject + importTasks)
+- [x] **Responsive Design** – Mobile-optimiert, prefers-reduced-motion Support
+
+**Dateien:** NEU: `AiSetupGuide.jsx/.css`, `aiPromptTemplate.js` (3 Dateien) + GEAENDERT: `Header.jsx`, `App.jsx`
+
+---
+
 ## MITTELFRISTIG (v3.5+ – Projekte & Vorlagen)
 
 ### Block C: Projekte & KI
 - [x] **Schritt 6:** Projekte als Unlock-Ziele im Skill-Tree ✅ (v3.5 Block C)
-- [ ] **Schritt 7:** KI-Import-Template (Prompt + JSON-Schema)
+- [x] **Schritt 7:** KI-Import-Template (Prompt + JSON-Schema) ✅ (v3.5 Block D)
 
 ### Block D: Vorlagen-System
 - [ ] **Skill-Set Templates** – Vordefinierte Vorlagen ("Softwareentwicklung", "Physik Klasse 10", "Sprachen lernen" etc.)
@@ -340,6 +356,7 @@ Umgesetzt am 13.02.2026, Schema v13 → v14:
 | **13.02.2026** | **Wildcard-Zaehlung Bugfix** | **getWildcardsUsedToday zaehlte nach startedAt (Kanban-Eintritt) statt Fast-Lane-Eintritt. Neues Feld fastLaneAt korrigiert die Tageszaehlung.** |
 | **13.02.2026** | **Projekte: Ansatz A (rein computed)** | **Projekte definieren Skill-Requirements, Status (locked/ready/active/done) wird rein computed. Kein projectId auf Quests. Fortschritt = wie viele Required Skills das Required Level erreicht haben.** |
 | **13.02.2026** | **v3.5 Block C shipped** | **Projekte als Unlock-Ziele: ProjectModal mit Requirements-Picker, ProjectCard (Full + Compact), Integration in SkillTree + Dashboard + SkillCheckModal + SkillModal + RpgDashboard. Schema v14 (projects Array). 4 Demo-Projekte.** |
+| **13.02.2026** | **v3.5 Block D shipped** | **KI Setup Guide: Neuer Tab mit Prompt-Template (Markdown), 3 Beispiel-Vorlagen (Webdev, KI, Physik), JSON-Import mit SKILL_INDEX-Aufloesung. User kann jeden Lernpfad per KI generieren lassen.** |
 
 ---
 

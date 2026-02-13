@@ -152,6 +152,15 @@
 - [x] **Export/Import/Restore** – projects Array in Export, Restore, clearDemoData
 - [x] **4 Status-Typen** – done (manuell), ready (computed: alle Requirements erfuellt), active (manuell), locked (computed: Requirements nicht erfuellt)
 
+**v3.5 Block D – KI Setup Guide (13.02.2026):**
+- [x] **Neuer Tab "KI Setup"** – Eigene Seite in der Hauptnavigation
+- [x] **AiSetupGuide-Komponente** – 3-Schritte-Erklaerung, Prompt-Vorschau, Copy/Download, Import-Bereich, Tipps
+- [x] **KI-Prompt-Template** – Umfassendes Markdown-Dokument (aiPromptTemplate.js) das der KI das NeuroForge-Datenmodell erklaert
+- [x] **JSON-Schema Referenz** – Categories, Skills, Projects, Tasks mit allen Feldern und Regeln
+- [x] **3 Beispiel-Vorlagen** – Webentwicklung, KI & Prompting, Physik Klasse 10 (jeweils mit Lernziel-Beschreibung)
+- [x] **KI-JSON-Import** – Parst die generierte JSON, loest SKILL_INDEX-Referenzen auf, importiert Categories + Skills + Projects + Tasks
+- [x] **Prompt kopieren/herunterladen** – Clipboard + .md Download, auch fuer Beispiel-Vorlagen (Prompt + Lernziel)
+
 **Naechster Schritt:** Siehe [ROADMAP.md](ROADMAP.md)
 
 ---
@@ -176,13 +185,14 @@ Quest_Board/
 │   │   ├── skillsData.js          <- 38 Skills, 6 Kategorien (mit showInDashboard), initialCategories
 │   │   ├── questTypes.js          <- QUEST_TYPES + DURATIONS + XP_VALUES + Level-Helpers + RPG_ATTRIBUTES
 │   │   ├── demoData.js            <- generateDemoData() + generateDemoProjects() – Demo-Quests + Demo-Projekte
-│   │   └── projectHelpers.js      <- Pure computed Helpers (Status, Progress, ForSkill, RelevantQuests, CONFIG)
+│   │   ├── projectHelpers.js      <- Pure computed Helpers (Status, Progress, ForSkill, RelevantQuests, CONFIG)
+│   │   └── aiPromptTemplate.js    <- KI-Prompt-Template (Markdown) + 3 Beispiel-Vorlagen (EXAMPLE_TEMPLATES)
 │   ├── hooks/
 │   │   ├── useLocalStorage.js     <- localStorage Wrapper (supports function initialValue)
 │   │   ├── useDashboardData.js    <- Dashboard-Datenaufbereitung (Heatmap, LineChart, EnergyCurve)
 │   │   └── useQuestBoard.js       <- Haupt-State-Management (Schema v14, Settings, importSkills, clearDemoData, Project CRUD)
 │   ├── components/
-│   │   ├── Header.jsx/css         <- Navigation + Tabs (Kanban/Backlog/Skills/Dashboard/Hilfe) + NeuroForge Branding + Settings + Import/Export
+│   │   ├── Header.jsx/css         <- Navigation + Tabs (Kanban/Backlog/Skills/Dashboard/KI Setup/Hilfe) + NeuroForge Branding + Settings + Import/Export
 │   │   ├── Eisenhower.jsx/css     <- 4-Quadranten Backlog + Unsortiert + Energie-Filter
 │   │   ├── Kanban.jsx/css         <- Mini-Backlog (Q2+Q1 als separate Kaesten) + Normal + Fast Lane (Wildcard-Counter) + Shared Done + WIP-Limits + Drag-Blockade
 │   │   ├── SkillTree.jsx/css      <- 2-Spalten: Projekte + Skills (Level+XP) links + RPG Dashboard rechts + Auge-Toggle
@@ -192,6 +202,7 @@ Quest_Board/
 │   │   ├── CharacterCard.jsx/css <- RPG Attribut-Balken (STR/INT/DEX/WIS/CHA/CON) + Level-Erklaerung + naechste Level + Hebel-Tipp
 │   │   ├── RecentSkills.jsx/css  <- Kuerzlich gelernte Skills (Woche + Monat)
 │   │   ├── PersonalDashboard.jsx/css <- Dashboard-Tab mit Projekt-Fortschritt, Heatmap, LineChart, EnergyCurve
+│   │   ├── AiSetupGuide.jsx/css   <- KI Setup Tab: Prompt-Template, 3 Beispiele, JSON-Import, Tipps
 │   │   ├── Heatmap.jsx/css         <- GitHub-Style Heatmap (Tageszeiten x Wochentage)
 │   │   ├── LineChart.jsx/css       <- SVG-Liniendiagramm (Quest-Typen ueber Zeit)
 │   │   ├── EnergyCurve.jsx/css     <- Persoenliche Energiekurve aus echten Daten
