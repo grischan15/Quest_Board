@@ -1,0 +1,137 @@
+.backup-restore {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 14px;
+}
+
+.backup-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.backup-section-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #25313a;
+  margin: 0;
+}
+
+.backup-section-desc {
+  font-size: 0.82rem;
+  color: #888;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Stats */
+.backup-stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.backup-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 14px;
+  background: #f8f8f6;
+  border-radius: 8px;
+  min-width: 60px;
+}
+
+.backup-stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #25313a;
+}
+
+.backup-stat-label {
+  font-size: 0.68rem;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Warning */
+.backup-restore-warning {
+  font-size: 0.8rem;
+  color: #c60a0f;
+  background: rgba(198, 10, 15, 0.04);
+  border: 1px solid rgba(198, 10, 15, 0.12);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-weight: 500;
+}
+
+/* File area */
+.backup-file-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.backup-file-name {
+  font-size: 0.78rem;
+  color: #666;
+}
+
+/* Restore preview */
+.backup-restore-preview {
+  padding: 14px 16px;
+  background: #fafaf8;
+  border: 1px solid #e5e5e3;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.backup-restore-preview-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #888;
+}
+
+.backup-restore-preview-stats {
+  display: flex;
+  gap: 16px;
+  font-size: 0.82rem;
+  color: #444;
+  flex-wrap: wrap;
+}
+
+.backup-restore-preview-stats strong {
+  color: #25313a;
+}
+
+.backup-restore-btn {
+  background: #e6a817 !important;
+  align-self: flex-start;
+}
+
+.backup-restore-btn:hover {
+  background: #d49a12 !important;
+}
+
+@media (max-width: 600px) {
+  .backup-stats {
+    gap: 6px;
+  }
+
+  .backup-stat {
+    padding: 6px 10px;
+    min-width: 50px;
+  }
+
+  .backup-restore-preview-stats {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

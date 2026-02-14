@@ -21,7 +21,7 @@ export default function SkillModal({ skill, categoryId, categories, projects, on
   function handleSubmit(e) {
     e.preventDefault();
     if (!name.trim()) return;
-    onSave({ name: name.trim(), category, status, xpCurrent: isEdit ? xpCurrent : undefined, level: isEdit ? editLevel : undefined });
+    onSave({ name: name.trim(), category, status, xpCurrent, level: editLevel });
   }
 
   function handleXpChange(value) {
@@ -75,55 +75,27 @@ export default function SkillModal({ skill, categoryId, categories, projects, on
           </select>
         </div>
 
-        {isEdit ? (
-          <div className="form-group">
-            <label className="form-label">XP &amp; Level</label>
-            <div className="skill-modal-xp-edit">
-              <div className="skill-modal-xp-input-row">
-                <input
-                  type="number"
-                  className="form-input skill-modal-xp-input"
-                  min={0}
-                  value={xpCurrent}
-                  onChange={(e) => handleXpChange(e.target.value)}
-                />
-                <span className="skill-modal-xp-suffix">XP</span>
-                <span className="skill-modal-level-badge">
-                  Lv.{editLevel} {getLevelLabel(editLevel)}
-                </span>
-              </div>
-              <div className="skill-modal-xp-thresholds">
-                Lv.1: 1 XP &middot; Lv.2: 100 &middot; Lv.3: 250 &middot; Lv.4: 500 &middot; Lv.5: 800
-              </div>
+        <div className="form-group">
+          <label className="form-label">XP &amp; Level</label>
+          <div className="skill-modal-xp-edit">
+            <div className="skill-modal-xp-input-row">
+              <input
+                type="number"
+                className="form-input skill-modal-xp-input"
+                min={0}
+                value={xpCurrent}
+                onChange={(e) => handleXpChange(e.target.value)}
+              />
+              <span className="skill-modal-xp-suffix">XP</span>
+              <span className="skill-modal-level-badge">
+                Lv.{editLevel} {getLevelLabel(editLevel)}
+              </span>
+            </div>
+            <div className="skill-modal-xp-thresholds">
+              Lv.1: 1 XP &middot; Lv.2: 100 &middot; Lv.3: 250 &middot; Lv.4: 500 &middot; Lv.5: 800
             </div>
           </div>
-        ) : (
-          <div className="form-group">
-            <label className="form-label">Status</label>
-            <div className="quadrant-radio-group">
-              <label className="quadrant-radio">
-                <input
-                  type="radio"
-                  name="skill-status"
-                  value="open"
-                  checked={status === 'open'}
-                  onChange={() => setStatus('open')}
-                />
-                <span>Offen (Level 0)</span>
-              </label>
-              <label className="quadrant-radio">
-                <input
-                  type="radio"
-                  name="skill-status"
-                  value="learned"
-                  checked={status === 'learned'}
-                  onChange={() => setStatus('learned')}
-                />
-                <span>Bereits gelernt (Level 3)</span>
-              </label>
-            </div>
-          </div>
-        )}
+        </div>
 
         {isEdit && skill && projects && (() => {
           const relatedProjects = getProjectsForSkill(skill.id, projects);

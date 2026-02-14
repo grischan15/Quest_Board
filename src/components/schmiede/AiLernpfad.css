@@ -1,0 +1,354 @@
+.ai-lernpfad {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 14px;
+}
+
+/* Steps */
+.ai-lernpfad-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ai-lernpfad-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #f8f8f6;
+  border-radius: 8px;
+}
+
+.ai-lernpfad-step-num {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #c60a0f;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ai-lernpfad-step-text {
+  flex: 1;
+}
+
+.ai-lernpfad-step-text strong {
+  font-size: 0.84rem;
+  color: #25313a;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.ai-lernpfad-step-text p {
+  font-size: 0.78rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Sections */
+.ai-lernpfad-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ai-lernpfad-section-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #25313a;
+  margin: 0;
+}
+
+.ai-lernpfad-section-desc {
+  font-size: 0.82rem;
+  color: #888;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Prompt actions */
+.ai-lernpfad-prompt-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Prompt preview */
+.ai-lernpfad-prompt-preview {
+  background: #f8f8f6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ai-lernpfad-prompt-summary {
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #25313a;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-lernpfad-prompt-summary::before {
+  content: '\25B6';
+  font-size: 0.6rem;
+  color: #aaa;
+  transition: transform 0.15s;
+}
+
+.ai-lernpfad-prompt-preview[open] .ai-lernpfad-prompt-summary::before {
+  transform: rotate(90deg);
+}
+
+.ai-lernpfad-prompt-summary::-webkit-details-marker {
+  display: none;
+}
+
+.ai-lernpfad-prompt-code {
+  margin: 0;
+  padding: 14px;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.7rem;
+  line-height: 1.6;
+  color: #444;
+  background: #fff;
+  border-top: 1px solid #e8e8e6;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+/* Demo warning */
+.ai-lernpfad-demo-warning {
+  font-size: 0.82rem;
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 10px 14px;
+  line-height: 1.5;
+}
+
+.ai-lernpfad-demo-warning strong {
+  color: #92400e;
+}
+
+/* Examples */
+.ai-lernpfad-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-lernpfad-example {
+  background: #fff;
+  border: 1px solid #f0f0ee;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.ai-lernpfad-example:hover {
+  border-color: #ddd;
+}
+
+.ai-lernpfad-example-active {
+  border-color: #c60a0f;
+}
+
+.ai-lernpfad-example-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+}
+
+.ai-lernpfad-example-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.ai-lernpfad-example-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ai-lernpfad-example-name {
+  font-weight: 600;
+  font-size: 0.84rem;
+  color: #25313a;
+}
+
+.ai-lernpfad-example-desc {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.ai-lernpfad-example-stats {
+  font-size: 0.7rem;
+  color: #aaa;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.ai-lernpfad-example-detail {
+  padding: 0 14px 12px;
+  border-top: 1px solid #f0f0ee;
+}
+
+.ai-lernpfad-example-prompt {
+  padding: 10px 0;
+  font-size: 0.82rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.ai-lernpfad-example-prompt strong {
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: 600;
+}
+
+.ai-lernpfad-example-prompt p {
+  margin: 4px 0 0;
+}
+
+.ai-lernpfad-example-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Import */
+.ai-lernpfad-import {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ai-lernpfad-import-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px 12px;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  border: 1px solid #e0e0de;
+  border-radius: 8px;
+  background: #fafaf8;
+  color: #25313a;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.ai-lernpfad-import-textarea:focus {
+  outline: none;
+  border-color: #c60a0f;
+  box-shadow: 0 0 0 2px rgba(198, 10, 15, 0.1);
+}
+
+.ai-lernpfad-import-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ai-lernpfad-import-preview {
+  padding: 14px 16px;
+  background: rgba(45, 138, 78, 0.06);
+  border: 1px solid rgba(45, 138, 78, 0.15);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ai-lernpfad-import-preview-title {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #2d8a4e;
+}
+
+.ai-lernpfad-import-preview-stats {
+  display: flex;
+  gap: 16px;
+  font-size: 0.82rem;
+  color: #444;
+  font-weight: 500;
+  flex-wrap: wrap;
+}
+
+/* Tips */
+.ai-lernpfad-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-lernpfad-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #f8f8f6;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.ai-lernpfad-tip-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ai-lernpfad-tip strong {
+  color: #25313a;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .ai-lernpfad-prompt-actions {
+    flex-direction: column;
+  }
+
+  .ai-lernpfad-example-header {
+    flex-wrap: wrap;
+  }
+
+  .ai-lernpfad-example-stats {
+    width: 100%;
+    text-align: left;
+    margin-top: 4px;
+  }
+
+  .ai-lernpfad-import-preview-stats {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-lernpfad-example,
+  .ai-lernpfad-prompt-summary::before {
+    transition: none;
+  }
+}

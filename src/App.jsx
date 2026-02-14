@@ -9,15 +9,13 @@ import SkillModal from './components/SkillModal';
 import CategoryModal from './components/CategoryModal';
 import ProjectModal from './components/ProjectModal';
 import DeleteModal from './components/DeleteModal';
-import ImportModal from './components/ImportModal';
-import ExportModal from './components/ExportModal';
 import SettingsModal from './components/SettingsModal';
-import SkillImportModal from './components/SkillImportModal';
 import PersonalDashboard from './components/PersonalDashboard';
-import AiSetupGuide from './components/AiSetupGuide';
+import SchmiedePage from './components/schmiede/SchmiedePage';
 import HelpPage from './components/HelpPage';
 import DemoBanner from './components/DemoBanner';
 import { useQuestBoard } from './hooks/useQuestBoard';
+import { getLevel } from './data/questTypes';
 import './App.css';
 
 export default function App() {
@@ -25,14 +23,11 @@ export default function App() {
   const [taskModal, setTaskModal] = useState(null);
   const [skillCheckTask, setSkillCheckTask] = useState(null);
   const [deleteTask, setDeleteTask] = useState(null);
-  const [showImport, setShowImport] = useState(false);
-  const [showExport, setShowExport] = useState(false);
   const [skillModal, setSkillModal] = useState(null);
   const [categoryModal, setCategoryModal] = useState(null);
   const [deleteSkillTarget, setDeleteSkillTarget] = useState(null);
   const [deleteCategoryTarget, setDeleteCategoryTarget] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [showSkillImport, setShowSkillImport] = useState(false);
   const [projectModal, setProjectModal] = useState(null);
   const [deleteProjectTarget, setDeleteProjectTarget] = useState(null);
 
@@ -136,8 +131,13 @@ export default function App() {
     ({ name, category, status, xpCurrent, level }) => {
       if (skillModal.mode === 'create') {
         const newSkill = board.createSkill(name, category);
-        if (status === 'learned') {
-          board.toggleSkillStatus(newSkill.id);
+        if (xpCurrent > 0) {
+          board.updateSkill(newSkill.id, {
+            xpCurrent,
+            level,
+            status: level >= 1 ? 'learned' : 'open',
+            learnedAt: level >= 1 ? new Date().toISOString() : null,
+          });
         }
       } else if (skillModal.mode === 'edit') {
         const updates = { name, category };
@@ -248,6 +248,41 @@ export default function App() {
     [board]
   );
 
+  // --- Wizard save handler (category + skills atomically) ---
+  const handleWizardSave = useCallback(
+    ({ isNewCategory, categoryId, categoryLabel, categoryIcon, skills: wizardSkills }) => {
+      let catId = categoryId;
+      if (isNewCategory) {
+        // Generate a stable slug ID (same format as createCategory)
+        catId = `custom-${categoryLabel.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}-${Date.now()}`;
+      }
+      if (!catId) return;
+
+      // importSkills auto-creates missing categories using the categoryLabel
+      const skillList = wizardSkills.map((s) => ({
+        name: s.name,
+        category: catId,
+        categoryLabel: isNewCategory ? categoryLabel : undefined,
+        status: getLevel(s.xp) >= 1 ? 'learned' : 'open',
+        xpCurrent: s.xp,
+        level: getLevel(s.xp),
+      }));
+      board.importSkills(skillList);
+
+      // Fix the icon + showInDashboard on the auto-created category
+      // (updateCategory uses functional updaters, so it sees the latest state)
+      if (isNewCategory) {
+        const dashboardCount = board.categories.filter((c) => c.showInDashboard).length;
+        board.updateCategory(catId, {
+          icon: categoryIcon || '\uD83D\uDCCC',
+          label: categoryLabel,
+          showInDashboard: dashboardCount < 6,
+        });
+      }
+    },
+    [board]
+  );
+
   // --- AI Setup import handler ---
   const handleAiImportJson = useCallback(
     (data) => {
@@ -326,8 +361,6 @@ export default function App() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onNewQuest={handleNewQuest}
-        onImport={() => setShowImport(true)}
-        onExport={() => setShowExport(true)}
         onSettingsClick={() => setShowSettings(true)}
       />
 
@@ -377,10 +410,8 @@ export default function App() {
             onEditSkill={handleEditSkill}
             onAddSkill={handleAddSkill}
             onEditCategory={handleEditCategory}
-            onAddCategory={handleAddCategory}
             onAddProject={handleAddProject}
             onEditProject={handleEditProject}
-            onImportSkills={() => setShowSkillImport(true)}
             onToggleDashboard={board.toggleCategoryDashboard}
           />
         )}
@@ -393,8 +424,19 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'ai-setup' && (
-          <AiSetupGuide onImportJson={handleAiImportJson} />
+        {activeTab === 'schmiede' && (
+          <SchmiedePage
+            categories={board.categories}
+            skills={board.skills}
+            projects={board.projects}
+            tasks={board.tasks}
+            isDemo={board.isDemo}
+            onWizardSave={handleWizardSave}
+            onImportTasks={handleImport}
+            onExportData={board.exportData}
+            onRestoreData={handleRestore}
+            onAiImportJson={handleAiImportJson}
+          />
         )}
 
         {activeTab === 'help' && <HelpPage />}
@@ -495,34 +537,6 @@ export default function App() {
           itemLabel="Projekt"
           onConfirm={handleConfirmDeleteProject}
           onClose={() => setDeleteProjectTarget(null)}
-        />
-      )}
-
-      {showImport && (
-        <ImportModal
-          onImport={handleImport}
-          onRestore={handleRestore}
-          onClose={() => setShowImport(false)}
-        />
-      )}
-
-      {showExport && (
-        <ExportModal
-          tasks={board.tasks}
-          skills={board.skills}
-          onExport={board.exportData}
-          onClose={() => setShowExport(false)}
-        />
-      )}
-
-      {showSkillImport && (
-        <SkillImportModal
-          categories={board.categories}
-          onImport={(skillList) => {
-            board.importSkills(skillList);
-            setShowSkillImport(false);
-          }}
-          onClose={() => setShowSkillImport(false)}
         />
       )}
 

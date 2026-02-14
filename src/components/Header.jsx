@@ -6,7 +6,7 @@ const tabs = [
   { id: 'eisenhower', label: 'Backlog', icon: '\uD83D\uDCCB' },
   { id: 'skills', label: 'Skills', icon: '\uD83C\uDF33' },
   { id: 'dashboard', label: 'Dashboard', icon: '\uD83D\uDCC8' },
-  { id: 'ai-setup', label: 'KI Setup', icon: '\uD83E\uDD16' },
+  { id: 'schmiede', label: 'Schmiede', icon: '\uD83D\uDD28' },
   { id: 'help', label: 'Hilfe', icon: '\u2753' },
 ];
 
@@ -14,8 +14,6 @@ export default function Header({
   activeTab,
   onTabChange,
   onNewQuest,
-  onImport,
-  onExport,
   onSettingsClick,
 }) {
   return (
@@ -37,12 +35,6 @@ export default function Header({
         ))}
       </nav>
       <div className="header-actions">
-        <button className="import-btn" onClick={onExport}>
-          Export
-        </button>
-        <button className="import-btn" onClick={onImport}>
-          Import
-        </button>
         <button className="new-quest-btn" onClick={onNewQuest}>
           + Neue Quest
         </button>

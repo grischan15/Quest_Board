@@ -9,7 +9,7 @@
 ## AKTUELLER STATUS
 
 ```
-████████████████████ Phase: v4.0 Beautification (komplett) → Naechster Schritt: Schmiede-Tab
+████████████████████ Phase: v4.1 Schmiede-Tab (komplett) → Naechster Schritt: Browser-Testing & Feinschliff
 ```
 
 **Was ist fertig:**
@@ -171,7 +171,20 @@
 - [x] **S-004: Settings-Button** – Zahnrad-Icon an letzte Position im Header verschoben, eigene `.settings-btn` CSS-Klasse
 - [x] **S-005: Projekt-Anzeige konsistent** – SkillTree zeigt aktive Projekte direkt, abgeschlossene hinter klappbarem Toggle (default: eingeklappt, 65% Opazitaet). Nutzt `getProjectStatus()` konsistent
 
-**Naechster Schritt:** Siehe [ROADMAP.md](ROADMAP.md) – "Schmiede"-Tab (Import/Export Konsolidierung)
+**v4.1 Schmiede-Tab (14.02.2026):**
+- [x] **Neuer Tab "Schmiede"** – Ersetzt "KI Setup" Tab, konsolidiert alle Import/Export-Funktionen an einem Ort
+- [x] **SchmiedePage** – Accordion-Layout mit 4 Sektionen (Progressive Disclosure), Hero-Header
+- [x] **Sektion 1: Lerngebiet-Wizard** – 3-Schritt-Wizard (Kategorie waehlen/erstellen → Skills definieren mit XP → Vorschau + Speichern)
+- [x] **Sektion 2: KI-Lernpfad** – Refactored AiSetupGuide mit "Bestand fuer KI kopieren" Button (Markdown-Export aktueller Categories/Skills/Projects) + Demo-Daten-Warnung
+- [x] **Sektion 3: Quest-Import** – Schnell-Eingabe + CSV/JSON Datei-Upload mit Preview (extrahiert aus ImportModal)
+- [x] **Sektion 4: Backup & Restore** – Export (JSON-Download mit Stats) + Restore (Upload + Merge) kombiniert (aus ExportModal + ImportModal)
+- [x] **8 alte Dateien entfernt** – ImportModal, ExportModal, SkillImportModal, AiSetupGuide (je .jsx/.css)
+- [x] **Header bereinigt** – Import/Export-Buttons entfernt, nur "Neue Quest" + Settings bleiben
+- [x] **SkillTree bereinigt** – "+ Neue Kategorie" und "Skills importieren" Buttons entfernt
+- [x] **SkillModal Bug-Fix** – Create-Mode zeigt jetzt XP-Input statt Status-Radio (gleicher Code wie Edit-Mode)
+- [x] **Wizard Doppel-Kategorie Bug-Fix** – React State Closure Problem geloest: importSkills erstellt Kategorie automatisch, updateCategory setzt Icon/Label per Functional Updater
+
+**Naechster Schritt:** Siehe [ROADMAP.md](ROADMAP.md)
 
 ---
 
@@ -202,7 +215,7 @@ Quest_Board/
 │   │   ├── useDashboardData.js    <- Dashboard-Datenaufbereitung (Heatmap, LineChart, EnergyCurve)
 │   │   └── useQuestBoard.js       <- Haupt-State-Management (Schema v14, Settings, importSkills, clearDemoData, Project CRUD)
 │   ├── components/
-│   │   ├── Header.jsx/css         <- Navigation + Tabs (Kanban/Backlog/Skills/Dashboard/KI Setup/Hilfe) + NeuroForge Branding + Settings + Import/Export
+│   │   ├── Header.jsx/css         <- Navigation + Tabs (Kanban/Backlog/Skills/Dashboard/Schmiede/Hilfe) + NeuroForge Branding + Settings
 │   │   ├── Eisenhower.jsx/css     <- 4-Quadranten Backlog + Unsortiert + Energie-Filter
 │   │   ├── Kanban.jsx/css         <- Mini-Backlog (Q2+Q1 als separate Kaesten) + Normal + Fast Lane (Wildcard-Counter) + Shared Done + WIP-Limits + Drag-Blockade
 │   │   ├── SkillTree.jsx/css      <- 2-Spalten: Projekte + Skills (Level+XP) links + RPG Dashboard rechts + Auge-Toggle
@@ -212,7 +225,6 @@ Quest_Board/
 │   │   ├── CharacterCard.jsx/css <- RPG Attribut-Balken (STR/INT/DEX/WIS/CHA/CON) + Level-Erklaerung + naechste Level + Hebel-Tipp
 │   │   ├── RecentSkills.jsx/css  <- Kuerzlich gelernte Skills (Woche + Monat)
 │   │   ├── PersonalDashboard.jsx/css <- Dashboard-Tab mit Projekt-Fortschritt, Heatmap, LineChart, EnergyCurve
-│   │   ├── AiSetupGuide.jsx/css   <- KI Setup Tab: Prompt-Template, 3 Beispiele, JSON-Import, Tipps
 │   │   ├── Heatmap.jsx/css         <- GitHub-Style Heatmap (Tageszeiten x Wochentage)
 │   │   ├── LineChart.jsx/css       <- SVG-Liniendiagramm (Quest-Typen ueber Zeit)
 │   │   ├── EnergyCurve.jsx/css     <- Persoenliche Energiekurve aus echten Daten
@@ -222,15 +234,18 @@ Quest_Board/
 │   │   ├── DroppableContainer.jsx <- DnD Wrapper
 │   │   ├── Modal.jsx/css          <- Basis-Modal (scrollbar auf kleinen Bildschirmen)
 │   │   ├── TaskModal.jsx/css      <- Quest Erstellen/Bearbeiten + Due Date + Quest-Typ + Duration + XP + Skill-Picker
-│   │   ├── SkillModal.jsx/css     <- Skill Erstellen/Bearbeiten/Ausblenden + Level/XP editierbar + "Wird benoetigt von" Projekte
+│   │   ├── SkillModal.jsx/css     <- Skill Erstellen/Bearbeiten/Ausblenden + Level/XP editierbar (Create + Edit) + "Wird benoetigt von" Projekte
 │   │   ├── CategoryModal.jsx/css  <- Kategorie Erstellen/Bearbeiten + Emoji-Picker
 │   │   ├── ProjectModal.jsx/css   <- Projekt Erstellen/Bearbeiten + Requirements-Picker (Skill + Level)
 │   │   ├── SkillCheckModal.jsx/css <- Done -> Skills + XP-Vergabe + Konfetti + Level-Up Preview + Projekt-Impact
-│   │   ├── ImportModal.jsx/css    <- Task-Import (Text + CSV/JSON mit Spaltendoku + Restore)
-│   │   ├── SkillImportModal.jsx/css <- Skill-Import (Text + CSV/JSON mit Spaltendoku)
-│   │   ├── ExportModal.jsx/css    <- Daten-Export mit Beschreibung
 │   │   ├── SettingsModal.jsx/css  <- WIP-Limits + Wildcard-Settings + Reset + Demo-Daten loeschen
 │   │   └── DeleteModal.jsx/css    <- Loeschbestaetigung (Quest, Skill, Kategorie)
+│   ├── components/schmiede/
+│   │   ├── SchmiedePage.jsx/css    <- Wrapper mit Accordion-Layout (4 Sektionen, Progressive Disclosure)
+│   │   ├── LerngebietWizard.jsx/css <- 3-Schritt-Wizard: Kategorie + Skills + Vorschau
+│   │   ├── AiLernpfad.jsx/css      <- KI-Flow: Prompt-Template + Bestands-Export + JSON-Import
+│   │   ├── QuestImport.jsx/css     <- Quest-Bulk-Import (Schnell-Eingabe + CSV/JSON)
+│   │   └── BackupRestore.jsx/css   <- Export (JSON-Download) + Restore (Upload + Merge)
 │   ├── App.jsx/css
 │   ├── main.jsx
 │   └── index.css

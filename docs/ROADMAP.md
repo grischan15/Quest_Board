@@ -304,6 +304,26 @@ Umgesetzt am 14.02.2026, kein Schema-Change:
 
 ---
 
+## ✅ ERLEDIGT (v4.1 – Schmiede-Tab)
+
+Umgesetzt am 14.02.2026, kein Schema-Change:
+
+- [x] **Neuer Tab "Schmiede"** – Ersetzt "KI Setup" Tab, konsolidiert Import/Export/Wizard/KI-Flow in 4 Accordion-Sektionen (Progressive Disclosure)
+- [x] **SchmiedePage** – Wrapper mit Hero-Header + AccordionSection (eine Sektion gleichzeitig offen)
+- [x] **Sektion 1: Lerngebiet-Wizard** – 3-Schritt-Wizard: Kategorie waehlen oder neu erstellen (Emoji-Picker) → Skills definieren (Name + XP-Input mit Level-Badge) → Vorschau + Speichern
+- [x] **Sektion 2: KI-Lernpfad** – Refactored AiSetupGuide: 3-Schritte-Erklaerung, Prompt kopieren/downloaden, 3 Beispiel-Vorlagen, JSON-Import. NEU: "Bestand fuer KI kopieren" (Markdown-Summary aktueller Categories/Skills/Projects in Clipboard). NEU: Demo-Daten-Warnung (gelber Banner wenn isDemo)
+- [x] **Sektion 3: Quest-Import** – Schnell-Eingabe (1 Quest pro Zeile) + Datei-Upload (CSV/JSON) mit Spalten-Dokumentation und Inline-Preview. Extrahiert aus ImportModal
+- [x] **Sektion 4: Backup & Restore** – Export (Statistiken + JSON-Download) + Restore (Datei-Upload + Merge-Warnung + Vorschau). Kombiniert ExportModal + ImportModal Restore-Tab
+- [x] **8 alte Dateien geloescht** – ImportModal.jsx/.css, ExportModal.jsx/.css, SkillImportModal.jsx/.css, AiSetupGuide.jsx/.css
+- [x] **Header bereinigt** – Import/Export-Buttons entfernt, nur "Neue Quest" + Settings bleiben
+- [x] **SkillTree bereinigt** – "+ Neue Kategorie" und "Skills importieren" Buttons entfernt
+- [x] **SkillModal Bug-Fix** – Create-Mode zeigt jetzt XP-Input (gleicher Code wie Edit-Mode), onSave sendet immer xpCurrent + level
+- [x] **Wizard Doppel-Kategorie Bug-Fix** – React State Closure Problem: createCategory + importSkills lasen veralteten State. Loesung: importSkills auto-erstellt Kategorie, updateCategory setzt Icon/Label per Functional Updater (sieht neuesten State)
+
+**Dateien:** NEU: `components/schmiede/` (SchmiedePage, LerngebietWizard, AiLernpfad, QuestImport, BackupRestore – je .jsx/.css = 10 Dateien) + GEAENDERT: `App.jsx`, `Header.jsx`, `SkillTree.jsx`, `SkillModal.jsx` + GELOESCHT: ImportModal, ExportModal, SkillImportModal, AiSetupGuide (je .jsx/.css = 8 Dateien)
+
+---
+
 ## MITTELFRISTIG (v3.5+ – Projekte & Vorlagen)
 
 ### Block C: Projekte & KI
@@ -315,45 +335,9 @@ Umgesetzt am 14.02.2026, kein Schema-Change:
 - [ ] **Template-Auswahl** – Bei erstem Start oder ueber Settings waehlbar
 - [ ] **Community Templates** – Spaeter: Templates teilen/importieren
 
-### Block E: "Schmiede"-Tab (Import/Export Konsolidierung) ← NAECHSTER SCHRITT
+### ✅ Block E: "Schmiede"-Tab (Import/Export Konsolidierung)
 
-Ersetzt den bisherigen "KI Setup"-Tab und konsolidiert alle verstreuten Import/Export-Funktionen in einem einzigen Tab.
-
-**Konzept: 4 Sektionen im Schmiede-Tab:**
-
-1. **Manueller Wizard: "Lerngebiet starten"**
-   - 1 Kategorie + Skills anlegen (mit vollem XP/Level-Input)
-   - Ersetzt: "+ Neue Kategorie" und "Skills importieren" aus dem SkillTree
-   - Projekte werden NICHT hier erstellt (die spannen ueber mehrere Kategorien)
-
-2. **KI-Flow: "KI-Lernpfad generieren"**
-   - Bisheriger KI Setup Guide (Prompt kopieren → KI fragen → JSON importieren)
-   - NEU: "Bestands-Export" Button – exportiert aktuelle Categories/Skills als Kontext fuer die KI
-   - Kann Projekte erstellen (diese spannen ueber mehrere Kategorien/Skills)
-   - Ersetzt: AiSetupGuide-Komponente (wird integriert)
-
-3. **Quest-Import**
-   - Schnell-Eingabe + CSV/JSON Upload fuer Tasks
-   - Ersetzt: ImportModal (Quest-Tab)
-
-4. **Backup & Restore**
-   - Export (JSON-Download aller Daten)
-   - Restore (Backup einspielen, Merge-Logik)
-   - Ersetzt: ExportModal + ImportModal (Restore-Tab)
-
-**Was entfernt wird:**
-- ImportModal (wird in Schmiede integriert)
-- ExportModal (wird in Schmiede integriert)
-- SkillImportModal (wird in Wizard integriert)
-- Header: Export + Import Buttons
-- SkillTree: "+ Neue Kategorie" + "Skills importieren" Buttons
-
-**Was bleibt:**
-- SkillTree: "+ Skill" Button (mit XP/Level-Fix im Create-Mode)
-- SkillTree: "+ Projekt" Button
-
-**Bug-Fix enthalten:**
-- SkillModal Create-Mode: XP/Level-Input fehlt (nur "Open" oder "Bereits gelernt" moeglich)
+Umgesetzt am 14.02.2026 – siehe Abschnitt "ERLEDIGT (v4.1)" weiter oben.
 
 ### Sonstiges
 - [ ] Browser-Testing & Feinschliff
@@ -417,6 +401,8 @@ Ersetzt den bisherigen "KI Setup"-Tab und konsolidiert alle verstreuten Import/E
 | **14.02.2026** | **v4.0 Beautification shipped** | **5 Schoenheitsfehler gefixt: Scrollbars (vertikal+horizontal), zentrales Breakpoint-System (Mobile/Tablet/Desktop), Settings-Button Repositionierung, konsistente Projekt-Anzeige mit Done-Toggle.** |
 | **14.02.2026** | **minmax(0,1fr) Pattern** | **`1fr` hat implizites `min-width:auto` – Kinder koennen Grid-Spalten ueber deren Breite hinaus ausdehnen. Fix: `minmax(0,1fr)` erlaubt Schrumpfen auf 0. Alle Grids umgestellt.** |
 | **14.02.2026** | **Schmiede-Tab Konzept** | **Import/Export/KI-Setup in 5 verschiedenen Stellen verstreut → konsolidiert in einem einzigen "Schmiede"-Tab mit 4 Sektionen: Manueller Wizard (1 Kategorie + Skills), KI-Flow (mit Bestands-Export), Quest-Import, Backup & Restore. Ersetzt KI-Setup-Tab + ImportModal + ExportModal + SkillImportModal.** |
+| **14.02.2026** | **v4.1 Schmiede-Tab shipped** | **4 Accordion-Sektionen (Progressive Disclosure), 10 neue Dateien in components/schmiede/, 8 alte Dateien geloescht, Header + SkillTree bereinigt. SkillModal Create-Mode XP-Bug gefixt. Wizard Doppel-Kategorie Bug (React State Closure) geloest.** |
+| **14.02.2026** | **React State Closure Lesson** | **createCategory() + importSkills() nacheinander aufrufen fuehrt zu Duplikaten: importSkills liest categories aus Closure (alter State ohne neue Kategorie) und auto-erstellt Duplikat. Loesung: Nur importSkills aufrufen (auto-create), dann updateCategory mit Functional Updater fuer Icon/Label.** |
 
 ---
 

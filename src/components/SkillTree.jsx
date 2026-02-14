@@ -5,7 +5,7 @@ import RpgDashboard from './RpgDashboard';
 import ProjectCard from './ProjectCard';
 import './SkillTree.css';
 
-export default function SkillTree({ skills, tasks, categories, projects, onEditSkill, onAddSkill, onEditCategory, onAddCategory, onAddProject, onEditProject, onImportSkills, onToggleDashboard }) {
+export default function SkillTree({ skills, tasks, categories, projects, onEditSkill, onAddSkill, onEditCategory, onAddProject, onEditProject, onToggleDashboard }) {
   const [collapsed, setCollapsed] = useState({});
   const [showHidden, setShowHidden] = useState(false);
   const [showDoneProjects, setShowDoneProjects] = useState(false);
@@ -231,18 +231,6 @@ export default function SkillTree({ skills, tasks, categories, projects, onEditS
               </div>
             ))}
 
-            <div className="skilltree-actions">
-              {onAddCategory && (
-                <button className="category-add-btn" onClick={onAddCategory}>
-                  + Neue Kategorie
-                </button>
-              )}
-              {onImportSkills && (
-                <button className="skill-import-btn" onClick={onImportSkills}>
-                  Skills importieren
-                </button>
-              )}
-            </div>
           </div>
 
           {/* Hidden Skills Section */}
