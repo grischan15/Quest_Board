@@ -75,7 +75,7 @@ export default function SettingsModal({ settings, isDemo, onClearDemo, onSave, o
           <div className="settings-section settings-section-demo">
             <div className="settings-section-title">Demo-Daten</div>
             <div className="settings-section-hint">
-              Du verwendest aktuell Demo-Daten. Loesche sie, um mit eigenen Quests zu starten.
+              Loescht alle Demo-Quests, Skills, Kategorien und Projekte &ndash; du startest komplett frisch.
             </div>
             <button
               type="button"

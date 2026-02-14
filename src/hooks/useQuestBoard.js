@@ -281,7 +281,7 @@ export function useQuestBoard() {
     });
   }, [setRawState]);
 
-  // Clear demo data: remove all tasks + projects, keep skills/categories/settings
+  // Clear demo data: full reset (tasks, projects, skills, categories)
   const clearDemoData = useCallback(() => {
     setRawState((prev) => {
       const migrated = migrateState(prev);
@@ -289,6 +289,8 @@ export function useQuestBoard() {
         ...migrated,
         tasks: [],
         projects: [],
+        skills: [],
+        categories: [],
         isDemo: false,
       };
     });
