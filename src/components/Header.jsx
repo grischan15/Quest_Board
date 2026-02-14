@@ -37,9 +37,6 @@ export default function Header({
         ))}
       </nav>
       <div className="header-actions">
-        <button className="import-btn" onClick={onSettingsClick} title="Einstellungen">
-          &#9881;
-        </button>
         <button className="import-btn" onClick={onExport}>
           Export
         </button>
@@ -48,6 +45,9 @@ export default function Header({
         </button>
         <button className="new-quest-btn" onClick={onNewQuest}>
           + Neue Quest
+        </button>
+        <button className="settings-btn" onClick={onSettingsClick} title="Einstellungen">
+          &#9881;
         </button>
       </div>
     </header>

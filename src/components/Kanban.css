@@ -1,20 +1,21 @@
 .kanban-wrapper {
   padding: 12px 16px;
-  height: calc(100vh - 60px);
+  height: 100%;
   overflow: hidden;
 }
 
 /* Main layout: mini-backlog (optional) + work area + shared done */
 .kanban-layout {
   display: grid;
-  grid-template-columns: 1fr 220px;
+  grid-template-columns: minmax(0, 1fr) 220px;
   gap: 10px;
   height: 100%;
+  max-width: 100%;
 }
 
 /* When mini-backlog is present, add a column for it */
 .kanban-layout:has(.kanban-mini-backlog) {
-  grid-template-columns: 180px 1fr 220px;
+  grid-template-columns: 180px minmax(0, 1fr) 220px;
 }
 
 /* Work area: normal (75%) + fast lane (25%) stacked */
@@ -86,7 +87,7 @@
 /* 4 work columns per row */
 .kanban-row-columns {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   flex: 1;
   min-height: 0;
@@ -101,6 +102,7 @@
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
+  min-width: 0;
 }
 
 /* Shared Done column (right side) */
@@ -112,6 +114,7 @@
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
+  min-width: 0;
 }
 
 .kanban-column-header {
@@ -411,4 +414,67 @@
   color: #999;
   text-align: center;
   margin-top: 3px;
+}
+
+/* ─── Tablet: < 1024px ─── */
+@media (max-width: 1024px) {
+  .kanban-wrapper {
+    padding: 8px 10px;
+  }
+
+  .kanban-layout {
+    grid-template-columns: minmax(0, 1fr) 180px;
+  }
+
+  .kanban-layout:has(.kanban-mini-backlog) {
+    grid-template-columns: 140px minmax(0, 1fr) 180px;
+  }
+
+  .kanban-col-subtitle {
+    display: none;
+  }
+}
+
+/* ─── Mobile: < 640px ─── */
+@media (max-width: 640px) {
+  .kanban-wrapper {
+    padding: 6px 8px;
+  }
+
+  .kanban-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 8px;
+  }
+
+  .kanban-layout:has(.kanban-mini-backlog) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+  }
+
+  .kanban-mini-backlog {
+    flex-direction: row;
+    max-height: 120px;
+  }
+
+  .mini-backlog-box {
+    flex: 1;
+  }
+
+  .mini-backlog-ratio {
+    display: none;
+  }
+
+  .kanban-done-shared {
+    max-height: 200px;
+  }
+
+  .kanban-row-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .kanban-col-label {
+    font-size: 0.65rem;
+  }
 }

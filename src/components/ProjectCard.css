@@ -185,7 +185,7 @@
 /* --- Grid for SkillTree --- */
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 12px;
 }
 
@@ -205,6 +205,38 @@
   font-weight: 700;
   color: #25313a;
   margin: 0;
+}
+
+.project-done-hint {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: #999;
+}
+
+.project-done-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 4px;
+  margin-top: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #999;
+  transition: color 0.15s;
+}
+
+.project-done-toggle:hover {
+  color: #666;
+}
+
+.project-grid-done {
+  opacity: 0.65;
+  margin-top: 6px;
 }
 
 .project-add-btn {

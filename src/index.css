@@ -16,14 +16,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
+html, body {
   margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
   min-width: 320px;
-  min-height: 100vh;
 }
 
 #root {
-  min-height: 100vh;
+  height: 100%;
 }
 
 button {
@@ -57,3 +61,9 @@ button {
   scrollbar-width: auto;
   scrollbar-color: #9a9a8e rgba(0, 0, 0, 0.06);
 }
+
+/* ─── Breakpoints (Referenz) ───
+ * Mobile:  max-width: 640px
+ * Tablet:  max-width: 1024px
+ * Desktop: ab 1024px (kein Media Query noetig)
+ */

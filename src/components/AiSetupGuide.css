@@ -1,7 +1,8 @@
 .ai-setup-wrapper {
   padding: 20px 24px;
-  height: calc(100vh - 60px);
+  height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .ai-setup-content {

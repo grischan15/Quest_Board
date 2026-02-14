@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getLevelLabel, getXpForNextLevel, LEVEL_THRESHOLDS } from '../data/questTypes';
+import { getProjectStatus } from '../data/projectHelpers';
 import RpgDashboard from './RpgDashboard';
 import ProjectCard from './ProjectCard';
 import './SkillTree.css';
@@ -7,6 +8,7 @@ import './SkillTree.css';
 export default function SkillTree({ skills, tasks, categories, projects, onEditSkill, onAddSkill, onEditCategory, onAddCategory, onAddProject, onEditProject, onImportSkills, onToggleDashboard }) {
   const [collapsed, setCollapsed] = useState({});
   const [showHidden, setShowHidden] = useState(false);
+  const [showDoneProjects, setShowDoneProjects] = useState(false);
 
   const visibleSkills = skills.filter((s) => !s.hidden);
   const hiddenSkills = skills.filter((s) => s.hidden);
@@ -71,35 +73,62 @@ export default function SkillTree({ skills, tasks, categories, projects, onEditS
       <div className="skilltree-layout">
         {/* Skill Tree - Left */}
         <div className="skilltree-main">
-          {/* Projects Section */}
-          {(projects && projects.length > 0 || onAddProject) && (
-            <div className="project-section">
-              <div className="project-section-header">
-                <h3 className="project-section-title">Projekte</h3>
-                {onAddProject && (
-                  <button className="project-add-btn" onClick={onAddProject}>
-                    + Projekt
-                  </button>
+          {/* Projects Section – gleiche Filterlogik wie Dashboard/RPG: nicht-done zuerst */}
+          {(projects && projects.length > 0 || onAddProject) && (() => {
+            const activeProjects = (projects || []).filter((p) => getProjectStatus(p, skills) !== 'done');
+            const doneProjects = (projects || []).filter((p) => getProjectStatus(p, skills) === 'done');
+            return (
+              <div className="project-section">
+                <div className="project-section-header">
+                  <h3 className="project-section-title">Projekte</h3>
+                  {onAddProject && (
+                    <button className="project-add-btn" onClick={onAddProject}>
+                      + Projekt
+                    </button>
+                  )}
+                </div>
+                {activeProjects.length > 0 ? (
+                  <div className="project-grid">
+                    {activeProjects.map((proj) => (
+                      <ProjectCard
+                        key={proj.id}
+                        project={proj}
+                        skills={skills}
+                        onClick={onEditProject ? () => onEditProject(proj) : undefined}
+                      />
+                    ))}
+                  </div>
+                ) : projects && projects.length > 0 ? null : (
+                  <div className="project-empty">
+                    Erstelle dein erstes Projekt &ndash; definiere welche Skills du brauchst, um es freizuschalten!
+                  </div>
+                )}
+                {doneProjects.length > 0 && (
+                  <>
+                    <button
+                      className="project-done-toggle"
+                      onClick={() => setShowDoneProjects((prev) => !prev)}
+                    >
+                      <span>{showDoneProjects ? '\u25BC' : '\u25B6'}</span>
+                      <span>Abgeschlossene Projekte ({doneProjects.length})</span>
+                    </button>
+                    {showDoneProjects && (
+                      <div className="project-grid project-grid-done">
+                        {doneProjects.map((proj) => (
+                          <ProjectCard
+                            key={proj.id}
+                            project={proj}
+                            skills={skills}
+                            onClick={onEditProject ? () => onEditProject(proj) : undefined}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
-              {projects && projects.length > 0 ? (
-                <div className="project-grid">
-                  {projects.map((proj) => (
-                    <ProjectCard
-                      key={proj.id}
-                      project={proj}
-                      skills={skills}
-                      onClick={onEditProject ? () => onEditProject(proj) : undefined}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="project-empty">
-                  Erstelle dein erstes Projekt &ndash; definiere welche Skills du brauchst, um es freizuschalten!
-                </div>
-              )}
-            </div>
-          )}
+            );
+          })()}
 
           {totalActive === 0 && (
             <div className="empty-state">

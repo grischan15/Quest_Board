@@ -1,7 +1,8 @@
 .dashboard-wrapper {
   padding: 20px 24px;
-  height: calc(100vh - 60px);
+  height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .dashboard-content {
@@ -43,7 +44,7 @@
 /* Project tiles grid */
 .dashboard-projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
   gap: 10px;
 }
 
@@ -75,6 +76,17 @@
   color: #888;
   line-height: 1.6;
   max-width: 400px;
+}
+
+/* ─── Mobile: < 640px ─── */
+@media (max-width: 640px) {
+  .dashboard-wrapper {
+    padding: 12px;
+  }
+
+  .dashboard-title {
+    font-size: 1.1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

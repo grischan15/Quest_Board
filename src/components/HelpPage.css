@@ -1,13 +1,13 @@
 /* ─── Layout: Sidebar + Content ─── */
 .help-layout {
   display: flex;
-  height: calc(100vh - 60px);
+  height: 100%;
 }
 
 .help-sidebar {
   width: 220px;
   min-width: 220px;
-  height: calc(100vh - 60px);
+  height: 100%;
   overflow-y: auto;
   border-right: 1px solid #f0f0ee;
   padding: 16px 12px;
@@ -17,8 +17,9 @@
 .help-wrapper {
   flex: 1;
   padding: 20px 24px;
-  height: calc(100vh - 60px);
+  height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
@@ -372,7 +373,7 @@
 /* Concept cards */
 .help-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-top: 10px;
 }
@@ -642,7 +643,7 @@
 /* Kanban flow cards */
 .help-flow-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin: 12px 0;
 }
@@ -686,7 +687,7 @@
 /* Context cards (universal use cases) */
 .help-context-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin: 12px 0;
 }
@@ -744,7 +745,7 @@
 
 .covey-pillars {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin: 14px 0;
 }
@@ -793,7 +794,7 @@
 
 .covey-quadrants {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
 
@@ -962,7 +963,7 @@
 /* Neurodivergence grid */
 .help-neuro-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-top: 12px;
 }
@@ -1030,6 +1031,48 @@
   padding: 24px 0 8px;
   border-top: 1px solid #f0f0ee;
   margin-top: 16px;
+}
+
+/* ─── Tablet: < 1024px ─── */
+@media (max-width: 1024px) {
+  .help-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .covey-pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .help-context-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ─── Mobile: < 640px ─── */
+@media (max-width: 640px) {
+  .help-wrapper {
+    padding: 12px;
+  }
+
+  .help-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .help-flow-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .help-context-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .help-neuro-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .covey-quadrants {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ─── Reduced motion ─── */

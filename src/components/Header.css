@@ -112,6 +112,24 @@
   font-weight: 500;
 }
 
+.settings-btn {
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #d5d4c7;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  line-height: 1;
+  margin-left: 4px;
+}
+
+.settings-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
 .new-quest-btn {
   padding: 8px 18px;
   background: #c60a0f;
@@ -129,4 +147,60 @@
 .new-quest-btn:hover {
   background: #a80810;
   transform: scale(1.03);
+}
+
+/* ─── Tablet: < 1024px ─── */
+@media (max-width: 1024px) {
+  .header {
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .header-subtitle {
+    display: none;
+  }
+
+  .tab-btn {
+    padding: 8px 10px;
+  }
+}
+
+/* ─── Mobile: < 640px ─── */
+@media (max-width: 640px) {
+  .header {
+    padding: 0 8px;
+    gap: 4px;
+    height: 50px;
+  }
+
+  .header-p3-logo {
+    display: none;
+  }
+
+  .header-logo {
+    font-size: 1rem;
+  }
+
+  .tab-label {
+    display: none;
+  }
+
+  .tab-btn {
+    padding: 6px 10px;
+    gap: 0;
+  }
+
+  .tab-icon {
+    font-size: 1.1rem;
+  }
+
+  .import-btn {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+
+  .new-quest-btn {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
 }

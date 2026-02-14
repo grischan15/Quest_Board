@@ -1,7 +1,8 @@
 .skilltree-wrapper {
   padding: 20px 24px;
-  height: calc(100vh - 60px);
-  overflow: auto;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .skilltree-header {
@@ -27,7 +28,7 @@
 /* 2-column layout: Skill Tree | RPG Dashboard */
 .skilltree-layout {
   display: grid;
-  grid-template-columns: 1fr 420px;
+  grid-template-columns: minmax(0, 1fr) 420px;
   gap: 20px;
   align-items: start;
 }
@@ -398,10 +399,24 @@
   text-decoration: line-through;
 }
 
-/* Responsive: under 900px -> single column (Dashboard on top, Skills below) */
-@media (max-width: 900px) {
+/* ─── Tablet: < 1024px – einspaltig ─── */
+@media (max-width: 1024px) {
   .skilltree-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Mobile: < 640px ─── */
+@media (max-width: 640px) {
+  .skilltree-wrapper {
+    padding: 12px;
+  }
+
+  .skilltree-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
   }
 }
 

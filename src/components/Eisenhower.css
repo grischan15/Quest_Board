@@ -1,7 +1,8 @@
 .eisenhower-wrapper {
   padding: 16px 24px;
-  height: calc(100vh - 60px);
-  overflow: auto;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .eisenhower-layout {
@@ -57,7 +58,7 @@
 
 .eisenhower-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: 1fr 1fr;
   gap: 12px;
   flex: 1;
@@ -72,6 +73,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
 }
 
 .quadrant-header {
@@ -202,4 +204,21 @@
 
 .empty-state-btn:hover {
   background: #a80810;
+}
+
+/* ─── Mobile: < 640px ─── */
+@media (max-width: 640px) {
+  .eisenhower-wrapper {
+    padding: 10px 12px;
+  }
+
+  .eisenhower-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    min-height: 0;
+  }
+
+  .energy-filter-bar {
+    flex-wrap: wrap;
+  }
 }
