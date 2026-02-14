@@ -1,7 +1,7 @@
 # STATE: NeuroForge
 ## Wo stehen wir?
 
-**Zuletzt aktualisiert:** 13. Februar 2026
+**Zuletzt aktualisiert:** 14. Februar 2026
 **Aktualisiert von:** Claude Code CLI
 
 ---
@@ -9,7 +9,7 @@
 ## AKTUELLER STATUS
 
 ```
-████████████████████ Phase: v3.5 Block D – KI Setup Guide (komplett)
+████████████████████ Phase: v4.0 Beautification (komplett) → Naechster Schritt: Schmiede-Tab
 ```
 
 **Was ist fertig:**
@@ -164,7 +164,14 @@
 - [x] **Prompt-Template ueberarbeitet** – Vollstaendige Feld-Tabellen fuer alle 4 Entitaeten, dueDate-Strategie, Eisenhower-Erklaerungen, Quest-Typ/Dauer/XP-Tabellen, Qualitaetskriterien, komplettes Mini-Beispiel (Git)
 - [x] **Hilfe-Seite** – Neue Sektion "KI Setup: Lernpfad generieren" erklaert 3-Schritte-Workflow, zeigt was generiert wird, listet die 3 Beispiel-Vorlagen
 
-**Naechster Schritt:** Siehe [ROADMAP.md](ROADMAP.md)
+**v4.0 Beautification (14.02.2026):**
+- [x] **S-001: Vertikale Scrollbar** – html/body overflow:hidden, App-Main als einziger Scroll-Container (height:100vh + overflow-y:auto)
+- [x] **S-002: Horizontale Scrollbars** – Alle CSS Grids von `1fr` auf `minmax(0, 1fr)` umgestellt (Kanban, Eisenhower, SkillTree, HelpPage), overflow-x:hidden auf Wrappern, Projekt-Grid mit `minmax(min(280px, 100%), 1fr)`
+- [x] **S-003: Zentrales Breakpoint-System** – Einheitlich Mobile <640px, Tablet <1024px, Desktop >=1024px. Responsive Regeln in Header, Eisenhower, Kanban, SkillTree, HelpPage, PersonalDashboard, AiSetupGuide
+- [x] **S-004: Settings-Button** – Zahnrad-Icon an letzte Position im Header verschoben, eigene `.settings-btn` CSS-Klasse
+- [x] **S-005: Projekt-Anzeige konsistent** – SkillTree zeigt aktive Projekte direkt, abgeschlossene hinter klappbarem Toggle (default: eingeklappt, 65% Opazitaet). Nutzt `getProjectStatus()` konsistent
+
+**Naechster Schritt:** Siehe [ROADMAP.md](ROADMAP.md) – "Schmiede"-Tab (Import/Export Konsolidierung)
 
 ---
 

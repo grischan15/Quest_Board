@@ -1,7 +1,7 @@
 # ROADMAP: NeuroForge
 ## Wohin geht die Reise?
 
-**Zuletzt aktualisiert:** 13. Februar 2026
+**Zuletzt aktualisiert:** 14. Februar 2026
 
 ---
 
@@ -290,6 +290,20 @@ Umgesetzt am 13.02.2026, kein Schema-Change:
 
 ---
 
+## ✅ ERLEDIGT (v4.0 – Beautification)
+
+Umgesetzt am 14.02.2026, kein Schema-Change:
+
+- [x] **S-001: Vertikale Scrollbar entfernt** – html/body overflow:hidden, `.app` height:100vh overflow:hidden, `.app-main` als einziger Scroll-Container (overflow-y:auto, overflow-x:hidden, min-height:0)
+- [x] **S-002: Horizontale Scrollbars gefixt** – Alle CSS Grid-Spalten von `1fr` auf `minmax(0, 1fr)` (verhindert implizites min-width:auto). Betrifft: Kanban (Layout + Row-Columns + Mini-Backlog), Eisenhower, SkillTree, HelpPage (6 Grids). Wrapper mit overflow-x:hidden. Projekt-Grid: `minmax(min(280px, 100%), 1fr)`
+- [x] **S-003: Zentrales Breakpoint-System** – Mobile <640px, Tablet <1024px, Desktop >=1024px. Responsive Rules fuer: Header (Tabs icon-only, P3-Logo hidden, kompaktere Buttons), Eisenhower (1 Spalte), Kanban (3→2→1 Spalten), SkillTree (900px→1024px), HelpPage, PersonalDashboard, AiSetupGuide
+- [x] **S-004: Settings-Button repositioniert** – Zahnrad von erster auf letzte Position im Header, eigene `.settings-btn` CSS-Klasse (subtil, dezent)
+- [x] **S-005: Projekt-Anzeige konsistent** – SkillTree: aktive Projekte im Grid, abgeschlossene hinter klappbarem Toggle (default eingeklappt, 65% Opazitaet). `getProjectStatus()` konsistent verwendet
+
+**Dateien:** GEAENDERT: `index.css`, `App.css`, `Header.jsx/.css`, `Eisenhower.css`, `Kanban.css`, `SkillTree.jsx/.css`, `ProjectCard.css`, `PersonalDashboard.css`, `HelpPage.css`, `AiSetupGuide.css`
+
+---
+
 ## MITTELFRISTIG (v3.5+ – Projekte & Vorlagen)
 
 ### Block C: Projekte & KI
@@ -301,8 +315,45 @@ Umgesetzt am 13.02.2026, kein Schema-Change:
 - [ ] **Template-Auswahl** – Bei erstem Start oder ueber Settings waehlbar
 - [ ] **Community Templates** – Spaeter: Templates teilen/importieren
 
-### Block E: Import/Export Konsolidierung
-- [ ] **Import/Export Moeglichkeiten pruefen** – Aktuelle Import/Export-Logik auf Konsistenz und Vollstaendigkeit pruefen (Tasks, Skills, Categories, Projects, Settings). Redundanzen identifizieren, ggf. einheitliches Format, Validierung und Fehlerbehandlung konsolidieren.
+### Block E: "Schmiede"-Tab (Import/Export Konsolidierung) ← NAECHSTER SCHRITT
+
+Ersetzt den bisherigen "KI Setup"-Tab und konsolidiert alle verstreuten Import/Export-Funktionen in einem einzigen Tab.
+
+**Konzept: 4 Sektionen im Schmiede-Tab:**
+
+1. **Manueller Wizard: "Lerngebiet starten"**
+   - 1 Kategorie + Skills anlegen (mit vollem XP/Level-Input)
+   - Ersetzt: "+ Neue Kategorie" und "Skills importieren" aus dem SkillTree
+   - Projekte werden NICHT hier erstellt (die spannen ueber mehrere Kategorien)
+
+2. **KI-Flow: "KI-Lernpfad generieren"**
+   - Bisheriger KI Setup Guide (Prompt kopieren → KI fragen → JSON importieren)
+   - NEU: "Bestands-Export" Button – exportiert aktuelle Categories/Skills als Kontext fuer die KI
+   - Kann Projekte erstellen (diese spannen ueber mehrere Kategorien/Skills)
+   - Ersetzt: AiSetupGuide-Komponente (wird integriert)
+
+3. **Quest-Import**
+   - Schnell-Eingabe + CSV/JSON Upload fuer Tasks
+   - Ersetzt: ImportModal (Quest-Tab)
+
+4. **Backup & Restore**
+   - Export (JSON-Download aller Daten)
+   - Restore (Backup einspielen, Merge-Logik)
+   - Ersetzt: ExportModal + ImportModal (Restore-Tab)
+
+**Was entfernt wird:**
+- ImportModal (wird in Schmiede integriert)
+- ExportModal (wird in Schmiede integriert)
+- SkillImportModal (wird in Wizard integriert)
+- Header: Export + Import Buttons
+- SkillTree: "+ Neue Kategorie" + "Skills importieren" Buttons
+
+**Was bleibt:**
+- SkillTree: "+ Skill" Button (mit XP/Level-Fix im Create-Mode)
+- SkillTree: "+ Projekt" Button
+
+**Bug-Fix enthalten:**
+- SkillModal Create-Mode: XP/Level-Input fehlt (nur "Open" oder "Bereits gelernt" moeglich)
 
 ### Sonstiges
 - [ ] Browser-Testing & Feinschliff
@@ -363,6 +414,9 @@ Umgesetzt am 13.02.2026, kein Schema-Change:
 | **13.02.2026** | **v3.5 Block C shipped** | **Projekte als Unlock-Ziele: ProjectModal mit Requirements-Picker, ProjectCard (Full + Compact), Integration in SkillTree + Dashboard + SkillCheckModal + SkillModal + RpgDashboard. Schema v14 (projects Array). 4 Demo-Projekte.** |
 | **13.02.2026** | **v3.5 Block D shipped** | **KI Setup Guide: Neuer Tab mit Prompt-Template (Markdown), 3 Beispiel-Vorlagen (Webdev, KI, Physik), JSON-Import mit SKILL_INDEX-Aufloesung. User kann jeden Lernpfad per KI generieren lassen.** |
 | **13.02.2026** | **Prompt-Template ueberarbeitet** | **Kritischer Review: dueDate fehlte, Kontext zu klein fuer zuverlaessige KI-Generierung. Komplett neu geschrieben mit vollstaendigen Feld-Tabellen, Verteilungsempfehlungen, Mini-Beispiel. Hilfe-Seite um KI-Setup-Sektion erweitert.** |
+| **14.02.2026** | **v4.0 Beautification shipped** | **5 Schoenheitsfehler gefixt: Scrollbars (vertikal+horizontal), zentrales Breakpoint-System (Mobile/Tablet/Desktop), Settings-Button Repositionierung, konsistente Projekt-Anzeige mit Done-Toggle.** |
+| **14.02.2026** | **minmax(0,1fr) Pattern** | **`1fr` hat implizites `min-width:auto` – Kinder koennen Grid-Spalten ueber deren Breite hinaus ausdehnen. Fix: `minmax(0,1fr)` erlaubt Schrumpfen auf 0. Alle Grids umgestellt.** |
+| **14.02.2026** | **Schmiede-Tab Konzept** | **Import/Export/KI-Setup in 5 verschiedenen Stellen verstreut → konsolidiert in einem einzigen "Schmiede"-Tab mit 4 Sektionen: Manueller Wizard (1 Kategorie + Skills), KI-Flow (mit Bestands-Export), Quest-Import, Backup & Restore. Ersetzt KI-Setup-Tab + ImportModal + ExportModal + SkillImportModal.** |
 
 ---
 
