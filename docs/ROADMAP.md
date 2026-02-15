@@ -30,6 +30,11 @@ v5.0 ist komplett (alle Bloecke erledigt). Naechste groessere Features siehe Mit
 - [ ] **Template-Auswahl** – Bei erstem Start oder ueber Settings waehlbar
 - [ ] **Community Templates** – Templates teilen/importieren
 
+### Import-Undo
+- [ ] **Snapshot vor AI-Import** – Vor jedem Lernpfad-Import automatisch State-Snapshot speichern
+- [ ] **Rueckgaengig-Button** – Nach Import anzeigen, stellt vorherigen Zustand wieder her
+- [ ] **Timeout** – Button verschwindet nach ~5 Minuten
+
 ### Browser-Testing & Feinschliff
 - [ ] Systematischer Cross-Browser-Test
 
