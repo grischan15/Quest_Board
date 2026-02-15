@@ -285,37 +285,105 @@ export default function App() {
 
   // --- AI Setup import handler ---
   const handleAiImportJson = useCallback(
-    (data) => {
+    (data, options = {}) => {
+      const mergeSkills = options.mergeSkills || false;
+      const stats = { categoriesNew: 0, categoriesSkipped: 0, skillsNew: 0, skillsMerged: 0, quests: 0, projects: 0 };
+
       // Import categories
       if (data.categories && data.categories.length > 0) {
-        const newCats = data.categories.map((c, i) => ({
-          id: c.id || `ai-cat-${Date.now()}-${i}`,
-          label: c.label,
-          icon: c.icon || '\uD83D\uDCCC',
-          predefined: false,
-          order: (board.categories.length) + i,
-          showInDashboard: c.showInDashboard !== false && i < 6,
-        }));
-        board.updateCategories((prev) => [...prev, ...newCats]);
+        if (mergeSkills) {
+          // Merge mode: skip existing categories (by ID)
+          const newCats = [];
+          for (let i = 0; i < data.categories.length; i++) {
+            const c = data.categories[i];
+            const catId = c.id || `ai-cat-${Date.now()}-${i}`;
+            const exists = board.categories.some((ec) => ec.id === catId);
+            if (exists) {
+              stats.categoriesSkipped++;
+            } else {
+              newCats.push({
+                id: catId,
+                label: c.label,
+                icon: c.icon || '\uD83D\uDCCC',
+                predefined: false,
+                order: board.categories.length + newCats.length,
+                showInDashboard: c.showInDashboard !== false && (board.categories.filter((ec) => ec.showInDashboard).length + newCats.length) < 6,
+              });
+              stats.categoriesNew++;
+            }
+          }
+          if (newCats.length > 0) {
+            board.updateCategories((prev) => [...prev, ...newCats]);
+          }
+        } else {
+          // Original mode: add all categories
+          const newCats = data.categories.map((c, i) => ({
+            id: c.id || `ai-cat-${Date.now()}-${i}`,
+            label: c.label,
+            icon: c.icon || '\uD83D\uDCCC',
+            predefined: false,
+            order: (board.categories.length) + i,
+            showInDashboard: c.showInDashboard !== false && i < 6,
+          }));
+          board.updateCategories((prev) => [...prev, ...newCats]);
+          stats.categoriesNew = newCats.length;
+        }
       }
 
       // Import skills – resolve category IDs and build index map
       const skillIdMap = new Map();
       if (data.skills && data.skills.length > 0) {
-        const importedSkills = board.importSkills(
-          data.skills.map((s) => ({
-            name: s.name,
-            category: s.category,
-            categoryLabel: s.categoryLabel,
-            status: s.status || 'open',
-            level: s.level || 0,
-            xpCurrent: s.xpCurrent || 0,
-          }))
-        );
-        // Build map: __idx_skill_N -> real skill ID
-        importedSkills.forEach((skill, i) => {
-          skillIdMap.set(`__idx_skill_${i}`, skill.id);
-        });
+        if (mergeSkills) {
+          // Merge mode: match existing skills by name (case-insensitive, trimmed)
+          const skillsToCreate = [];
+          data.skills.forEach((s, i) => {
+            const existing = board.skills.find(
+              (es) => es.name.trim().toLowerCase() === s.name.trim().toLowerCase()
+            );
+            if (existing) {
+              // Reuse existing skill – keep their level, XP, category
+              skillIdMap.set(`__idx_skill_${i}`, existing.id);
+              stats.skillsMerged++;
+            } else {
+              // Will create new – collect for batch import
+              skillsToCreate.push({ index: i, skill: s });
+            }
+          });
+
+          // Batch-create new skills
+          if (skillsToCreate.length > 0) {
+            const importedNew = board.importSkills(
+              skillsToCreate.map(({ skill: s }) => ({
+                name: s.name,
+                category: s.category,
+                categoryLabel: s.categoryLabel,
+                status: s.status || 'open',
+                level: s.level || 0,
+                xpCurrent: s.xpCurrent || 0,
+              }))
+            );
+            skillsToCreate.forEach(({ index }, j) => {
+              skillIdMap.set(`__idx_skill_${index}`, importedNew[j].id);
+            });
+            stats.skillsNew = skillsToCreate.length;
+          }
+        } else {
+          // Original mode: create all skills
+          const importedSkills = board.importSkills(
+            data.skills.map((s) => ({
+              name: s.name,
+              category: s.category,
+              categoryLabel: s.categoryLabel,
+              status: s.status || 'open',
+              level: s.level || 0,
+              xpCurrent: s.xpCurrent || 0,
+            }))
+          );
+          importedSkills.forEach((skill, i) => {
+            skillIdMap.set(`__idx_skill_${i}`, skill.id);
+          });
+          stats.skillsNew = importedSkills.length;
+        }
       }
 
       // Import projects – resolve skill references
@@ -328,6 +396,7 @@ export default function App() {
             }))
             .filter((r) => r.skillId && !r.skillId.startsWith('__idx_'));
           board.createProject(proj.name, proj.description, proj.icon, requirements);
+          stats.projects++;
         }
       }
 
@@ -348,6 +417,7 @@ export default function App() {
           dependsOn: t.dependsOn || [],
         }));
         const importedTasks = board.importTasks(taskList);
+        stats.quests = importedTasks.length;
 
         // Build map: __idx_task_N -> real task ID
         importedTasks.forEach((task, i) => {
@@ -364,6 +434,8 @@ export default function App() {
           }
         }
       }
+
+      return stats;
     },
     [board]
   );

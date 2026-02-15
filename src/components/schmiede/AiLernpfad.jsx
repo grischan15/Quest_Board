@@ -12,6 +12,8 @@ export default function AiLernpfad({ categories, skills, projects, isDemo, onImp
   const [importError, setImportError] = useState('');
   const [importPreview, setImportPreview] = useState(null);
   const [importSuccess, setImportSuccess] = useState(null);
+  const [mergeSkills, setMergeSkills] = useState(true);
+  const [importStats, setImportStats] = useState(null);
   const fileInputRef = useRef(null);
 
   function handleCopyPrompt() {
@@ -143,6 +145,7 @@ export default function AiLernpfad({ categories, skills, projects, isDemo, onImp
     setImportError('');
     setImportPreview(null);
     setImportSuccess(null);
+    setImportStats(null);
 
     if (!text.trim()) return;
 
@@ -152,6 +155,36 @@ export default function AiLernpfad({ categories, skills, projects, isDemo, onImp
     } else {
       setImportPreview(result.data);
     }
+  }
+
+  function computeMergePreview(previewData) {
+    if (!previewData) return null;
+    let skillsMerged = 0;
+    let skillsNew = 0;
+    let categoriesSkipped = 0;
+    let categoriesNew = 0;
+
+    for (const cat of (previewData.categories || [])) {
+      const catId = cat.id;
+      if (categories.some((ec) => ec.id === catId)) {
+        categoriesSkipped++;
+      } else {
+        categoriesNew++;
+      }
+    }
+
+    for (const s of (previewData.skills || [])) {
+      const existing = skills.find(
+        (es) => es.name.trim().toLowerCase() === s.name.trim().toLowerCase()
+      );
+      if (existing) {
+        skillsMerged++;
+      } else {
+        skillsNew++;
+      }
+    }
+
+    return { skillsMerged, skillsNew, categoriesSkipped, categoriesNew };
   }
 
   function handleFileUpload(e) {
@@ -170,9 +203,10 @@ export default function AiLernpfad({ categories, skills, projects, isDemo, onImp
 
   function handleImport() {
     if (!importPreview || !onImportJson) return;
-    onImportJson(importPreview);
+    const stats = onImportJson(importPreview, { mergeSkills });
     const name = importPreview.meta?.name || 'Lernpfad';
     setImportSuccess(name);
+    setImportStats(stats || null);
     setImportText('');
     setImportPreview(null);
     setImportError('');
@@ -342,29 +376,64 @@ export default function AiLernpfad({ categories, skills, projects, isDemo, onImp
             </div>
           )}
 
-          {importPreview && (
-            <div className="ai-lernpfad-import-preview">
-              <div className="ai-lernpfad-import-preview-title">
-                {'\u2705'} Vorschau: {importPreview.meta?.name || 'Lernpfad'}
+          {importPreview && (() => {
+            const mergePreview = mergeSkills ? computeMergePreview(importPreview) : null;
+            return (
+              <div className="ai-lernpfad-import-preview">
+                <div className="ai-lernpfad-import-preview-title">
+                  {'\u2705'} Vorschau: {importPreview.meta?.name || 'Lernpfad'}
+                </div>
+                <div className="ai-lernpfad-import-preview-stats">
+                  <span>{importPreview.categories.length} Kategorien</span>
+                  <span>{importPreview.skills.length} Skills</span>
+                  <span>{(importPreview.projects || []).length} Projekte</span>
+                  <span>{(importPreview.tasks || []).length} Quests</span>
+                </div>
+
+                {mergePreview && (mergePreview.skillsMerged > 0 || mergePreview.categoriesSkipped > 0) && (
+                  <div className="ai-lernpfad-merge-preview">
+                    {mergePreview.skillsMerged > 0 && (
+                      <span>{mergePreview.skillsMerged} Skills werden mit bestehenden verknuepft</span>
+                    )}
+                    {mergePreview.skillsNew > 0 && (
+                      <span>{mergePreview.skillsNew} Skills werden neu angelegt</span>
+                    )}
+                    {mergePreview.categoriesSkipped > 0 && (
+                      <span>{mergePreview.categoriesSkipped} Kategorien bereits vorhanden</span>
+                    )}
+                  </div>
+                )}
+
+                <label className="ai-lernpfad-merge-toggle">
+                  <input
+                    type="checkbox"
+                    checked={mergeSkills}
+                    onChange={(e) => setMergeSkills(e.target.checked)}
+                  />
+                  <span>Bestehende Skills wiederverwenden</span>
+                </label>
+
+                <button
+                  className="schmiede-btn schmiede-btn-primary schmiede-btn-sm"
+                  onClick={handleImport}
+                >
+                  {'\uD83D\uDE80'} Jetzt importieren
+                </button>
               </div>
-              <div className="ai-lernpfad-import-preview-stats">
-                <span>{importPreview.categories.length} Kategorien</span>
-                <span>{importPreview.skills.length} Skills</span>
-                <span>{(importPreview.projects || []).length} Projekte</span>
-                <span>{(importPreview.tasks || []).length} Quests</span>
-              </div>
-              <button
-                className="schmiede-btn schmiede-btn-primary schmiede-btn-sm"
-                onClick={handleImport}
-              >
-                {'\uD83D\uDE80'} Jetzt importieren
-              </button>
-            </div>
-          )}
+            );
+          })()}
 
           {importSuccess && (
             <div className="schmiede-success">
               {'\u2705'} "{importSuccess}" erfolgreich importiert!
+              {importStats && (
+                <div className="ai-lernpfad-import-stats">
+                  <span>Kategorien: {importStats.categoriesNew} neu{importStats.categoriesSkipped > 0 && `, ${importStats.categoriesSkipped} uebersprungen`}</span>
+                  <span>Skills: {importStats.skillsNew} neu{importStats.skillsMerged > 0 && `, ${importStats.skillsMerged} gemerged`}</span>
+                  <span>Quests: {importStats.quests} importiert</span>
+                  <span>Projekte: {importStats.projects} importiert</span>
+                </div>
+              )}
             </div>
           )}
         </div>

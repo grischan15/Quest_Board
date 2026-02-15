@@ -295,6 +295,46 @@
   flex-wrap: wrap;
 }
 
+/* Merge toggle */
+.ai-lernpfad-merge-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #444;
+  cursor: pointer;
+}
+
+.ai-lernpfad-merge-toggle input[type="checkbox"] {
+  accent-color: #c60a0f;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Merge preview info */
+.ai-lernpfad-merge-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.78rem;
+  color: #2d8a4e;
+  padding: 8px 10px;
+  background: rgba(45, 138, 78, 0.06);
+  border-radius: 6px;
+}
+
+/* Import stats after success */
+.ai-lernpfad-import-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.78rem;
+  margin-top: 6px;
+  color: #444;
+  font-weight: 400;
+}
+
 /* Tips */
 .ai-lernpfad-tips {
   display: flex;
