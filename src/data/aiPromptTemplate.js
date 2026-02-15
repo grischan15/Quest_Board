@@ -120,7 +120,7 @@ Diese Referenzen werden beim Import automatisch durch echte IDs ersetzt.
 
 ## 3. Projects (Unlock-Ziele / Meilensteine)
 
-Projekte sind **reale, vorzeigbare Ergebnisse**. Der Fortschritt wird automatisch aus den Skill-Leveln berechnet. Generiere **2-4 Projekte** mit steigender Schwierigkeit.
+Projekte sind **reale, vorzeigbare Ergebnisse**. Der Fortschritt wird automatisch aus den Skill-Leveln berechnet. Generiere **genau 1 Projekt** – einen klaren, erreichbaren ersten Meilenstein. Weniger ist mehr: Ein einzelnes Ziel motiviert, mehrere gleichzeitig ueberfordern (besonders bei Neurodivergenz). Der User kann spaeter weitere Projekte anlegen.
 
 \`\`\`json
 {
@@ -146,16 +146,12 @@ Projekte sind **reale, vorzeigbare Ergebnisse**. Der Fortschritt wird automatisc
 | \`requirements[].requiredLevel\` | number | Ja | Benoetiges Level: \`1\` bis \`5\`. Siehe Level-Tabelle oben |
 | \`status\` | string | Ja | Immer \`"active"\` |
 
-### Projekt-Progression (WICHTIG)
+### Projekt-Guidelines
 
-Projekte muessen eine **sinnvolle Schwierigkeitskurve** haben:
-
-| Projekt-Nr | Schwierigkeit | Typische Requirements | Beispiel |
-|-----------|---------------|----------------------|---------|
-| 1 (Einstieg) | Leicht | 2-3 Skills auf Level 1-2 | "Erste Uebungsaufgabe loesen" |
-| 2 (Aufbau) | Mittel | 3-4 Skills auf Level 2-3 | "Mini-Projekt bauen" |
-| 3 (Fortgeschritten) | Schwer | 4-5 Skills auf Level 3-4 | "Echtes Projekt deployen" |
-| 4 (Meisterwerk) | Experte | 4-6 Skills auf Level 4-5 | "Portfolio-Stueck praesentieren" |
+Das eine Projekt sollte ein **realistischer Einstiegs-Meilenstein** sein:
+- Schwierigkeit: **Leicht bis Mittel** (2-4 Skills auf Level 2-3)
+- Erreichbar mit den generierten Starter-Quests
+- Ein konkretes, vorzeigbares Ergebnis
 
 **Projekte sind echte Meilensteine:**
 - NICHT "Kapitel 3 gelesen" (das ist eine Quest)
@@ -260,13 +256,13 @@ Das Faelligkeitsdatum steuert die **Reihenfolge** und Dringlichkeit:
 
 1. **Praxisbezug**: Jede Quest muss ein konkretes Ergebnis liefern ("Tutorial durchgearbeitet", "Layout gebaut", "Funktion implementiert")
 2. **Progression**: Vom Einfachen zum Komplexen – beginne mit \`input\`+\`routine\` Quests, dann \`focus\`+\`create\`
-3. **Motivation**: Projekte sind echte Meilensteine (vorzeigbare Ergebnisse, nicht nur "Kapitel gelesen")
+3. **Motivation**: Das Projekt ist ein echter Meilenstein (vorzeigbares Ergebnis, nicht nur "Kapitel gelesen")
 4. **Ausgewogenheit**: Quest-Typen und Energielevel mischen (nicht nur \`focus\`!)
 5. **Messbarkeit**: Skill-Namen mit Aktionsverb – man muss erkennen koennen ob der Skill "erfuellt" ist
 6. **15-45 Min Regel**: Jede Quest muss in einer einzigen Session machbar sein
 7. **linkedSkills stimmen**: Jede Quest trainiert genau die Skills die inhaltlich passen (1-3 Stueck)
 8. **Skill-Referenzen korrekt**: Alle \`SKILL_INDEX_N\` muessen gueltige Indizes im skills-Array sein
-9. **Projekt-Requirements realistisch**: Wenn ein Projekt Level 3 fuer einen Skill braucht, muessen genug Quests existieren die diesen Skill trainieren
+9. **Projekt-Requirements realistisch**: Das Projekt muss mit den generierten Starter-Quests erreichbar sein
 
 ---
 
@@ -362,7 +358,7 @@ Hier ein vereinfachtes Beispiel fuer "Git lernen" mit 1 Kategorie, 3 Skills, 1 P
 Der User beschreibt jetzt sein Lernziel. Generiere daraus:
 1. Passende **Kategorien** (3-6)
 2. **Skills** pro Kategorie (5-12 pro Kat, insgesamt 20-50)
-3. **Projekte** als Meilensteine (2-4, mit steigender Schwierigkeit)
+3. **1 Projekt** als erster Meilenstein (erreichbar mit den Starter-Quests)
 4. **Starter-Quests** (10-20 zum Loslegen, mit sinnvoller dueDate-Reihenfolge fuer die ersten)
 
 **Antworte NUR mit dem JSON-Objekt.** Kein erklaender Text davor oder danach.
@@ -371,7 +367,7 @@ Stelle sicher dass:
 - Alle \`SKILL_INDEX_N\` Referenzen gueltige Array-Indizes sind
 - Alle \`category\` Werte existierenden Category-IDs entsprechen
 - Quest-Typen, Durations und XP-Werte nur die erlaubten Werte verwenden
-- Projekte eine steigende Schwierigkeitskurve haben
+- Genau 1 Projekt generiert wird (nicht mehr)
 - Die Quest-Reihenfolge durch \`dueDate\` und \`quadrant\` gesteuert wird
 `;
 
@@ -381,7 +377,7 @@ export const EXAMPLE_TEMPLATES = [
     name: 'Webentwicklung Einstieg',
     description: 'HTML, CSS, JavaScript, React \u2013 vom ersten Tag bis zur eigenen Web-App',
     icon: '\uD83C\uDF10',
-    stats: { categories: 4, skills: 28, projects: 3, tasks: 15 },
+    stats: { categories: 4, skills: 28, projects: 1, tasks: 15 },
     prompt: 'Ich moechte Webentwicklung lernen. Von den Grundlagen (HTML, CSS, JavaScript) bis hin zu einer eigenen React-App. Ich bin kompletter Anfaenger, habe aber Motivation. Mein Ziel: In 3-6 Monaten eine eigene Web-App deployen. Setze die dueDate-Felder so, dass die Einstiegs-Quests in den naechsten 2 Wochen faellig sind und die fortgeschrittenen Quests spaeter.',
   },
   {
@@ -389,7 +385,7 @@ export const EXAMPLE_TEMPLATES = [
     name: 'KI & Prompting Basics',
     description: 'Prompt Engineering, APIs, Agents, Automation \u2013 KI produktiv nutzen',
     icon: '\uD83E\uDD16',
-    stats: { categories: 4, skills: 22, projects: 3, tasks: 15 },
+    stats: { categories: 4, skills: 22, projects: 1, tasks: 15 },
     prompt: 'Ich moechte lernen, KI-Tools produktiv zu nutzen. Von Prompt Engineering ueber API-Nutzung (OpenAI, Anthropic) bis hin zu eigenen Automationen mit n8n. Ziel: Eigene KI-gestuetzte Workflows bauen und einen KI-Chatbot deployen. Setze die dueDate-Felder so, dass Grundlagen-Quests zuerst kommen.',
   },
   {
@@ -397,7 +393,7 @@ export const EXAMPLE_TEMPLATES = [
     name: 'Physik Klasse 10',
     description: 'Mechanik, Energie, Elektrizitaet, Optik \u2013 Schulstoff gamifiziert',
     icon: '\u269B\uFE0F',
-    stats: { categories: 5, skills: 30, projects: 3, tasks: 18 },
+    stats: { categories: 5, skills: 30, projects: 1, tasks: 18 },
     prompt: 'Erstelle einen Lernpfad fuer Physik Klasse 10 (Gymnasium, Deutschland). Themen: Mechanik (Kraefte, Bewegung), Energie (Arbeit, Leistung), Elektrizitaet (Stromkreise, Widerstand), Optik (Linsen, Brechung), Waermelehre. Ziel: Gute Note in der Klausur + echtes Verstaendnis. Setze dueDate auf die Quests die zuerst erledigt werden sollen (Grundlagen vor Vertiefung).',
   },
 ];
