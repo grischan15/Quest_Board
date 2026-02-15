@@ -6,7 +6,7 @@ import { getLevel } from '../data/questTypes';
 import { generateDemoData, generateDemoProjects } from '../data/demoData';
 
 const STORAGE_KEY = 'questboard';
-const SCHEMA_VERSION = 14;
+const SCHEMA_VERSION = 15;
 
 export const DEFAULT_SETTINGS = {
   wipLimits: {
@@ -128,6 +128,10 @@ function migrateState(state) {
       if (task.linkedSkills === undefined) {
         task.linkedSkills = [];
       }
+      // V14 -> V15: add dependsOn
+      if (!Array.isArray(task.dependsOn)) {
+        task.dependsOn = [];
+      }
       // V12 -> V13: add fastLaneAt
       if (task.fastLaneAt === undefined) {
         if (task.fastLane && task.history) {
@@ -231,6 +235,7 @@ function validateState(state) {
       if (!t.title) errors.push(`task[${i}] hat keinen title`);
       if (!t.location) errors.push(`task[${i}] hat keine location`);
       if (!Array.isArray(t.history)) errors.push(`task[${i}] hat keine history`);
+      if (!Array.isArray(t.dependsOn)) errors.push(`task[${i}] hat kein dependsOn Array`);
     });
   }
   if (!Array.isArray(state.skills)) {
@@ -402,7 +407,7 @@ export function useQuestBoard() {
   }, [setRawState]);
 
   // Task CRUD
-  const createTask = useCallback((title, description, quadrant, dueDate, questType, duration, xp, linkedSkills) => {
+  const createTask = useCallback((title, description, quadrant, dueDate, questType, duration, xp, linkedSkills, dependsOn) => {
     const now = new Date().toISOString();
     const newTask = {
       id: uuidv4(),
@@ -415,6 +420,7 @@ export function useQuestBoard() {
       fastLaneAt: null,
       skillsLearned: [],
       linkedSkills: linkedSkills || [],
+      dependsOn: dependsOn || [],
       createdAt: now,
       startedAt: null,
       completedAt: null,
@@ -443,6 +449,7 @@ export function useQuestBoard() {
       fastLaneAt: null,
       skillsLearned: [],
       linkedSkills: t.linkedSkills || [],
+      dependsOn: t.dependsOn || [],
       createdAt: now,
       startedAt: null,
       completedAt: null,

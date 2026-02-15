@@ -3,10 +3,10 @@
  * This is the markdown content that users copy into ChatGPT/Claude.
  *
  * IMPORTANT: Every field from the actual data model must be documented here.
- * Last verified against Schema v14 (useQuestBoard.js) on 13.02.2026.
+ * Last verified against Schema v15 (useQuestBoard.js) on 15.02.2026.
  */
 
-export const AI_PROMPT_TEMPLATE = `# NeuroForge – Lernpfad-Generator (Schema v14)
+export const AI_PROMPT_TEMPLATE = `# NeuroForge – Lernpfad-Generator (Schema v15)
 
 Du bist ein Experte fuer Lernpfade, Gamification und Skill-basiertes Lernen.
 Der User wird dir ein **Lernziel** oder **Themengebiet** beschreiben.
@@ -38,7 +38,7 @@ Generiere ein JSON-Objekt mit **genau** dieser Struktur. Alle Felder sind Pflich
     "name": "Name des Lernpfads",
     "description": "Kurze Beschreibung des Lernziels",
     "version": 1,
-    "generatedFor": "neuroforge-v14"
+    "generatedFor": "neuroforge-v15"
   },
   "categories": [ ... ],
   "skills": [ ... ],
@@ -161,7 +161,7 @@ Das eine Projekt sollte ein **realistischer Einstiegs-Meilenstein** sein:
 
 ## 4. Tasks/Quests (Aufgaben)
 
-Quests sind **konkrete, in einer Session machbare Aufgaben**. Generiere **10-20 Starter-Quests**.
+Quests sind **konkrete, in einer Session machbare Aufgaben**. Generiere **15-25 Starter-Quests**.
 
 \`\`\`json
 {
@@ -172,7 +172,8 @@ Quests sind **konkrete, in einer Session machbare Aufgaben**. Generiere **10-20 
   "questType": "input",
   "duration": "short",
   "xp": 50,
-  "linkedSkills": ["SKILL_INDEX_1", "SKILL_INDEX_2"]
+  "linkedSkills": ["SKILL_INDEX_1", "SKILL_INDEX_2"],
+  "dependsOn": ["TASK_INDEX_0"]
 }
 \`\`\`
 
@@ -186,6 +187,20 @@ Quests sind **konkrete, in einer Session machbare Aufgaben**. Generiere **10-20 
 | \`duration\` | string | Ja | Geschaetzte Dauer (siehe Tabelle unten) |
 | \`xp\` | number | Ja | XP-Wert: \`30\`, \`50\` oder \`80\` (siehe Tabelle unten) |
 | \`linkedSkills\` | array | Ja | Array von \`"SKILL_INDEX_N"\` – welche Skills trainiert werden. **1-3 Skills** pro Quest |
+| \`dependsOn\` | array | Optional | Array von \`"TASK_INDEX_N"\` – welche Quests vorher erledigt sein muessen. **0-2 Dependencies** pro Quest. \`[]\` oder weglassen wenn keine Abhaengigkeit |
+
+### TASK_INDEX-Referenzierung (fuer dependsOn)
+
+Analog zu \`SKILL_INDEX_N\` referenzierst du Tasks ueber ihren Index im tasks-Array:
+- \`tasks[0]\` → \`"TASK_INDEX_0"\`
+- \`tasks[1]\` → \`"TASK_INDEX_1"\`
+- usw.
+
+**Regeln fuer dependsOn:**
+- Maximal **2 Dependencies** pro Quest
+- Dependencies muessen einen frueheren Index haben (\`TASK_INDEX_3\` darf NICHT von \`TASK_INDEX_5\` abhaengen)
+- Nutze Dependencies fuer **logische Lernreihenfolge** (erst Grundlagen, dann Anwendung)
+- Nicht jede Quest braucht Dependencies – nur wo eine klare Voraussetzung besteht
 
 ### Eisenhower-Quadranten (Feld: \`quadrant\`)
 
@@ -252,6 +267,49 @@ Das Faelligkeitsdatum steuert die **Reihenfolge** und Dringlichkeit:
 
 ---
 
+## XP-Balancing (PFLICHT)
+
+**KRITISCH:** Projekte muessen mathematisch erreichbar sein! Jeder Skill in einem Projekt-Requirement braucht genug verlinkte Quests, um das Required Level zu erreichen.
+
+### Mindest-Quest-Anzahl pro Required Level
+
+| Required Level | XP noetig | Mindestens Quests | Empfohlen (mit 120% Puffer) |
+|----------------|----------|-------------------|----------------------------|
+| Lv.1 (Novice) | 1 XP | 1 Quest | 1-2 |
+| Lv.2 (Apprentice) | 100 XP | 2 Quests | 3-4 |
+| Lv.3 (Journeyman) | 250 XP | 4 Quests | 5-6 |
+| Lv.4 (Expert) | 500 XP | 7 Quests | 8-10 |
+| Lv.5 (Master) | 800 XP | 11 Quests | 12-15 |
+
+### Die 120%-Puffer-Regel
+
+Die Quest-XP-Summe pro Skill MUSS **mindestens 120%** der Level-Schwelle betragen:
+- Lv.2 braucht 100 XP → mindestens 120 XP durch Quests bereitstellen
+- Lv.3 braucht 250 XP → mindestens 300 XP durch Quests bereitstellen
+
+### Validierung vor JSON-Ausgabe (PFLICHT)
+
+Fuehre diesen Check fuer **jeden Skill** in einem Projekt-Requirement durch:
+
+\`\`\`
+1. requiredXP = Level-Schwelle (1/100/250/500/800)
+2. verlinkteQuests = alle Quests wo dieser Skill in linkedSkills vorkommt
+3. verfuegbareXP = Summe aller quest.xp dieser Quests
+4. PRUEFE: verfuegbareXP >= requiredXP × 1.2
+5. PRUEFE: verlinkteQuests.length >= 1 (kein Skill ohne Quest!)
+\`\`\`
+
+Falls ein Check fehlschlaegt: Fuege weitere Quests hinzu, bis das Budget stimmt!
+
+### Progression innerhalb eines Skills
+
+Ein Skill soll in verschiedenen Quests mit **steigender Komplexitaet** auftauchen:
+1. **Rezeptiv** (30 XP): Grundlagen lesen/anschauen
+2. **Reproduktiv** (50 XP): Nachbauen, Tutorial folgen
+3. **Produktiv** (80 XP): Eigene Loesung ohne Anleitung
+
+---
+
 ## Qualitaetskriterien (WICHTIG)
 
 1. **Praxisbezug**: Jede Quest muss ein konkretes Ergebnis liefern ("Tutorial durchgearbeitet", "Layout gebaut", "Funktion implementiert")
@@ -261,14 +319,15 @@ Das Faelligkeitsdatum steuert die **Reihenfolge** und Dringlichkeit:
 5. **Messbarkeit**: Skill-Namen mit Aktionsverb – man muss erkennen koennen ob der Skill "erfuellt" ist
 6. **15-45 Min Regel**: Jede Quest muss in einer einzigen Session machbar sein
 7. **linkedSkills stimmen**: Jede Quest trainiert genau die Skills die inhaltlich passen (1-3 Stueck)
-8. **Skill-Referenzen korrekt**: Alle \`SKILL_INDEX_N\` muessen gueltige Indizes im skills-Array sein
-9. **Projekt-Requirements realistisch**: Das Projekt muss mit den generierten Starter-Quests erreichbar sein
+8. **Skill-Referenzen korrekt**: Alle \`SKILL_INDEX_N\` und \`TASK_INDEX_N\` muessen gueltige Array-Indizes sein
+9. **Projekt-Requirements erreichbar**: XP-Budget pro Skill >= 120% der Level-Schwelle. Rechne es nach! Siehe "XP-Balancing" Abschnitt oben
+10. **dependsOn fuer logische Reihenfolge**: Nutze Dependencies um die Lernreihenfolge abzubilden (erst Grundlagen-Quest, dann Anwendungs-Quest)
 
 ---
 
 ## Vollstaendiges Mini-Beispiel (zum Verstaendnis)
 
-Hier ein vereinfachtes Beispiel fuer "Git lernen" mit 1 Kategorie, 3 Skills, 1 Projekt, 4 Quests:
+Hier ein vereinfachtes Beispiel fuer "Git lernen" mit 1 Kategorie, 3 Skills, 1 Projekt, 7 Quests:
 
 \`\`\`json
 {
@@ -276,7 +335,7 @@ Hier ein vereinfachtes Beispiel fuer "Git lernen" mit 1 Kategorie, 3 Skills, 1 P
     "name": "Git Grundlagen",
     "description": "Versionskontrolle mit Git lernen – vom ersten Commit bis zum Pull Request",
     "version": 1,
-    "generatedFor": "neuroforge-v14"
+    "generatedFor": "neuroforge-v15"
   },
   "categories": [
     {
@@ -299,7 +358,7 @@ Hier ein vereinfachtes Beispiel fuer "Git lernen" mit 1 Kategorie, 3 Skills, 1 P
       "description": "Einen Pull Request an ein echtes Open-Source Projekt auf GitHub stellen",
       "icon": "🌟",
       "requirements": [
-        { "skillId": "SKILL_INDEX_0", "requiredLevel": 3 },
+        { "skillId": "SKILL_INDEX_0", "requiredLevel": 2 },
         { "skillId": "SKILL_INDEX_1", "requiredLevel": 2 },
         { "skillId": "SKILL_INDEX_2", "requiredLevel": 2 }
       ],
@@ -314,8 +373,9 @@ Hier ein vereinfachtes Beispiel fuer "Git lernen" mit 1 Kategorie, 3 Skills, 1 P
       "dueDate": "2026-02-20",
       "questType": "input",
       "duration": "short",
-      "xp": 50,
-      "linkedSkills": ["SKILL_INDEX_0"]
+      "xp": 30,
+      "linkedSkills": ["SKILL_INDEX_0"],
+      "dependsOn": []
     },
     {
       "title": "Eigenes Uebungs-Repository anlegen",
@@ -324,8 +384,20 @@ Hier ein vereinfachtes Beispiel fuer "Git lernen" mit 1 Kategorie, 3 Skills, 1 P
       "dueDate": "2026-02-22",
       "questType": "focus",
       "duration": "short",
-      "xp": 80,
-      "linkedSkills": ["SKILL_INDEX_0"]
+      "xp": 50,
+      "linkedSkills": ["SKILL_INDEX_0"],
+      "dependsOn": ["TASK_INDEX_0"]
+    },
+    {
+      "title": "Git Reset, Stash und Diff ausprobieren",
+      "description": "Aenderungen rueckgaengig machen, stashen, Diffs lesen. Ergebnis: Cheat-Sheet mit den wichtigsten Befehlen.",
+      "quadrant": "q2",
+      "dueDate": null,
+      "questType": "focus",
+      "duration": "short",
+      "xp": 50,
+      "linkedSkills": ["SKILL_INDEX_0"],
+      "dependsOn": ["TASK_INDEX_1"]
     },
     {
       "title": "Git Branching Konzepte lesen",
@@ -335,21 +407,50 @@ Hier ein vereinfachtes Beispiel fuer "Git lernen" mit 1 Kategorie, 3 Skills, 1 P
       "questType": "input",
       "duration": "sprint",
       "xp": 30,
-      "linkedSkills": ["SKILL_INDEX_1"]
+      "linkedSkills": ["SKILL_INDEX_1"],
+      "dependsOn": []
     },
     {
-      "title": "Pull Request Workflow ueben",
-      "description": "Branch erstellen, Feature committen, PR auf GitHub oeffnen, selbst reviewen und mergen.",
+      "title": "Feature-Branch Workflow ueben",
+      "description": "Im Uebungs-Repo 3 Feature-Branches erstellen, je ein Feature committen, per Merge zusammenfuehren. Merge-Konflikte absichtlich erzeugen und loesen.",
       "quadrant": "q2",
       "dueDate": null,
       "questType": "focus",
       "duration": "long",
       "xp": 80,
-      "linkedSkills": ["SKILL_INDEX_0", "SKILL_INDEX_1", "SKILL_INDEX_2"]
+      "linkedSkills": ["SKILL_INDEX_0", "SKILL_INDEX_1"],
+      "dependsOn": ["TASK_INDEX_1", "TASK_INDEX_3"]
+    },
+    {
+      "title": "GitHub Pull Request Workflow kennenlernen",
+      "description": "GitHub Docs zu Pull Requests lesen. Verstehen: Fork vs Clone, PR erstellen, Review-Prozess, Merge-Optionen.",
+      "quadrant": "q2",
+      "dueDate": null,
+      "questType": "input",
+      "duration": "sprint",
+      "xp": 30,
+      "linkedSkills": ["SKILL_INDEX_2"],
+      "dependsOn": []
+    },
+    {
+      "title": "Pull Request an eigenes Repo stellen",
+      "description": "Branch erstellen, Feature committen, PR auf GitHub oeffnen, selbst reviewen und mergen. Ergebnis: 1 gemergter PR.",
+      "quadrant": "q2",
+      "dueDate": null,
+      "questType": "focus",
+      "duration": "long",
+      "xp": 80,
+      "linkedSkills": ["SKILL_INDEX_0", "SKILL_INDEX_1", "SKILL_INDEX_2"],
+      "dependsOn": ["TASK_INDEX_4", "TASK_INDEX_5"]
     }
   ]
 }
 \`\`\`
+
+**XP-Validierung dieses Beispiels:**
+- **Git CLI (SKILL_INDEX_0)**: Req. Lv.2 (100 XP) → Quests: 30+50+50+80+80 = **290 XP** ✓ (290% der Schwelle)
+- **Branching (SKILL_INDEX_1)**: Req. Lv.2 (100 XP) → Quests: 30+80+80 = **190 XP** ✓ (190% der Schwelle)
+- **Pull Requests (SKILL_INDEX_2)**: Req. Lv.2 (100 XP) → Quests: 30+80 = **110 XP** ✓ (110% der Schwelle)
 
 ---
 
@@ -359,16 +460,18 @@ Der User beschreibt jetzt sein Lernziel. Generiere daraus:
 1. Passende **Kategorien** (3-6)
 2. **Skills** pro Kategorie (5-12 pro Kat, insgesamt 20-50)
 3. **1 Projekt** als erster Meilenstein (erreichbar mit den Starter-Quests)
-4. **Starter-Quests** (10-20 zum Loslegen, mit sinnvoller dueDate-Reihenfolge fuer die ersten)
+4. **Starter-Quests** (15-25 zum Loslegen, mit sinnvoller dueDate-Reihenfolge und dependsOn fuer Lernabfolge)
 
 **Antworte NUR mit dem JSON-Objekt.** Kein erklaender Text davor oder danach.
 Stelle sicher dass:
 - Das JSON syntaktisch valide ist
 - Alle \`SKILL_INDEX_N\` Referenzen gueltige Array-Indizes sind
+- Alle \`TASK_INDEX_N\` Referenzen gueltige Array-Indizes sind (nur frueherer Index erlaubt!)
 - Alle \`category\` Werte existierenden Category-IDs entsprechen
 - Quest-Typen, Durations und XP-Werte nur die erlaubten Werte verwenden
 - Genau 1 Projekt generiert wird (nicht mehr)
-- Die Quest-Reihenfolge durch \`dueDate\` und \`quadrant\` gesteuert wird
+- Die Quest-Reihenfolge durch \`dueDate\`, \`quadrant\` und \`dependsOn\` gesteuert wird
+- **XP-Balancing stimmt:** Jeder Skill in Projekt-Requirements hat genug Quest-XP (>= 120% der Level-Schwelle)
 `;
 
 export const EXAMPLE_TEMPLATES = [
@@ -377,23 +480,23 @@ export const EXAMPLE_TEMPLATES = [
     name: 'Webentwicklung Einstieg',
     description: 'HTML, CSS, JavaScript, React \u2013 vom ersten Tag bis zur eigenen Web-App',
     icon: '\uD83C\uDF10',
-    stats: { categories: 4, skills: 28, projects: 1, tasks: 15 },
-    prompt: 'Ich moechte Webentwicklung lernen. Von den Grundlagen (HTML, CSS, JavaScript) bis hin zu einer eigenen React-App. Ich bin kompletter Anfaenger, habe aber Motivation. Mein Ziel: In 3-6 Monaten eine eigene Web-App deployen. Setze die dueDate-Felder so, dass die Einstiegs-Quests in den naechsten 2 Wochen faellig sind und die fortgeschrittenen Quests spaeter.',
+    stats: { categories: 4, skills: 28, projects: 1, tasks: 20 },
+    prompt: 'Ich moechte Webentwicklung lernen. Von den Grundlagen (HTML, CSS, JavaScript) bis hin zu einer eigenen React-App. Ich bin kompletter Anfaenger, habe aber Motivation. Mein Ziel: In 3-6 Monaten eine eigene Web-App deployen. Setze die dueDate-Felder so, dass die Einstiegs-Quests in den naechsten 2 Wochen faellig sind und die fortgeschrittenen Quests spaeter. Nutze dependsOn um die Lernreihenfolge abzubilden.',
   },
   {
     id: 'ki-einstieg',
     name: 'KI & Prompting Basics',
     description: 'Prompt Engineering, APIs, Agents, Automation \u2013 KI produktiv nutzen',
     icon: '\uD83E\uDD16',
-    stats: { categories: 4, skills: 22, projects: 1, tasks: 15 },
-    prompt: 'Ich moechte lernen, KI-Tools produktiv zu nutzen. Von Prompt Engineering ueber API-Nutzung (OpenAI, Anthropic) bis hin zu eigenen Automationen mit n8n. Ziel: Eigene KI-gestuetzte Workflows bauen und einen KI-Chatbot deployen. Setze die dueDate-Felder so, dass Grundlagen-Quests zuerst kommen.',
+    stats: { categories: 4, skills: 22, projects: 1, tasks: 18 },
+    prompt: 'Ich moechte lernen, KI-Tools produktiv zu nutzen. Von Prompt Engineering ueber API-Nutzung (OpenAI, Anthropic) bis hin zu eigenen Automationen mit n8n. Ziel: Eigene KI-gestuetzte Workflows bauen und einen KI-Chatbot deployen. Setze die dueDate-Felder so, dass Grundlagen-Quests zuerst kommen. Nutze dependsOn um die Lernreihenfolge abzubilden.',
   },
   {
     id: 'schule-physik',
     name: 'Physik Klasse 10',
     description: 'Mechanik, Energie, Elektrizitaet, Optik \u2013 Schulstoff gamifiziert',
     icon: '\u269B\uFE0F',
-    stats: { categories: 5, skills: 30, projects: 1, tasks: 18 },
-    prompt: 'Erstelle einen Lernpfad fuer Physik Klasse 10 (Gymnasium, Deutschland). Themen: Mechanik (Kraefte, Bewegung), Energie (Arbeit, Leistung), Elektrizitaet (Stromkreise, Widerstand), Optik (Linsen, Brechung), Waermelehre. Ziel: Gute Note in der Klausur + echtes Verstaendnis. Setze dueDate auf die Quests die zuerst erledigt werden sollen (Grundlagen vor Vertiefung).',
+    stats: { categories: 5, skills: 30, projects: 1, tasks: 22 },
+    prompt: 'Erstelle einen Lernpfad fuer Physik Klasse 10 (Gymnasium, Deutschland). Themen: Mechanik (Kraefte, Bewegung), Energie (Arbeit, Leistung), Elektrizitaet (Stromkreise, Widerstand), Optik (Linsen, Brechung), Waermelehre. Ziel: Gute Note in der Klausur + echtes Verstaendnis. Setze dueDate auf die Quests die zuerst erledigt werden sollen (Grundlagen vor Vertiefung). Nutze dependsOn um die Lernreihenfolge abzubilden.',
   },
 ];

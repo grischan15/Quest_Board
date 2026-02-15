@@ -90,10 +90,10 @@ export default function AiLernpfad({ categories, skills, projects, isDemo, onImp
     });
   }
 
-  function resolveSkillRef(ref, maxIndex) {
-    if (typeof ref === 'string' && ref.startsWith('SKILL_INDEX_')) {
-      const idx = parseInt(ref.replace('SKILL_INDEX_', ''), 10);
-      if (idx >= 0 && idx < maxIndex) return `__idx_${idx}`;
+  function resolveIndexRef(prefix, placeholderPrefix, ref, maxIndex) {
+    if (typeof ref === 'string' && ref.startsWith(prefix)) {
+      const idx = parseInt(ref.replace(prefix, ''), 10);
+      if (idx >= 0 && idx < maxIndex) return `${placeholderPrefix}${idx}`;
     }
     return ref;
   }
@@ -107,18 +107,20 @@ export default function AiLernpfad({ categories, skills, projects, isDemo, onImp
       }
 
       const skillCount = data.skills.length;
+      const taskCount = (data.tasks || []).length;
 
       const resolvedProjects = (data.projects || []).map((p) => ({
         ...p,
         requirements: (p.requirements || []).map((r) => ({
           ...r,
-          skillId: resolveSkillRef(r.skillId, skillCount),
+          skillId: resolveIndexRef('SKILL_INDEX_', '__idx_skill_', r.skillId, skillCount),
         })),
       }));
 
       const resolvedTasks = (data.tasks || []).map((t) => ({
         ...t,
-        linkedSkills: (t.linkedSkills || []).map((ref) => resolveSkillRef(ref, skillCount)),
+        linkedSkills: (t.linkedSkills || []).map((ref) => resolveIndexRef('SKILL_INDEX_', '__idx_skill_', ref, skillCount)),
+        dependsOn: (t.dependsOn || []).map((ref) => resolveIndexRef('TASK_INDEX_', '__idx_task_', ref, taskCount)),
       }));
 
       return {

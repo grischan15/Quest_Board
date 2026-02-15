@@ -7,7 +7,7 @@
 
 ## AKTUELLER STATUS
 
-**Version:** v4.2 (Migrations-Sicherheitsnetz) · **Schema:** v14 · **Naechster Schritt:** v5.0 Quest-Dependencies. Siehe [ROADMAP.md](ROADMAP.md)
+**Version:** v5.0 (Quest-Dependencies + XP-Balancing) · **Schema:** v15 · **Naechster Schritt:** Block C – Relevance Score. Siehe [ROADMAP.md](ROADMAP.md)
 
 **Tech-Stack:** React + Vite + dnd-kit + localStorage · **Design:** Neurodivergenz-optimiert
 
@@ -18,6 +18,8 @@
 - **Skill-Tree** – Skills mit Level 0-5 + XP + RPG Dashboard (Radar-Chart, CharacterCard, RecentSkills) + Projekte als Unlock-Ziele
 - **Personal Dashboard** – Energiekurve, Heatmap (GitHub-Style), LineChart, Projekt-Fortschritt
 - **Schmiede** – 4 Accordion-Sektionen: Lerngebiet-Wizard, KI-Lernpfad (Prompt + JSON-Import), Quest-Import, Backup & Restore
+- **Quest-Dependencies** – `dependsOn[]` auf Tasks, Dependency-Picker im TaskModal, Dependency-Badge auf TaskCard, TASK_INDEX_N Import-Referenzen
+- **KI-Lernpfad v2** – XP-Balancing-Regeln, 120%-Puffer-Pflicht, Validierungsanweisungen, dependsOn-Feld im Prompt
 - **Migrations-Sicherheitsnetz** – Auto-Backup vor Migration, Schema-Validierung, Fehler-Banner, Notfall-Restore in Settings
 - **Hilfe-Seite** – Konzept, Workflow, Covey/Eisenhower/Pareto, Farb-Code, Neurodivergenz-Prinzipien
 - **Gamification** – Quest-Typen (Focus/Input/Create/Routine/Reflect), Duration (Sprint/Kurz/Lang), XP (30/50/80), Konfetti + Level-Up
@@ -35,8 +37,9 @@ Quest_Board/
 │   ├── Skill_Matrix_v1_0.md
 │   ├── Quest_Skill_Projekt_Konzept_v1_0.md
 │   ├── 2025_12_25_Neurodivergenz_UI_Guidelines_v1_0.md
-│   ├── 2025_06_22_Relevance_Score_Regeln_v1_0.md    <- Referenz fuer v5.0
+│   ├── 2025_06_22_Relevance_Score_Regeln_v1_0.md    <- Referenz fuer Block C
 │   ├── 2025_09_06_Covey_Wochenarbeitsblatt_Konzept_v1_0.md  <- Teilweise umgesetzt, Rest zurueckgestellt
+│   ├── 2026_02_15_KI_Lernpfad_XP_Balancing_Problem_v1_0.md  <- XP-Balancing Analyse + Regeln
 │   ├── P3_Logo_RZ_WortBild_mClaim_hell.svg
 │   ├── STATE.md
 │   └── ROADMAP.md
@@ -48,11 +51,11 @@ Quest_Board/
 │   │   ├── questTypes.js          <- QUEST_TYPES, DURATIONS, XP_VALUES, Level-Helpers, RPG_ATTRIBUTES
 │   │   ├── demoData.js            <- generateDemoData() + generateDemoProjects()
 │   │   ├── projectHelpers.js      <- getProjectStatus, getProjectProgress, getProjectsForSkill
-│   │   └── aiPromptTemplate.js    <- KI-Prompt-Template + EXAMPLE_TEMPLATES
+│   │   └── aiPromptTemplate.js    <- KI-Prompt-Template v15 (XP-Balancing + dependsOn) + EXAMPLE_TEMPLATES
 │   ├── hooks/
 │   │   ├── useLocalStorage.js     <- localStorage Wrapper
 │   │   ├── useDashboardData.js    <- Heatmap, LineChart, EnergyCurve Datenaufbereitung
-│   │   └── useQuestBoard.js       <- Haupt-State (Schema v14, migrateState, CRUD, Import/Export, Auto-Backup, validateState)
+│   │   └── useQuestBoard.js       <- Haupt-State (Schema v15, migrateState, CRUD, Import/Export, Auto-Backup, validateState)
 │   ├── components/
 │   │   ├── Header.jsx/css         <- Tabs + Branding + Settings
 │   │   ├── Eisenhower.jsx/css     <- 4 Quadranten + Unsortiert + Energie-Filter
@@ -69,10 +72,10 @@ Quest_Board/
 │   │   ├── EnergyCurve.jsx/css    <- Persoenliche Energiekurve
 │   │   ├── DemoBanner.jsx/css     <- Demo-Modus Banner
 │   │   ├── HelpPage.jsx/css       <- Hilfe-Seite
-│   │   ├── TaskCard.jsx/css       <- Quest-Karte
+│   │   ├── TaskCard.jsx/css       <- Quest-Karte (+ Dependency-Badge)
 │   │   ├── DroppableContainer.jsx <- DnD Wrapper
 │   │   ├── Modal.jsx/css          <- Basis-Modal
-│   │   ├── TaskModal.jsx/css      <- Quest CRUD + Skill-Picker
+│   │   ├── TaskModal.jsx/css      <- Quest CRUD + Skill-Picker + Dependency-Picker
 │   │   ├── SkillModal.jsx/css     <- Skill CRUD + XP/Level
 │   │   ├── CategoryModal.jsx/css  <- Kategorie CRUD + Emoji-Picker
 │   │   ├── ProjectModal.jsx/css   <- Projekt CRUD + Requirements-Picker
@@ -82,7 +85,7 @@ Quest_Board/
 │   ├── components/schmiede/
 │   │   ├── SchmiedePage.jsx/css   <- Accordion-Layout (4 Sektionen)
 │   │   ├── LerngebietWizard.jsx/css <- Kategorie + Skills Wizard
-│   │   ├── AiLernpfad.jsx/css     <- KI-Flow: Prompt + Import
+│   │   ├── AiLernpfad.jsx/css     <- KI-Flow: Prompt + Import (SKILL_INDEX + TASK_INDEX Resolution)
 │   │   ├── QuestImport.jsx/css    <- Schnell-Eingabe + CSV/JSON
 │   │   └── BackupRestore.jsx/css  <- Export + Restore
 │   ├── App.jsx/css
@@ -113,6 +116,7 @@ Quest_Board/
 | v12 | linkedSkills auf Tasks, isDemo auf State |
 | v13 | fastLaneAt auf Tasks |
 | v14 | projects[] im State (id, name, description, icon, requirements, status) |
+| v15 | dependsOn[] auf Tasks (Quest-Dependencies) |
 
 ---
 

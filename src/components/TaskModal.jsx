@@ -11,7 +11,7 @@ const quadrantOptions = [
   { id: 'unsorted', label: 'Unsortiert (sp\u00e4ter zuordnen)' },
 ];
 
-export default function TaskModal({ task, skills, categories, onSave, onDelete, onClose }) {
+export default function TaskModal({ task, skills, categories, allTasks, onSave, onDelete, onClose }) {
   const isEdit = !!task;
   const [title, setTitle] = useState(task?.title || '');
   const [description, setDescription] = useState(task?.description || '');
@@ -21,7 +21,9 @@ export default function TaskModal({ task, skills, categories, onSave, onDelete, 
   const [duration, setDuration] = useState(task?.duration || null);
   const [xp, setXp] = useState(task?.xp || null);
   const [linkedSkills, setLinkedSkills] = useState(task?.linkedSkills || []);
+  const [dependsOn, setDependsOn] = useState(task?.dependsOn || []);
   const [skillsExpanded, setSkillsExpanded] = useState(false);
+  const [depsExpanded, setDepsExpanded] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -40,6 +42,7 @@ export default function TaskModal({ task, skills, categories, onSave, onDelete, 
       duration,
       xp,
       linkedSkills,
+      dependsOn,
     });
   }
 
@@ -50,6 +53,19 @@ export default function TaskModal({ task, skills, categories, onSave, onDelete, 
         : [...prev, skillId]
     );
   }
+
+  function toggleDependency(taskId) {
+    setDependsOn((prev) =>
+      prev.includes(taskId)
+        ? prev.filter((id) => id !== taskId)
+        : [...prev, taskId]
+    );
+  }
+
+  // Available tasks for dependency picker (not self, not already done)
+  const availableDeps = (allTasks || []).filter(
+    (t) => t.id !== task?.id && t.kanbanColumn !== 'done'
+  );
 
   const visibleSkills = (skills || []).filter((s) => !s.hidden);
   const sortedCategories = [...(categories || [])].sort((a, b) => a.order - b.order);
@@ -213,6 +229,37 @@ export default function TaskModal({ task, skills, categories, onSave, onDelete, 
                       ))}
                     </div>
                   </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {availableDeps.length > 0 && (
+          <div className="form-group">
+            <button
+              type="button"
+              className="skill-link-toggle"
+              onClick={() => setDepsExpanded(!depsExpanded)}
+            >
+              Haengt ab von <span className="form-optional">(optional{dependsOn.length > 0 ? ` \u00B7 ${dependsOn.length} gewaehlt` : ''})</span>
+              {dependsOn.length > 0 && <span className="skill-link-count">{dependsOn.length}</span>}
+              <span className={`skill-link-toggle-arrow ${depsExpanded ? 'open' : ''}`}>&#9660;</span>
+            </button>
+            {depsExpanded && (
+              <div className="dependency-picker">
+                {availableDeps.map((dep) => (
+                  <label
+                    key={dep.id}
+                    className={`dependency-item ${dependsOn.includes(dep.id) ? 'selected' : ''}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={dependsOn.includes(dep.id)}
+                      onChange={() => toggleDependency(dep.id)}
+                    />
+                    {dep.title}
+                  </label>
                 ))}
               </div>
             )}

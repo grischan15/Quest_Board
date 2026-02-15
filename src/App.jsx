@@ -42,11 +42,11 @@ export default function App() {
   }, []);
 
   const handleSaveTask = useCallback(
-    ({ title, description, quadrant, dueDate, questType, duration, xp, linkedSkills }) => {
+    ({ title, description, quadrant, dueDate, questType, duration, xp, linkedSkills, dependsOn }) => {
       if (taskModal.mode === 'create') {
-        board.createTask(title, description, quadrant, dueDate, questType, duration, xp, linkedSkills);
+        board.createTask(title, description, quadrant, dueDate, questType, duration, xp, linkedSkills, dependsOn);
       } else if (taskModal.mode === 'edit') {
-        const updates = { title, description, dueDate, questType, duration, xp, linkedSkills };
+        const updates = { title, description, dueDate, questType, duration, xp, linkedSkills, dependsOn };
         if (taskModal.task.location === 'eisenhower') {
           updates.quadrant = quadrant;
         }
@@ -312,9 +312,9 @@ export default function App() {
             xpCurrent: s.xpCurrent || 0,
           }))
         );
-        // Build map: __idx_N -> real skill ID
+        // Build map: __idx_skill_N -> real skill ID
         importedSkills.forEach((skill, i) => {
-          skillIdMap.set(`__idx_${i}`, skill.id);
+          skillIdMap.set(`__idx_skill_${i}`, skill.id);
         });
       }
 
@@ -331,7 +331,8 @@ export default function App() {
         }
       }
 
-      // Import tasks – resolve linked skill references
+      // Import tasks – resolve linked skill references, keep dependsOn as placeholders for now
+      const taskIdMap = new Map();
       if (data.tasks && data.tasks.length > 0) {
         const taskList = data.tasks.map((t) => ({
           title: t.title,
@@ -344,8 +345,24 @@ export default function App() {
           linkedSkills: (t.linkedSkills || [])
             .map((ref) => skillIdMap.get(ref) || ref)
             .filter((id) => id && !id.startsWith('__idx_')),
+          dependsOn: t.dependsOn || [],
         }));
-        board.importTasks(taskList);
+        const importedTasks = board.importTasks(taskList);
+
+        // Build map: __idx_task_N -> real task ID
+        importedTasks.forEach((task, i) => {
+          taskIdMap.set(`__idx_task_${i}`, task.id);
+        });
+
+        // Resolve dependsOn placeholders to real task IDs
+        for (const task of importedTasks) {
+          if (task.dependsOn && task.dependsOn.some((ref) => ref.startsWith('__idx_task_'))) {
+            const resolvedDeps = task.dependsOn
+              .map((ref) => taskIdMap.get(ref) || ref)
+              .filter((id) => id && !id.startsWith('__idx_'));
+            board.updateTask(task.id, { dependsOn: resolvedDeps });
+          }
+        }
       }
     },
     [board]
@@ -461,6 +478,7 @@ export default function App() {
           task={taskModal.mode === 'edit' ? taskModal.task : null}
           skills={board.skills}
           categories={board.categories}
+          allTasks={board.tasks}
           onSave={handleSaveTask}
           onDelete={taskModal.mode === 'edit' ? handleRequestDelete : null}
           onClose={() => setTaskModal(null)}

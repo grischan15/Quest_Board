@@ -166,6 +166,11 @@ export default function TaskCard({
             {task.xp} XP
           </span>
         )}
+        {task.dependsOn && task.dependsOn.length > 0 && (
+          <span className="task-card-depends">
+            &#128279; {task.dependsOn.length}
+          </span>
+        )}
       </div>
       <div className="task-card-footer">
         {showStart && (

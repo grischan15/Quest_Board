@@ -10,9 +10,10 @@
 | Dokument | Inhalt |
 |----------|--------|
 | [Quest-Skill-Projekt Konzept v1.0](Quest_Skill_Projekt_Konzept_v1_0.md) | Hybrid-System, XP, Level, Quest-Typen, WIP, Fast Lane, Intake-Flow |
-| [Relevance Score Regeln v1.0](2025_06_22_Relevance_Score_Regeln_v1_0.md) | Priorisierungsformel (Airtable-Ursprung, adaptiert fuer v5.0) |
+| [Relevance Score Regeln v1.0](2025_06_22_Relevance_Score_Regeln_v1_0.md) | Priorisierungsformel (Airtable-Ursprung, adaptiert fuer Block C) |
 | [Covey Wochenarbeitsblatt v1.0](2025_09_06_Covey_Wochenarbeitsblatt_Konzept_v1_0.md) | Wochenplanung (teilweise in Mini-Backlog umgesetzt, Rest zurueckgestellt) |
 | [Neurodivergenz UI Guidelines](2025_12_25_Neurodivergenz_UI_Guidelines_v1_0.md) | HSP/ADHS-optimiertes Design |
+| [KI-Lernpfad XP-Balancing v1.0](2026_02_15_KI_Lernpfad_XP_Balancing_Problem_v1_0.md) | XP-Budget-Analyse, Validierungsregeln, Mindest-Quest-Tabelle |
 
 ---
 
@@ -24,15 +25,13 @@
 
 **Kernidee:** Quests stehen oft in logischen Ketten (Quest 3 braucht Quest 1+2 zuerst). Die Dringlichkeit ergibt sich aus der gesamten Abhaengigkeitskette, nicht nur dem eigenen dueDate.
 
-**Vorhandene Daten:** `dueDate`, `duration` (Sprint/Kurz/Lang), Eisenhower-Quadranten.
+**Vorhandene Daten:** `dueDate`, `duration` (Sprint/Kurz/Lang), Eisenhower-Quadranten, `dependsOn[]`.
 **Aktuell:** Tasks innerhalb der Quadranten werden nur nach Drag-Reihenfolge sortiert (keine Auto-Sortierung).
 
 **Was fehlt:**
-- `dependsOn: [taskId, ...]` auf Tasks → **Schema v15**
 - Relevance Score Berechnung (pure computed, kein Storage)
 - Auto-Sort innerhalb der Quadranten nach Score
-- Visuelles Dringlichkeits-Feedback + Blockiert-Indikator
-- Dependency-Picker im TaskModal
+- Visuelles Dringlichkeits-Feedback + Blockiert-Indikator (ausgegraut)
 
 **Vereinfachte Score-Formel:**
 ```
@@ -45,7 +44,7 @@ Noch Zeit:     Score = MAX(1, (7 - Tage_Rest)) x Prioritaets_Faktor
 
 **Geplante Bloecke:**
 - [x] **Block A:** Sicherheitsnetz (v4.2, erledigt)
-- [ ] **Block B:** Schema v15 – `dependsOn: []` + Migration + Dependency-Picker
+- [x] **Block B:** Schema v15 – `dependsOn: []` + Migration + Dependency-Picker + KI-Prompt XP-Balancing
 - [ ] **Block C:** Relevance Score – `relevanceScore.js` + Auto-Sort + visuelles Feedback
 - [ ] **Block D:** Blockiert-Logik – Ausgegraut/Ketten-Symbol fuer wartende Quests
 
@@ -120,6 +119,8 @@ Offene Quests automatisch in freie Kalender-Slots einplanen. Bei Nicht-Erledigun
 | 15.02 | KI-Template: nur 1 Projekt | 2-4 Projekte ueberfordern bei Neurodivergenz. 1 klares Ziel motiviert besser |
 | 15.02 | Docs-Struktur bereinigt | CLAUDE.md=Regeln, STATE=Gegenwart, ROADMAP=Zukunft+Log, Git=Historie. Keine Redundanz |
 | 15.02 | v4.2 Migrations-Sicherheitsnetz | Auto-Backup + validateState + Fehler-Banner + Notfall-Restore. Voraussetzung fuer Schema v15 |
+| 15.02 | XP-Balancing + Dependencies zusammen | KI-Prompt + Import-Logik werden ohnehin angefasst. dependsOn + XP-Regeln in einem Block |
+| 15.02 | TASK_INDEX_N Referenz-System | Analog zu SKILL_INDEX. Ermoeglicht Dependencies im KI-generierten JSON vor ID-Vergabe |
 
 ---
 

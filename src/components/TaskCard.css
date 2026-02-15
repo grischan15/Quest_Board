@@ -234,3 +234,13 @@
   background: rgba(45, 138, 78, 0.1);
   border-radius: 3px;
 }
+
+/* Dependency Badge */
+.task-card-depends {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #6b7c5e;
+  padding: 1px 6px;
+  background: rgba(107, 124, 94, 0.1);
+  border-radius: 3px;
+}
