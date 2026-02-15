@@ -1,0 +1,49 @@
+# GitHub Action: Manuelles Deployment auf ALL-INKL
+# Ausloesen: GitHub → Actions → "Deploy to ALL-INKL" → "Run workflow"
+#
+# Voraussetzung: Repository Secrets angelegt:
+#   FTP_SERVER   = w00b10a9.kasserver.com
+#   FTP_USERNAME = (FTP-Benutzername)
+#   FTP_PASSWORD = (FTP-Passwort)
+
+name: Deploy to ALL-INKL
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Code auschecken
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Node.js einrichten
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3. Dependencies installieren
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Build mit ALL-INKL base-Pfad
+      - name: Build for ALL-INKL
+        run: npm run build
+        env:
+          DEPLOY_TARGET: allinkl
+
+      # 5. Per FTP auf ALL-INKL hochladen
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /quest-board/
+          dangerous-clean-slate: false
