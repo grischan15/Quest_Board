@@ -14,7 +14,7 @@
 ### Kern-Features
 
 - **Kanban** (Hauptansicht) – Mini-Backlog (Q2 Saege-schaerfen + Q1 Dringend, Covey 80/20) + Normal Flow + Fast Lane + Shared Done + WIP-Limits + Wildcard-Tageslimit
-- **Eisenhower-Backlog** – 4 Quadranten + Unsortiert + Energie-Filter (Quest-Typ Chips) + Drag & Drop
+- **Eisenhower-Backlog** – 4 Quadranten + Unsortiert + Energie-Filter (Quest-Typ Chips) + Drag & Drop + Auto-Sort nach Relevance Score
 - **Skill-Tree** – Skills mit Level 0-5 + XP + RPG Dashboard (Radar-Chart, CharacterCard, RecentSkills) + Projekte als Unlock-Ziele
 - **Personal Dashboard** – Energiekurve, Heatmap (GitHub-Style), LineChart, Projekt-Fortschritt
 - **Schmiede** – 4 Accordion-Sektionen: Lerngebiet-Wizard, KI-Lernpfad (Prompt + JSON-Import), Quest-Import, Backup & Restore
@@ -39,7 +39,7 @@ Quest_Board/
 │   ├── Skill_Matrix_v1_0.md
 │   ├── Quest_Skill_Projekt_Konzept_v1_0.md
 │   ├── 2025_12_25_Neurodivergenz_UI_Guidelines_v1_0.md
-│   ├── 2025_06_22_Relevance_Score_Regeln_v1_0.md    <- Referenz fuer Block C
+│   ├── 2025_06_22_Relevance_Score_Regeln_v1_0.md    <- Referenz fuer Relevance Score (umgesetzt)
 │   ├── 2025_09_06_Covey_Wochenarbeitsblatt_Konzept_v1_0.md  <- Teilweise umgesetzt, Rest zurueckgestellt
 │   ├── 2026_02_15_KI_Lernpfad_XP_Balancing_Problem_v1_0.md  <- XP-Balancing Analyse + Regeln
 │   ├── P3_Logo_RZ_WortBild_mClaim_hell.svg

@@ -19,34 +19,7 @@
 
 ## NAECHSTE SCHRITTE
 
-### v5.0 – Quest-Dependencies + Relevance Score
-
-> **Referenz:** [Relevance Score Regeln v1.0](2025_06_22_Relevance_Score_Regeln_v1_0.md)
-
-**Kernidee:** Quests stehen oft in logischen Ketten (Quest 3 braucht Quest 1+2 zuerst). Die Dringlichkeit ergibt sich aus der gesamten Abhaengigkeitskette, nicht nur dem eigenen dueDate.
-
-**Vorhandene Daten:** `dueDate`, `duration` (Sprint/Kurz/Lang), Eisenhower-Quadranten, `dependsOn[]`.
-**Aktuell:** Tasks innerhalb der Quadranten werden nur nach Drag-Reihenfolge sortiert (keine Auto-Sortierung).
-
-**Was fehlt:**
-- Relevance Score Berechnung (pure computed, kein Storage)
-- Auto-Sort innerhalb der Quadranten nach Score
-- Visuelles Dringlichkeits-Feedback + Blockiert-Indikator (ausgegraut)
-
-**Vereinfachte Score-Formel:**
-```
-Verfuegbare_Zeit = dueDate - (heute + eigene_duration + SUM(abhaengige_durations))
-Prioritaets_Faktor = Quadrant-Gewicht (Q1=6, Q2=4, Q3=3, Q4=1)
-
-Ueberfaellig:  Score = Prioritaets_Faktor x 100
-Noch Zeit:     Score = MAX(1, (7 - Tage_Rest)) x Prioritaets_Faktor
-```
-
-**Geplante Bloecke:**
-- [x] **Block A:** Sicherheitsnetz (v4.2, erledigt)
-- [x] **Block B:** Schema v15 – `dependsOn: []` + Migration + Dependency-Picker + KI-Prompt XP-Balancing
-- [x] **Block C:** Relevance Score – `relevanceScore.js` + Auto-Sort + visuelles Feedback
-- [x] **Block D:** Blockiert-Logik – Ausgegraut/Schloss-Symbol fuer wartende Quests
+v5.0 ist komplett (alle Bloecke erledigt). Naechste groessere Features siehe Mittelfristig.
 
 ---
 
