@@ -62,16 +62,6 @@ export default function RpgDashboard({ skills, tasks, categories, projects }) {
     };
   }, [skills, categories]);
 
-  if (categoryStrengths.length === 0) {
-    return (
-      <div className="rpg-dashboard rpg-dashboard-empty">
-        <div className="rpg-dashboard-empty-text">
-          Aktiviere Kategorien im Skill-Tree mit dem Auge-Icon, um das RPG Dashboard zu sehen.
-        </div>
-      </div>
-    );
-  }
-
   const activeProjects = useMemo(() => {
     if (!projects || projects.length === 0) return [];
     return projects
@@ -82,6 +72,16 @@ export default function RpgDashboard({ skills, tasks, categories, projects }) {
       }))
       .filter((p) => p.computedStatus !== 'done');
   }, [projects, skills]);
+
+  if (categoryStrengths.length === 0) {
+    return (
+      <div className="rpg-dashboard rpg-dashboard-empty">
+        <div className="rpg-dashboard-empty-text">
+          Aktiviere Kategorien im Skill-Tree mit dem Auge-Icon, um das RPG Dashboard zu sehen.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rpg-dashboard">
