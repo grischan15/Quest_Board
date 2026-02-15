@@ -9,7 +9,7 @@
 ## AKTUELLER STATUS
 
 ```
-████████████████████ Phase: v4.1 Schmiede-Tab (komplett) → Naechster Schritt: Browser-Testing & Feinschliff
+████████████████████ Phase: v4.1 Schmiede-Tab (komplett) → Naechster Schritt: v4.2 Migrations-Sicherheitsnetz → v5.0 Quest-Dependencies + Relevance Score
 ```
 
 **Was ist fertig:**
@@ -184,7 +184,7 @@
 - [x] **SkillModal Bug-Fix** – Create-Mode zeigt jetzt XP-Input statt Status-Radio (gleicher Code wie Edit-Mode)
 - [x] **Wizard Doppel-Kategorie Bug-Fix** – React State Closure Problem geloest: importSkills erstellt Kategorie automatisch, updateCategory setzt Icon/Label per Functional Updater
 
-**Naechster Schritt:** Siehe [ROADMAP.md](ROADMAP.md)
+**Naechster Schritt:** v4.2 Migrations-Sicherheitsnetz (Auto-Backup + Validierung) → dann v5.0 Quest-Dependencies + Relevance Score. Siehe [ROADMAP.md](ROADMAP.md)
 
 ---
 
@@ -198,6 +198,8 @@ Quest_Board/
 │   ├── Skill_Matrix_v1_0.md
 │   ├── Quest_Skill_Projekt_Konzept_v1_0.md
 │   ├── 2025_12_25_Neurodivergenz_UI_Guidelines_v1_0.md
+│   ├── 2025_06_22_Relevance_Score_Regeln_v1_0.md    <- Referenz: Priorisierungsformel (Airtable-Ursprung, adaptiert fuer v5.0)
+│   ├── 2025_09_06_Covey_Wochenarbeitsblatt_Konzept_v1_0.md  <- Referenz: Wochenplanung (teilweise in Mini-Backlog umgesetzt, Rest zurueckgestellt)
 │   ├── P3_Logo_RZ_WortBild_mClaim_hell.svg
 │   ├── STATE.md
 │   └── ROADMAP.md

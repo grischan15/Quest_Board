@@ -324,18 +324,78 @@ Umgesetzt am 14.02.2026, kein Schema-Change:
 
 ---
 
+## NAECHSTE SCHRITTE (v4.2+ – Migrationssicherheit & Intelligente Priorisierung)
+
+### v4.2 – Migrations-Sicherheitsnetz
+
+**Problem:** Das Migrationssystem (`migrateState()` in useQuestBoard.js) hat 14 Schema-Versionen erfolgreich migriert, aber es gibt kein Sicherheitsnetz: Wenn eine Migration fehlschlaegt, werden die alten Daten ueberschrieben. Mit scharfen Daten im System (keine Demo-Daten mehr) ist das ein reales Risiko – auch fuer zukuenftige Nutzer.
+
+**Analyse der aktuellen Schwachstellen:**
+- Kein Backup vor Migration – altes Schema wird sofort ueberschrieben
+- Keine Validierung nach Migration – fehlerhafte Daten werden gespeichert
+- Kein Rollback-Mechanismus – einzige Rettung waere manueller JSON-Export (wenn vorher gemacht)
+
+**Geplante Massnahmen:**
+- [ ] **Auto-Backup vor Migration** – `localStorage.setItem('questboard_backup_v{N}', ...)` bevor `migrateState` schreibt
+- [ ] **Schema-Validierung** – `validateState(state)` Funktion prueft nach Migration alle Pflichtfelder und Datentypen
+- [ ] **Notfall-Restore in Settings** – Button "Letztes Backup wiederherstellen" liest `questboard_backup_v{N}` aus localStorage
+- [ ] **Fehlerbehandlung** – Wenn Migration oder Validierung fehlschlaegt: alten State behalten, User warnen, nicht ueberschreiben
+
+**Voraussetzung fuer:** Schema v15 (Quest-Dependencies) und alle zukuenftigen Schema-Changes.
+
+---
+
+### v5.0 – Quest-Dependencies + Relevance Score
+
+> **Referenzdokument:** [Relevance Score Regeln v1.0](2025_06_22_Relevance_Score_Regeln_v1_0.md)
+
+**Kernidee:** Quests stehen oft in logischen Ketten (Quest 3 braucht Quest 1+2 zuerst). Die Dringlichkeit einer Quest ergibt sich nicht nur aus ihrem eigenen `dueDate`, sondern aus der gesamten Abhaengigkeitskette. Wenn Quest 3 am Freitag faellig ist und Quest 1+2 jeweils 45 Minuten brauchen, dann ist Quest 1 effektiv viel dringender als ihr eigenes Faelligkeitsdatum vermuten laesst.
+
+**Was bereits vorhanden ist:**
+- `dueDate` auf Tasks (seit Schema v3)
+- `duration` auf Tasks: Sprint ~15min / Kurz ~30min / Lang ~45min (seit Schema v6)
+- Eisenhower-Quadranten als Wichtigkeits-Proxy (Q1=dringend+wichtig bis Q4=unwichtig)
+- Aktuelle Sortierung innerhalb der Quadranten: nur `a.order - b.order` (reine Drag-Reihenfolge, **keine Auto-Sortierung**)
+
+**Was fehlt:**
+- `dependsOn: [taskId, ...]` auf Tasks (analog zu `linkedSkills`) → **Schema v15**
+- Relevance Score Berechnung (pure computed, kein Storage)
+- Auto-Sort innerhalb der Quadranten nach Score
+- Visuelles Dringlichkeits-Feedback (Countdown, Farbabstufungen)
+- Blockiert-Indikator (Quest wartet auf Vorgaenger)
+- Dependency-Picker im TaskModal
+
+**Vereinfachte Score-Formel (adaptiert aus Referenzdokument):**
+```
+Verfuegbare_Zeit = dueDate - (heute + eigene_duration + SUM(abhaengige_durations))
+Prioritaets_Faktor = Quadrant-Gewicht (Q1=6, Q2=4, Q3=3, Q4=1)
+
+Ueberfaellig:  Score = Prioritaets_Faktor x 100
+Noch Zeit:     Score = MAX(1, (7 - Tage_Rest)) x Prioritaets_Faktor
+```
+
+**localStorage-Last:** Minimal. `dependsOn` ist nur ein kleines Array von IDs pro Task. Der Score wird live berechnet, nicht gespeichert.
+
+**Geplante Bloecke:**
+- [ ] **Block A: Sicherheitsnetz** – Auto-Backup + Validierung (v4.2, siehe oben)
+- [ ] **Block B: Schema v15** – `dependsOn: []` auf Tasks + Migration + Dependency-Picker im TaskModal
+- [ ] **Block C: Relevance Score** – `relevanceScore.js` Helper + Auto-Sort in Eisenhower-Quadranten + visuelles Feedback
+- [ ] **Block D: Blockiert-Logik** – Ausgegraut/Ketten-Symbol fuer Quests deren Vorgaenger nicht erledigt sind
+
+---
+
 ## MITTELFRISTIG (v3.5+ – Projekte & Vorlagen)
 
 ### Block C: Projekte & KI
-- [x] **Schritt 6:** Projekte als Unlock-Ziele im Skill-Tree ✅ (v3.5 Block C)
-- [x] **Schritt 7:** KI-Import-Template (Prompt + JSON-Schema) ✅ (v3.5 Block D)
+- [x] **Schritt 6:** Projekte als Unlock-Ziele im Skill-Tree (v3.5 Block C)
+- [x] **Schritt 7:** KI-Import-Template (Prompt + JSON-Schema) (v3.5 Block D)
 
 ### Block D: Vorlagen-System
 - [ ] **Skill-Set Templates** – Vordefinierte Vorlagen ("Softwareentwicklung", "Physik Klasse 10", "Sprachen lernen" etc.)
 - [ ] **Template-Auswahl** – Bei erstem Start oder ueber Settings waehlbar
 - [ ] **Community Templates** – Spaeter: Templates teilen/importieren
 
-### ✅ Block E: "Schmiede"-Tab (Import/Export Konsolidierung)
+### Block E: "Schmiede"-Tab (Import/Export Konsolidierung)
 
 Umgesetzt am 14.02.2026 – siehe Abschnitt "ERLEDIGT (v4.1)" weiter oben.
 
@@ -344,22 +404,51 @@ Umgesetzt am 14.02.2026 – siehe Abschnitt "ERLEDIGT (v4.1)" weiter oben.
 
 ### Datenbank statt localStorage
 
-**Problem:** Daten liegen nur im Browser. Bei Browser-Wechsel, Gerätewechsel oder Datenverlust sind die Daten weg (nur Export/Import als Backup).
+**Problem:** Daten liegen nur im Browser. Bei Browser-Wechsel, Geraetewechsel oder Datenverlust sind die Daten weg (nur Export/Import als Backup).
 
-**Status:** Bewusst aufgeschoben – localStorage reicht für Single-User. Datenbank-Migration ist selbst ein **Projekt im System** (Skills: `be-01` Supabase Setup, `be-02` SQL Grundlagen).
+**Status:** Bewusst aufgeschoben – localStorage reicht fuer Single-User. Datenbank-Migration ist selbst ein **Projekt im System** (Skills: `be-01` Supabase Setup, `be-02` SQL Grundlagen).
 
-**Entscheidung:** Wenn das Gamification-System stabil läuft und du das Board öffnen willst → Supabase als Lernprojekt. Der Skill "Datenbank" wird dabei natürlich im eigenen Quest Board getrackt. 🔄
+**Entscheidung:** Wenn das Gamification-System stabil laeuft und du das Board oeffnen willst → Supabase als Lernprojekt. Der Skill "Datenbank" wird dabei natuerlich im eigenen Quest Board getrackt.
 
 ---
 
 ## LANGFRISTIG (Ideen)
 
+### Kalender-Integration (Outlook / Google Calendar)
+
+> **Ursprungsidee:** Offene Quests automatisch in freie Kalender-Slots einplanen. Bei Nicht-Erledigung werden alle Quests nach Dringlichkeit (Relevance Score) automatisch nach hinten verschoben.
+
+**Voraussetzungen:**
+- Datenbank (Supabase) – fuer Server-seitige Logik
+- OAuth-Anbindung an Google Calendar / Microsoft Graph API
+- Relevance Score + Quest-Dependencies (v5.0) als Intelligenz fuer den Auto-Scheduler
+- Rescheduling-Logik: Wenn Quest nicht abgeschlossen → gesamte Abhaengigkeitskette zeitlich verschieben
+
+**Status:** Vision. Die Dependencies + Relevance Score (v5.0) sind die direkte Vorarbeit – wenn die Dringlichkeitsberechnung sauber im Frontend laeuft, hat ein spaeterer Kalender-Scheduler bereits die noetige Intelligenz.
+
+### Covey Wochenarbeitsblatt
+
+> **Referenzdokument:** [Covey Wochenarbeitsblatt Konzept v1.0](2025_09_06_Covey_Wochenarbeitsblatt_Konzept_v1_0.md)
+
+**Was bereits umgesetzt ist:**
+- Saege schaerfen (Q2, 20%) → Mini-Backlog im Kanban
+- 80/20 Prinzip → Covey-Ratio-Bar
+- Skill-Kategorien → aehneln "beruflichen Rollen"
+
+**Was fehlen wuerde fuer vollstaendige Umsetzung:**
+- Rollen als Lebensbereich-Konzept (Vater, Coach, Selbstfuersorge ≠ Skill-Kategorien) → neues Datenmodell
+- Wochenplanung-View mit Zeitbloecken → neue Komponente
+- Wochenziele pro Rolle → neue Verknuepfungen
+
+**Entscheidung (15.02.2026):** Zurueckgestellt. Das Rollen-Konzept ist ein komplett neues Paradigma das ueber Skill-Kategorien hinausgeht. Passt besser in eine Phase mit Datenbank, eventuell kombiniert mit der Kalender-Integration.
+
+### Weitere Ideen
 - [ ] PWA mit Offline-Support (Service Worker)
 - [ ] Mobile App via Capacitor
-- [ ] Erweiterte Analytics (Burndown Charts, Velocity, Skill-Wachstum über Zeit)
-- [ ] Benachrichtigungen bei überfälligen Tasks
+- [ ] Erweiterte Analytics (Burndown Charts, Velocity, Skill-Wachstum ueber Zeit)
+- [ ] Benachrichtigungen bei ueberfaelligen Tasks
 - [ ] Dark Mode
-- [ ] Coaching-Modus (Skill-Sets für Klienten zuweisen)
+- [ ] Coaching-Modus (Skill-Sets fuer Klienten zuweisen)
 
 ---
 
@@ -403,7 +492,12 @@ Umgesetzt am 14.02.2026 – siehe Abschnitt "ERLEDIGT (v4.1)" weiter oben.
 | **14.02.2026** | **Schmiede-Tab Konzept** | **Import/Export/KI-Setup in 5 verschiedenen Stellen verstreut → konsolidiert in einem einzigen "Schmiede"-Tab mit 4 Sektionen: Manueller Wizard (1 Kategorie + Skills), KI-Flow (mit Bestands-Export), Quest-Import, Backup & Restore. Ersetzt KI-Setup-Tab + ImportModal + ExportModal + SkillImportModal.** |
 | **14.02.2026** | **v4.1 Schmiede-Tab shipped** | **4 Accordion-Sektionen (Progressive Disclosure), 10 neue Dateien in components/schmiede/, 8 alte Dateien geloescht, Header + SkillTree bereinigt. SkillModal Create-Mode XP-Bug gefixt. Wizard Doppel-Kategorie Bug (React State Closure) geloest.** |
 | **14.02.2026** | **React State Closure Lesson** | **createCategory() + importSkills() nacheinander aufrufen fuehrt zu Duplikaten: importSkills liest categories aus Closure (alter State ohne neue Kategorie) und auto-erstellt Duplikat. Loesung: Nur importSkills aufrufen (auto-create), dann updateCategory mit Functional Updater fuer Icon/Label.** |
+| **15.02.2026** | **Relevance Score Konzept evaluiert** | **Referenzdokument (Juni 2025, Airtable) analysiert. Kernidee passt zu NeuroForge: Quest-Dependencies (`dependsOn`) + Duration-Ketten ermoeglichen automatische Dringlichkeitsberechnung. Score ist rein computed (kein Storage), nur `dependsOn: []` als neues Feld noetig (Schema v15). Vereinfachte Formel: dueDate minus Chain-Duration, gewichtet nach Eisenhower-Quadrant.** |
+| **15.02.2026** | **Covey Wochenarbeitsblatt zurueckgestellt** | **Referenzdokument (Sep 2025) analysiert. 80/20 + Saege-schaerfen bereits im Mini-Backlog umgesetzt. Volles Rollen-Konzept (Lebensrollen ≠ Skill-Kategorien) + Wochenplanung + Zeitbloecke waere neues Paradigma → benoetigt Datenbank. Spaeter evtl. kombiniert mit Kalender-Integration.** |
+| **15.02.2026** | **Migrations-Sicherheitsnetz priorisiert** | **Analyse des aktuellen Migrationssystems: 14 Versionen erfolgreich, aber kein Backup vor Migration, keine Validierung, kein Rollback. Mit scharfen Daten (keine Demo mehr) und zukuenftigen Nutzern ist das ein reales Risiko. Auto-Backup + Schema-Validierung + Notfall-Restore als Block v4.2 VOR Schema v15 geplant.** |
+| **15.02.2026** | **Kalender-Integration als Vision** | **Idee: Offene Quests automatisch in Outlook/Google Calendar Slots einplanen, bei Nicht-Erledigung nach Dringlichkeit verschieben. Benoetigt DB + OAuth + Server-Logik. Dependencies + Relevance Score (v5.0) sind die direkte Vorarbeit dafuer.** |
+| **15.02.2026** | **Aktuelle Sortierung: nur Drag-Order** | **Festgestellt: Tasks innerhalb der Eisenhower-Quadranten werden nur nach `a.order - b.order` sortiert (Drag-Reihenfolge). Keinerlei automatische Sortierung nach dueDate oder Dringlichkeit. Relevance Score wuerde das aendern.** |
 
 ---
 
-*Diese Datei wird bei Strategiediskussionen und Planungsänderungen aktualisiert.*
+*Diese Datei wird bei Strategiediskussionen und Planungsaenderungen aktualisiert.*
