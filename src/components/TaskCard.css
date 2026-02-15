@@ -244,3 +244,36 @@
   background: rgba(107, 124, 94, 0.1);
   border-radius: 3px;
 }
+
+/* Blocked Task */
+.task-card-blocked {
+  opacity: 0.55;
+}
+
+.task-card-blocked .task-card-title {
+  color: #8a8a8a;
+}
+
+.task-card-depends-blocked {
+  color: #b0a080;
+  background: rgba(176, 160, 128, 0.12);
+}
+
+/* Urgency Badges */
+.task-card-urgency-high {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #c60a0f;
+  background: rgba(198, 10, 15, 0.1);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.task-card-urgency-medium {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #e6a817;
+  background: rgba(230, 168, 23, 0.1);
+  padding: 1px 6px;
+  border-radius: 3px;
+}

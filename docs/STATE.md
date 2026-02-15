@@ -7,7 +7,7 @@
 
 ## AKTUELLER STATUS
 
-**Version:** v5.0 (Quest-Dependencies + XP-Balancing) · **Schema:** v15 · **Naechster Schritt:** Block C – Relevance Score. Siehe [ROADMAP.md](ROADMAP.md)
+**Version:** v5.0 (Quest-Dependencies + Relevance Score + Blockiert-Logik) · **Schema:** v15 · **Naechster Schritt:** Siehe [ROADMAP.md](ROADMAP.md)
 
 **Tech-Stack:** React + Vite + dnd-kit + localStorage · **Design:** Neurodivergenz-optimiert
 
@@ -19,6 +19,8 @@
 - **Personal Dashboard** – Energiekurve, Heatmap (GitHub-Style), LineChart, Projekt-Fortschritt
 - **Schmiede** – 4 Accordion-Sektionen: Lerngebiet-Wizard, KI-Lernpfad (Prompt + JSON-Import), Quest-Import, Backup & Restore
 - **Quest-Dependencies** – `dependsOn[]` auf Tasks, Dependency-Picker im TaskModal, Dependency-Badge auf TaskCard, TASK_INDEX_N Import-Referenzen
+- **Relevance Score** – Auto-Sortierung im Eisenhower nach Dringlichkeit (dueDate + Duration-Ketten + Quadrant-Gewicht), Urgency-Badges (Dringend/Bald faellig)
+- **Blockiert-Logik** – Tasks mit offenen Dependencies werden ausgegraut (opacity 0.55), Schloss-Symbol, kein Starten-Button, ans Ende sortiert
 - **KI-Lernpfad v2** – XP-Balancing-Regeln, 120%-Puffer-Pflicht, Validierungsanweisungen, dependsOn-Feld im Prompt
 - **Migrations-Sicherheitsnetz** – Auto-Backup vor Migration, Schema-Validierung, Fehler-Banner, Notfall-Restore in Settings
 - **Hilfe-Seite** – Konzept, Workflow, Covey/Eisenhower/Pareto, Farb-Code, Neurodivergenz-Prinzipien
@@ -51,6 +53,7 @@ Quest_Board/
 │   │   ├── questTypes.js          <- QUEST_TYPES, DURATIONS, XP_VALUES, Level-Helpers, RPG_ATTRIBUTES
 │   │   ├── demoData.js            <- generateDemoData() + generateDemoProjects()
 │   │   ├── projectHelpers.js      <- getProjectStatus, getProjectProgress, getProjectsForSkill
+│   │   ├── relevanceScore.js      <- isBlocked, calculateRelevanceScore, QUADRANT_WEIGHT, DURATION_MINUTES
 │   │   └── aiPromptTemplate.js    <- KI-Prompt-Template v15 (XP-Balancing + dependsOn) + EXAMPLE_TEMPLATES
 │   ├── hooks/
 │   │   ├── useLocalStorage.js     <- localStorage Wrapper
@@ -72,7 +75,7 @@ Quest_Board/
 │   │   ├── EnergyCurve.jsx/css    <- Persoenliche Energiekurve
 │   │   ├── DemoBanner.jsx/css     <- Demo-Modus Banner
 │   │   ├── HelpPage.jsx/css       <- Hilfe-Seite
-│   │   ├── TaskCard.jsx/css       <- Quest-Karte (+ Dependency-Badge)
+│   │   ├── TaskCard.jsx/css       <- Quest-Karte (+ Dependency/Blocked-Badge + Urgency-Badge)
 │   │   ├── DroppableContainer.jsx <- DnD Wrapper
 │   │   ├── Modal.jsx/css          <- Basis-Modal
 │   │   ├── TaskModal.jsx/css      <- Quest CRUD + Skill-Picker + Dependency-Picker

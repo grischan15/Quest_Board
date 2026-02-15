@@ -30,6 +30,8 @@ export default function TaskCard({
   onReturnToBacklog,
   showStart = false,
   showFastLane = false,
+  isTaskBlocked = false,
+  relevanceScore = null,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -45,7 +47,7 @@ export default function TaskCard({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.5 : undefined,
   };
 
   const isDone = task.kanbanColumn === 'done';
@@ -64,7 +66,7 @@ export default function TaskCard({
       style={cardStyle}
       className={`task-card ${task.fastLane && !isDone ? 'task-card-fastlane' : ''} ${
         isDone ? 'task-card-done' : ''
-      } ${isDone && wasFastLane ? 'task-card-was-fastlane' : ''}`}
+      } ${isDone && wasFastLane ? 'task-card-was-fastlane' : ''} ${isTaskBlocked ? 'task-card-blocked' : ''}`}
       {...attributes}
       {...listeners}
     >
@@ -167,13 +169,18 @@ export default function TaskCard({
           </span>
         )}
         {task.dependsOn && task.dependsOn.length > 0 && (
-          <span className="task-card-depends">
-            &#128279; {task.dependsOn.length}
+          <span className={`task-card-depends ${isTaskBlocked ? 'task-card-depends-blocked' : ''}`}>
+            {isTaskBlocked ? '\uD83D\uDD12' : '\uD83D\uDD17'} {task.dependsOn.length}
+          </span>
+        )}
+        {!isTaskBlocked && relevanceScore !== null && relevanceScore >= 20 && (
+          <span className={relevanceScore >= 100 ? 'task-card-urgency-high' : 'task-card-urgency-medium'}>
+            {relevanceScore >= 100 ? '!! Dringend' : 'Bald f\u00E4llig'}
           </span>
         )}
       </div>
       <div className="task-card-footer">
-        {showStart && (
+        {showStart && !isTaskBlocked && (
           <button
             className="task-start-btn"
             onClick={(e) => {

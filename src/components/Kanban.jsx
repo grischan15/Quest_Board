@@ -10,6 +10,7 @@ import { useState } from 'react';
 import DroppableContainer from './DroppableContainer';
 import TaskCard from './TaskCard';
 import { KANBAN_COLUMNS } from '../hooks/useQuestBoard';
+import { isBlocked } from '../data/relevanceScore';
 import './Kanban.css';
 
 const workColumns = KANBAN_COLUMNS.filter((c) => c.id !== 'done');
@@ -113,7 +114,7 @@ function KanbanRow({
   );
 }
 
-function MiniBacklog({ q1Tasks, q2Tasks, onStart, onEdit }) {
+function MiniBacklog({ q1Tasks, q2Tasks, allTasks, onStart, onEdit }) {
   const totalQ1 = q1Tasks.length;
   const totalQ2 = q2Tasks.length;
   const total = totalQ1 + totalQ2;
@@ -132,22 +133,28 @@ function MiniBacklog({ q1Tasks, q2Tasks, onStart, onEdit }) {
           <div className="mini-backlog-empty">Keine Q2 Quests</div>
         ) : (
           <div className="mini-backlog-list">
-            {q2Tasks.slice(0, 4).map((task) => (
-              <div key={task.id} className="mini-backlog-item mini-backlog-item-q2">
-                <div
-                  className="mini-backlog-item-title"
-                  onClick={() => onEdit?.(task)}
-                >
-                  {task.title}
+            {q2Tasks.slice(0, 4).map((task) => {
+              const blocked = isBlocked(task, allTasks);
+              return (
+                <div key={task.id} className={`mini-backlog-item mini-backlog-item-q2${blocked ? ' mini-backlog-item-blocked' : ''}`}>
+                  <div
+                    className="mini-backlog-item-title"
+                    onClick={() => onEdit?.(task)}
+                  >
+                    {blocked && <span className="mini-backlog-lock">{'\uD83D\uDD12'} </span>}
+                    {task.title}
+                  </div>
+                  {!blocked && (
+                    <button
+                      className="mini-backlog-start-btn"
+                      onClick={() => onStart?.(task.id)}
+                    >
+                      &#9654;
+                    </button>
+                  )}
                 </div>
-                <button
-                  className="mini-backlog-start-btn"
-                  onClick={() => onStart?.(task.id)}
-                >
-                  &#9654;
-                </button>
-              </div>
-            ))}
+              );
+            })}
             {totalQ2 > 4 && (
               <div className="mini-backlog-more">+{totalQ2 - 4} weitere</div>
             )}
@@ -165,22 +172,28 @@ function MiniBacklog({ q1Tasks, q2Tasks, onStart, onEdit }) {
           <div className="mini-backlog-empty">Keine Q1 Quests</div>
         ) : (
           <div className="mini-backlog-list">
-            {q1Tasks.slice(0, 6).map((task) => (
-              <div key={task.id} className="mini-backlog-item">
-                <div
-                  className="mini-backlog-item-title"
-                  onClick={() => onEdit?.(task)}
-                >
-                  {task.title}
+            {q1Tasks.slice(0, 6).map((task) => {
+              const blocked = isBlocked(task, allTasks);
+              return (
+                <div key={task.id} className={`mini-backlog-item${blocked ? ' mini-backlog-item-blocked' : ''}`}>
+                  <div
+                    className="mini-backlog-item-title"
+                    onClick={() => onEdit?.(task)}
+                  >
+                    {blocked && <span className="mini-backlog-lock">{'\uD83D\uDD12'} </span>}
+                    {task.title}
+                  </div>
+                  {!blocked && (
+                    <button
+                      className="mini-backlog-start-btn"
+                      onClick={() => onStart?.(task.id)}
+                    >
+                      &#9654;
+                    </button>
+                  )}
                 </div>
-                <button
-                  className="mini-backlog-start-btn"
-                  onClick={() => onStart?.(task.id)}
-                >
-                  &#9654;
-                </button>
-              </div>
-            ))}
+              );
+            })}
             {totalQ1 > 6 && (
               <div className="mini-backlog-more">+{totalQ1 - 6} weitere</div>
             )}
@@ -214,6 +227,7 @@ export default function Kanban({
   getColumnTasks,
   getDoneTasksGrouped,
   kanbanTasks,
+  allTasks,
   q1Tasks,
   q2Tasks,
   onStart,
@@ -331,6 +345,7 @@ export default function Kanban({
               <MiniBacklog
                 q1Tasks={q1Tasks}
                 q2Tasks={q2Tasks}
+                allTasks={allTasks}
                 onStart={onStart}
                 onEdit={onEdit}
               />

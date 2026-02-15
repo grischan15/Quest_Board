@@ -4,6 +4,7 @@ import { useLocalStorage } from './useLocalStorage';
 import { initialSkills, initialCategories } from '../data/skillsData';
 import { getLevel } from '../data/questTypes';
 import { generateDemoData, generateDemoProjects } from '../data/demoData';
+import { calculateRelevanceScore } from '../data/relevanceScore';
 
 const STORAGE_KEY = 'questboard';
 const SCHEMA_VERSION = 15;
@@ -800,10 +801,29 @@ export function useQuestBoard() {
   const eisenhowerTasks = tasks.filter((t) => t.location === 'eisenhower');
   const kanbanTasks = tasks.filter((t) => t.location === 'kanban');
 
-  const getQuadrantTasks = (quadrant) =>
-    eisenhowerTasks
-      .filter((t) => t.quadrant === quadrant)
-      .sort((a, b) => a.order - b.order);
+  const getQuadrantTasks = (quadrant) => {
+    const filtered = eisenhowerTasks.filter((t) => t.quadrant === quadrant);
+    // Calculate score for each task
+    const scored = filtered.map((t) => ({
+      task: t,
+      ...calculateRelevanceScore(t, tasks),
+    }));
+    // Sort: blocked → end, then scored descending, then unscored by manual order
+    scored.sort((a, b) => {
+      // Blocked tasks to the end
+      if (a.blocked && !b.blocked) return 1;
+      if (!a.blocked && b.blocked) return -1;
+      if (a.blocked && b.blocked) return a.task.order - b.task.order;
+      // Both have score > 0: descending
+      if (a.score > 0 && b.score > 0) return b.score - a.score;
+      // Scored before unscored
+      if (a.score > 0 && b.score === 0) return -1;
+      if (a.score === 0 && b.score > 0) return 1;
+      // Both unscored: manual order
+      return a.task.order - b.task.order;
+    });
+    return scored.map((s) => s.task);
+  };
 
   const getColumnTasks = (column, isFastLane) =>
     kanbanTasks

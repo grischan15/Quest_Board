@@ -45,8 +45,8 @@ Noch Zeit:     Score = MAX(1, (7 - Tage_Rest)) x Prioritaets_Faktor
 **Geplante Bloecke:**
 - [x] **Block A:** Sicherheitsnetz (v4.2, erledigt)
 - [x] **Block B:** Schema v15 – `dependsOn: []` + Migration + Dependency-Picker + KI-Prompt XP-Balancing
-- [ ] **Block C:** Relevance Score – `relevanceScore.js` + Auto-Sort + visuelles Feedback
-- [ ] **Block D:** Blockiert-Logik – Ausgegraut/Ketten-Symbol fuer wartende Quests
+- [x] **Block C:** Relevance Score – `relevanceScore.js` + Auto-Sort + visuelles Feedback
+- [x] **Block D:** Blockiert-Logik – Ausgegraut/Schloss-Symbol fuer wartende Quests
 
 ---
 
@@ -121,6 +121,9 @@ Offene Quests automatisch in freie Kalender-Slots einplanen. Bei Nicht-Erledigun
 | 15.02 | v4.2 Migrations-Sicherheitsnetz | Auto-Backup + validateState + Fehler-Banner + Notfall-Restore. Voraussetzung fuer Schema v15 |
 | 15.02 | XP-Balancing + Dependencies zusammen | KI-Prompt + Import-Logik werden ohnehin angefasst. dependsOn + XP-Regeln in einem Block |
 | 15.02 | TASK_INDEX_N Referenz-System | Analog zu SKILL_INDEX. Ermoeglicht Dependencies im KI-generierten JSON vor ID-Vergabe |
+| 15.02 | Relevance Score Formel | Verfuegbare_Zeit = dueDate - (jetzt + eigene_duration + dep_durations). Score = MAX(1, 7-Tage_Rest) x Quadrant-Gewicht. Blockiert = -1, kein dueDate = 0 |
+| 15.02 | Blockiert-Design dezent | opacity 0.55 + Schloss-Symbol statt Ketten. Sanft statt bestrafend (Neurodivergenz-Prinzip) |
+| 15.02 | Score nur im Eisenhower | Kanban-Spalten bleiben manuell sortiert (dort arbeitet man aktiv). Score sortiert nur Backlog-Quadranten |
 
 ---
 

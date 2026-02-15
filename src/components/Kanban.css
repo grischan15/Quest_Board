@@ -345,6 +345,14 @@
   border-left: 2px solid rgba(45, 138, 78, 0.3);
 }
 
+.mini-backlog-item-blocked {
+  opacity: 0.55;
+}
+
+.mini-backlog-lock {
+  font-size: 0.6rem;
+}
+
 .mini-backlog-item-title {
   flex: 1;
   font-size: 0.7rem;

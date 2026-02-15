@@ -403,6 +403,7 @@ export default function App() {
         {activeTab === 'eisenhower' && (
           <Eisenhower
             getQuadrantTasks={board.getQuadrantTasks}
+            allTasks={board.tasks}
             onStart={handleStartTask}
             onEdit={handleEditTask}
             onDelete={handleRequestDelete}
@@ -416,6 +417,7 @@ export default function App() {
             getColumnTasks={board.getColumnTasks}
             getDoneTasksGrouped={board.getDoneTasksGrouped}
             kanbanTasks={board.kanbanTasks}
+            allTasks={board.tasks}
             q1Tasks={board.getQuadrantTasks('q1')}
             q2Tasks={board.getQuadrantTasks('q2')}
             onStart={handleStartTask}

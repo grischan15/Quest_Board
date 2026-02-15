@@ -10,6 +10,7 @@ import { useState } from 'react';
 import DroppableContainer from './DroppableContainer';
 import TaskCard from './TaskCard';
 import { QUEST_TYPES } from '../data/questTypes';
+import { isBlocked, calculateRelevanceScore } from '../data/relevanceScore';
 import './Eisenhower.css';
 
 const quadrants = [
@@ -23,6 +24,7 @@ const allZones = [...quadrants, { id: 'unsorted' }];
 
 export default function Eisenhower({
   getQuadrantTasks,
+  allTasks,
   onStart,
   onEdit,
   onDelete,
@@ -36,10 +38,10 @@ export default function Eisenhower({
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
 
-  const allTasks = allZones.flatMap((q) => getQuadrantTasks(q.id));
-  const hasAnyType = allTasks.some((t) => t.questType);
+  const allQuadrantTasks = allZones.flatMap((q) => getQuadrantTasks(q.id));
+  const hasAnyType = allQuadrantTasks.some((t) => t.questType);
   const unsortedTasks = getQuadrantTasks('unsorted');
-  const activeTask = allTasks.find((t) => t.id === activeId);
+  const activeTask = allQuadrantTasks.find((t) => t.id === activeId);
 
   const filterTask = (task) => !filterType || task.questType === filterType;
 
@@ -55,19 +57,18 @@ export default function Eisenhower({
     const taskId = active.id;
     let targetQuadrant = over.id;
     if (!allZones.find((q) => q.id === targetQuadrant)) {
-      const overTask = allTasks.find((t) => t.id === over.id);
+      const overTask = allQuadrantTasks.find((t) => t.id === over.id);
       if (overTask) targetQuadrant = overTask.quadrant;
       else return;
     }
 
-    const task = allTasks.find((t) => t.id === taskId);
+    const task = allQuadrantTasks.find((t) => t.id === taskId);
     if (task && task.quadrant !== targetQuadrant) {
       moveToQuadrant(taskId, targetQuadrant);
     }
   }
 
-  const quadrantTasks = quadrants.flatMap((q) => getQuadrantTasks(q.id));
-  const isEmpty = allTasks.length === 0;
+  const isEmpty = allQuadrantTasks.length === 0;
 
   return (
     <div className="eisenhower-wrapper">
@@ -135,16 +136,22 @@ export default function Eisenhower({
                       items={tasks.map((t) => t.id)}
                       className="quadrant-tasks"
                     >
-                      {tasks.map((task) => (
-                        <TaskCard
-                          key={task.id}
-                          task={task}
-                          showStart
-                          onStart={onStart}
-                          onEdit={onEdit}
-                          onDelete={onDelete}
-                        />
-                      ))}
+                      {tasks.map((task) => {
+                        const blocked = isBlocked(task, allTasks);
+                        const scoreData = calculateRelevanceScore(task, allTasks);
+                        return (
+                          <TaskCard
+                            key={task.id}
+                            task={task}
+                            showStart
+                            onStart={onStart}
+                            onEdit={onEdit}
+                            onDelete={onDelete}
+                            isTaskBlocked={blocked}
+                            relevanceScore={scoreData.score > 0 ? scoreData.score : null}
+                          />
+                        );
+                      })}
                     </DroppableContainer>
                   </div>
                 );
@@ -166,16 +173,22 @@ export default function Eisenhower({
                   items={unsortedTasks.filter(filterTask).map((t) => t.id)}
                   className="unsorted-tasks"
                 >
-                  {unsortedTasks.filter(filterTask).map((task) => (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      showStart
-                      onStart={onStart}
-                      onEdit={onEdit}
-                      onDelete={onDelete}
-                    />
-                  ))}
+                  {unsortedTasks.filter(filterTask).map((task) => {
+                    const blocked = isBlocked(task, allTasks);
+                    const scoreData = calculateRelevanceScore(task, allTasks);
+                    return (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        showStart
+                        onStart={onStart}
+                        onEdit={onEdit}
+                        onDelete={onDelete}
+                        isTaskBlocked={blocked}
+                        relevanceScore={scoreData.score > 0 ? scoreData.score : null}
+                      />
+                    );
+                  })}
                 </DroppableContainer>
               </div>
             )}
