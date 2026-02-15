@@ -364,6 +364,20 @@ export default function App() {
         onSettingsClick={() => setShowSettings(true)}
       />
 
+      {board.migrationError && (
+        <div className="migration-banner">
+          <span className="migration-banner-text">
+            Migration fehlgeschlagen &ndash; deine Daten wurden nicht veraendert.
+          </span>
+          <button
+            className="migration-banner-btn"
+            onClick={() => setShowSettings(true)}
+          >
+            Einstellungen
+          </button>
+        </div>
+      )}
+
       {board.isDemo && (
         <DemoBanner onClearDemo={board.clearDemoData} />
       )}
@@ -546,6 +560,11 @@ export default function App() {
           isDemo={board.isDemo}
           onClearDemo={() => {
             board.clearDemoData();
+            setShowSettings(false);
+          }}
+          backups={board.getBackups()}
+          onRestoreBackup={(key) => {
+            board.restoreFromBackup(key);
             setShowSettings(false);
           }}
           onSave={(newSettings) => {

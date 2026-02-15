@@ -12,3 +12,42 @@
   overflow-x: hidden;
   min-height: 0;
 }
+
+.migration-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: #fde8e8;
+  border-bottom: 1px solid #e8c0c0;
+  font-size: 0.84rem;
+  color: #7f1d1d;
+}
+
+.migration-banner-text {
+  font-weight: 500;
+}
+
+.migration-banner-btn {
+  padding: 5px 14px;
+  background: #b91c1c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.migration-banner-btn:hover {
+  background: #991b1b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .migration-banner-btn {
+    transition: none;
+  }
+}

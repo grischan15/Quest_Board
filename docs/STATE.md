@@ -7,7 +7,7 @@
 
 ## AKTUELLER STATUS
 
-**Version:** v4.1 (Schmiede-Tab) · **Schema:** v14 · **Naechster Schritt:** v4.2 Migrations-Sicherheitsnetz → v5.0 Quest-Dependencies. Siehe [ROADMAP.md](ROADMAP.md)
+**Version:** v4.2 (Migrations-Sicherheitsnetz) · **Schema:** v14 · **Naechster Schritt:** v5.0 Quest-Dependencies. Siehe [ROADMAP.md](ROADMAP.md)
 
 **Tech-Stack:** React + Vite + dnd-kit + localStorage · **Design:** Neurodivergenz-optimiert
 
@@ -18,6 +18,7 @@
 - **Skill-Tree** – Skills mit Level 0-5 + XP + RPG Dashboard (Radar-Chart, CharacterCard, RecentSkills) + Projekte als Unlock-Ziele
 - **Personal Dashboard** – Energiekurve, Heatmap (GitHub-Style), LineChart, Projekt-Fortschritt
 - **Schmiede** – 4 Accordion-Sektionen: Lerngebiet-Wizard, KI-Lernpfad (Prompt + JSON-Import), Quest-Import, Backup & Restore
+- **Migrations-Sicherheitsnetz** – Auto-Backup vor Migration, Schema-Validierung, Fehler-Banner, Notfall-Restore in Settings
 - **Hilfe-Seite** – Konzept, Workflow, Covey/Eisenhower/Pareto, Farb-Code, Neurodivergenz-Prinzipien
 - **Gamification** – Quest-Typen (Focus/Input/Create/Routine/Reflect), Duration (Sprint/Kurz/Lang), XP (30/50/80), Konfetti + Level-Up
 - **Demo-Daten** – ~50 Beispiel-Quests + 4 Projekte beim ersten Start, loeschbar
@@ -51,7 +52,7 @@ Quest_Board/
 │   ├── hooks/
 │   │   ├── useLocalStorage.js     <- localStorage Wrapper
 │   │   ├── useDashboardData.js    <- Heatmap, LineChart, EnergyCurve Datenaufbereitung
-│   │   └── useQuestBoard.js       <- Haupt-State (Schema v14, migrateState, CRUD, Import/Export)
+│   │   └── useQuestBoard.js       <- Haupt-State (Schema v14, migrateState, CRUD, Import/Export, Auto-Backup, validateState)
 │   ├── components/
 │   │   ├── Header.jsx/css         <- Tabs + Branding + Settings
 │   │   ├── Eisenhower.jsx/css     <- 4 Quadranten + Unsortiert + Energie-Filter
@@ -76,7 +77,7 @@ Quest_Board/
 │   │   ├── CategoryModal.jsx/css  <- Kategorie CRUD + Emoji-Picker
 │   │   ├── ProjectModal.jsx/css   <- Projekt CRUD + Requirements-Picker
 │   │   ├── SkillCheckModal.jsx/css <- Done-Flow: XP + Konfetti + Projekt-Impact
-│   │   ├── SettingsModal.jsx/css  <- WIP-Limits + Wildcards + Demo-Delete
+│   │   ├── SettingsModal.jsx/css  <- WIP-Limits + Wildcards + Demo-Delete + Notfall-Backups
 │   │   └── DeleteModal.jsx/css    <- Loeschbestaetigung
 │   ├── components/schmiede/
 │   │   ├── SchmiedePage.jsx/css   <- Accordion-Layout (4 Sektionen)

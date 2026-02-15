@@ -18,20 +18,6 @@
 
 ## NAECHSTE SCHRITTE
 
-### v4.2 – Migrations-Sicherheitsnetz
-
-**Problem:** `migrateState()` hat 14 Schema-Versionen erfolgreich migriert, aber kein Sicherheitsnetz. Bei einem Bug in der Migration werden scharfe Daten unwiderruflich ueberschrieben.
-
-**Geplante Massnahmen:**
-- [ ] **Auto-Backup vor Migration** – `localStorage.setItem('questboard_backup_v{N}', ...)` bevor migrateState schreibt
-- [ ] **Schema-Validierung** – `validateState(state)` prueft nach Migration alle Pflichtfelder und Datentypen
-- [ ] **Notfall-Restore in Settings** – Button "Letztes Backup wiederherstellen"
-- [ ] **Fehlerbehandlung** – Bei Fehler: alten State behalten, User warnen, nicht ueberschreiben
-
-**Voraussetzung fuer:** Schema v15 und alle zukuenftigen Schema-Changes.
-
----
-
 ### v5.0 – Quest-Dependencies + Relevance Score
 
 > **Referenz:** [Relevance Score Regeln v1.0](2025_06_22_Relevance_Score_Regeln_v1_0.md)
@@ -58,7 +44,7 @@ Noch Zeit:     Score = MAX(1, (7 - Tage_Rest)) x Prioritaets_Faktor
 ```
 
 **Geplante Bloecke:**
-- [ ] **Block A:** Sicherheitsnetz (v4.2, siehe oben)
+- [x] **Block A:** Sicherheitsnetz (v4.2, erledigt)
 - [ ] **Block B:** Schema v15 – `dependsOn: []` + Migration + Dependency-Picker
 - [ ] **Block C:** Relevance Score – `relevanceScore.js` + Auto-Sort + visuelles Feedback
 - [ ] **Block D:** Blockiert-Logik – Ausgegraut/Ketten-Symbol fuer wartende Quests
@@ -133,6 +119,7 @@ Offene Quests automatisch in freie Kalender-Slots einplanen. Bei Nicht-Erledigun
 | 15.02 | Kalender-Integration als Vision | Auto-Scheduling in Outlook/Google. Dependencies + Score sind Vorarbeit |
 | 15.02 | KI-Template: nur 1 Projekt | 2-4 Projekte ueberfordern bei Neurodivergenz. 1 klares Ziel motiviert besser |
 | 15.02 | Docs-Struktur bereinigt | CLAUDE.md=Regeln, STATE=Gegenwart, ROADMAP=Zukunft+Log, Git=Historie. Keine Redundanz |
+| 15.02 | v4.2 Migrations-Sicherheitsnetz | Auto-Backup + validateState + Fehler-Banner + Notfall-Restore. Voraussetzung fuer Schema v15 |
 
 ---
 

@@ -5,7 +5,7 @@ import './SettingsModal.css';
 
 const workColumns = KANBAN_COLUMNS.filter((c) => c.id !== 'done');
 
-export default function SettingsModal({ settings, isDemo, onClearDemo, onSave, onClose }) {
+export default function SettingsModal({ settings, isDemo, onClearDemo, backups, onRestoreBackup, onSave, onClose }) {
   const [wipLimits, setWipLimits] = useState({ ...settings.wipLimits });
   const [maxWildcardsPerDay, setMaxWildcardsPerDay] = useState(settings.maxWildcardsPerDay);
 
@@ -84,6 +84,35 @@ export default function SettingsModal({ settings, isDemo, onClearDemo, onSave, o
             >
               Demo-Daten loeschen
             </button>
+          </div>
+        )}
+
+        {backups && backups.length > 0 && (
+          <div className="settings-section settings-section-backup">
+            <div className="settings-section-title">Notfall-Backups</div>
+            <div className="settings-section-hint">
+              Automatische Backups vor Schema-Migrationen. Nur im Notfall wiederherstellen!
+            </div>
+            <ul className="settings-backup-list">
+              {backups.map((b) => (
+                <li key={b.key} className="settings-backup-item">
+                  <span className="settings-backup-info">
+                    Schema v{b.version} &ndash; {b.taskCount} Quests, {b.skillCount} Skills
+                  </span>
+                  <button
+                    type="button"
+                    className="settings-backup-restore"
+                    onClick={() => {
+                      if (window.confirm(`Backup v${b.version} wiederherstellen? Aktuelle Daten werden ueberschrieben!`)) {
+                        onRestoreBackup(b.key);
+                      }
+                    }}
+                  >
+                    Wiederherstellen
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 

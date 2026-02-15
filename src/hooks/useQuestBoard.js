@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useLocalStorage } from './useLocalStorage';
 import { initialSkills, initialCategories } from '../data/skillsData';
@@ -201,6 +201,79 @@ function migrateState(state) {
   return migrated;
 }
 
+function cleanupOldBackups(keep) {
+  const backupKeys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('questboard_backup_v')) {
+      const version = parseInt(key.replace('questboard_backup_v', ''), 10);
+      if (!isNaN(version)) {
+        backupKeys.push({ key, version });
+      }
+    }
+  }
+  backupKeys.sort((a, b) => b.version - a.version);
+  for (let i = keep; i < backupKeys.length; i++) {
+    localStorage.removeItem(backupKeys[i].key);
+  }
+}
+
+function validateState(state) {
+  const errors = [];
+  if (state.version !== SCHEMA_VERSION) {
+    errors.push(`version ist ${state.version}, erwartet ${SCHEMA_VERSION}`);
+  }
+  if (!Array.isArray(state.tasks)) {
+    errors.push('tasks ist kein Array');
+  } else {
+    state.tasks.forEach((t, i) => {
+      if (!t.id) errors.push(`task[${i}] hat keine id`);
+      if (!t.title) errors.push(`task[${i}] hat keinen title`);
+      if (!t.location) errors.push(`task[${i}] hat keine location`);
+      if (!Array.isArray(t.history)) errors.push(`task[${i}] hat keine history`);
+    });
+  }
+  if (!Array.isArray(state.skills)) {
+    errors.push('skills ist kein Array');
+  } else {
+    state.skills.forEach((s, i) => {
+      if (!s.id) errors.push(`skill[${i}] hat keine id`);
+      if (!s.name) errors.push(`skill[${i}] hat keinen name`);
+      if (!s.category) errors.push(`skill[${i}] hat keine category`);
+    });
+  }
+  if (!Array.isArray(state.categories)) {
+    errors.push('categories ist kein Array');
+  }
+  if (!Array.isArray(state.projects)) {
+    errors.push('projects ist kein Array');
+  }
+  if (!state.settings || !state.settings.wipLimits || state.settings.maxWildcardsPerDay == null) {
+    errors.push('settings unvollstaendig');
+  }
+  return errors.length === 0 ? { valid: true } : { valid: false, errors };
+}
+
+function getBackups() {
+  const backups = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('questboard_backup_v')) {
+      try {
+        const data = JSON.parse(localStorage.getItem(key));
+        backups.push({
+          key,
+          version: data.version || 0,
+          taskCount: (data.tasks || []).length,
+          skillCount: (data.skills || []).length,
+        });
+      } catch { /* skip corrupt backups */ }
+    }
+  }
+  backups.sort((a, b) => b.version - a.version);
+  return backups;
+}
+
 function addHistoryEntry(task, action, from, to) {
   return {
     ...task,
@@ -218,17 +291,49 @@ export const KANBAN_COLUMNS = [
 
 export function useQuestBoard() {
   const [rawState, setRawState] = useLocalStorage(STORAGE_KEY, getInitialState);
-  const state = migrateState(rawState);
+  const migrationRef = useRef({ version: null, error: null });
 
-  if (rawState.version !== state.version) {
+  let state = rawState;
+  let migrationError = null;
+
+  if (rawState && rawState.version < SCHEMA_VERSION) {
+    if (migrationRef.current.version !== rawState.version) {
+      migrationRef.current.version = rawState.version;
+
+      // Auto-backup BEFORE overwriting
+      try {
+        localStorage.setItem(
+          `questboard_backup_v${rawState.version}`,
+          JSON.stringify(rawState)
+        );
+        cleanupOldBackups(3);
+      } catch { /* localStorage full – continue without backup */ }
+
+      try {
+        const migrated = migrateState(rawState);
+        const validation = validateState(migrated);
+        if (!validation.valid) {
+          throw new Error(`Validierung fehlgeschlagen: ${validation.errors.join(', ')}`);
+        }
+        migrationRef.current.error = null;
+        state = migrated;
+      } catch (err) {
+        console.error('Migration failed:', err);
+        migrationRef.current.error = err.message;
+      }
+    }
+    migrationError = migrationRef.current.error;
+  }
+
+  if (!migrationError && rawState.version !== state.version) {
     setRawState(state);
   }
 
-  const tasks = state.tasks || [];
-  const skills = state.skills || initialSkills;
-  const categories = state.categories || initialCategories;
-  const projects = state.projects || [];
-  const settings = state.settings || DEFAULT_SETTINGS;
+  const tasks = Array.isArray(state.tasks) ? state.tasks : [];
+  const skills = Array.isArray(state.skills) ? state.skills : initialSkills;
+  const categories = Array.isArray(state.categories) ? state.categories : initialCategories;
+  const projects = Array.isArray(state.projects) ? state.projects : [];
+  const settings = (state.settings && state.settings.wipLimits) ? state.settings : DEFAULT_SETTINGS;
   const isDemo = state.isDemo || false;
 
   const updateTasks = useCallback((updater) => {
@@ -750,6 +855,19 @@ export function useQuestBoard() {
     URL.revokeObjectURL(url);
   }, [tasks, skills, categories, projects, settings]);
 
+  // Restore from auto-backup (migration safety net)
+  const restoreFromBackup = useCallback((key) => {
+    try {
+      const data = JSON.parse(localStorage.getItem(key));
+      if (data) {
+        migrationRef.current = { version: null, error: null };
+        setRawState(data);
+        return true;
+      }
+    } catch { /* corrupt backup */ }
+    return false;
+  }, [setRawState]);
+
   // Restore from exported JSON (BUG-001 fix: merge instead of replace)
   const restoreData = useCallback((data) => {
     if (!data || !data.tasks || !data.skills) return false;
@@ -784,12 +902,15 @@ export function useQuestBoard() {
     projects,
     settings,
     isDemo,
+    migrationError,
     eisenhowerTasks,
     kanbanTasks,
     getQuadrantTasks,
     getColumnTasks,
     getDoneTasksGrouped,
     getWildcardsUsedToday,
+    getBackups,
+    restoreFromBackup,
     clearDemoData,
     createTask,
     importTasks,
