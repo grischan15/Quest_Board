@@ -24,7 +24,7 @@ export default function CharacterCard({
       <div className="character-card-header">
         <div className="character-level">Lv. {totalLevel}</div>
         <div className="character-xp">{totalXP} XP gesamt</div>
-        <div className="character-level-hint">Durchschnitt deiner Kategorie-St&auml;rken</div>
+        <div className="character-level-hint">Basiert auf deinen sichtbaren Dashboard-Kategorien</div>
       </div>
 
       <div className="character-next-levels">

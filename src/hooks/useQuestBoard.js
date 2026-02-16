@@ -905,6 +905,8 @@ export function useQuestBoard() {
       tasks: data.tasks,
       skills: data.skills,
       categories: data.categories,
+      projects: data.projects,
+      settings: data.settings,
     });
 
     // Merge skills and categories with predefined ones
