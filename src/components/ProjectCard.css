@@ -266,6 +266,13 @@
   border-radius: 10px;
 }
 
+/* Import Preview Highlight */
+.project-card-import-new {
+  border-left: 4px solid #c60a0f;
+  background: rgba(198, 10, 15, 0.05);
+  box-shadow: 0 1px 6px rgba(198, 10, 15, 0.2);
+}
+
 /* prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .project-card {

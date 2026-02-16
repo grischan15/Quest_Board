@@ -31,6 +31,7 @@ export default function SchmiedePage({
   projects,
   tasks,
   isDemo,
+  importReview,
   onWizardSave,
   onImportTasks,
   onExportData,
@@ -82,6 +83,7 @@ export default function SchmiedePage({
               skills={skills}
               projects={projects}
               isDemo={isDemo}
+              importReview={importReview}
               onImportJson={onAiImportJson}
             />
           </AccordionSection>

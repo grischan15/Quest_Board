@@ -1,7 +1,7 @@
 import { getProjectStatus, getProjectProgress, PROJECT_STATUS_CONFIG } from '../data/projectHelpers';
 import './ProjectCard.css';
 
-export default function ProjectCard({ project, skills, compact, onClick }) {
+export default function ProjectCard({ project, skills, compact, onClick, isHighlighted }) {
   const status = getProjectStatus(project, skills);
   const progress = getProjectProgress(project, skills);
   const config = PROJECT_STATUS_CONFIG[status];
@@ -9,7 +9,7 @@ export default function ProjectCard({ project, skills, compact, onClick }) {
   if (compact) {
     return (
       <div
-        className="project-card project-card-compact"
+        className={`project-card project-card-compact${isHighlighted ? ' project-card-import-new' : ''}`}
         onClick={onClick}
         style={{ '--proj-color': config.color, '--proj-bg': config.bg }}
       >
@@ -35,7 +35,7 @@ export default function ProjectCard({ project, skills, compact, onClick }) {
 
   return (
     <div
-      className="project-card project-card-full"
+      className={`project-card project-card-full${isHighlighted ? ' project-card-import-new' : ''}`}
       onClick={onClick}
       style={{ '--proj-color': config.color, '--proj-bg': config.bg }}
     >

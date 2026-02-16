@@ -335,6 +335,21 @@
   font-weight: 400;
 }
 
+/* Review hint */
+.ai-lernpfad-review-hint {
+  font-size: 0.82rem;
+  color: #1e40af;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 12px 14px;
+  line-height: 1.5;
+}
+
+.ai-lernpfad-review-hint strong {
+  color: #1e3a8a;
+}
+
 /* Tips */
 .ai-lernpfad-tips {
   display: flex;

@@ -114,7 +114,7 @@ function KanbanRow({
   );
 }
 
-function MiniBacklog({ q1Tasks, q2Tasks, allTasks, onStart, onEdit }) {
+function MiniBacklog({ q1Tasks, q2Tasks, allTasks, onStart, onEdit, highlightTaskIds }) {
   const totalQ1 = q1Tasks.length;
   const totalQ2 = q2Tasks.length;
   const total = totalQ1 + totalQ2;
@@ -136,7 +136,7 @@ function MiniBacklog({ q1Tasks, q2Tasks, allTasks, onStart, onEdit }) {
             {q2Tasks.slice(0, 4).map((task) => {
               const blocked = isBlocked(task, allTasks);
               return (
-                <div key={task.id} className={`mini-backlog-item mini-backlog-item-q2${blocked ? ' mini-backlog-item-blocked' : ''}`}>
+                <div key={task.id} className={`mini-backlog-item mini-backlog-item-q2${blocked ? ' mini-backlog-item-blocked' : ''}${highlightTaskIds?.has(task.id) ? ' mini-backlog-item-import-new' : ''}`}>
                   <div
                     className="mini-backlog-item-title"
                     onClick={() => onEdit?.(task)}
@@ -175,7 +175,7 @@ function MiniBacklog({ q1Tasks, q2Tasks, allTasks, onStart, onEdit }) {
             {q1Tasks.slice(0, 6).map((task) => {
               const blocked = isBlocked(task, allTasks);
               return (
-                <div key={task.id} className={`mini-backlog-item${blocked ? ' mini-backlog-item-blocked' : ''}`}>
+                <div key={task.id} className={`mini-backlog-item${blocked ? ' mini-backlog-item-blocked' : ''}${highlightTaskIds?.has(task.id) ? ' mini-backlog-item-import-new' : ''}`}>
                   <div
                     className="mini-backlog-item-title"
                     onClick={() => onEdit?.(task)}
@@ -241,6 +241,7 @@ export default function Kanban({
   wipLimits,
   getWildcardsUsedToday,
   maxWildcardsPerDay,
+  highlightTaskIds,
 }) {
   const [activeId, setActiveId] = useState(null);
 
@@ -348,6 +349,7 @@ export default function Kanban({
                 allTasks={allTasks}
                 onStart={onStart}
                 onEdit={onEdit}
+                highlightTaskIds={highlightTaskIds}
               />
             )}
 

@@ -1,7 +1,7 @@
 # ROADMAP: NeuroForge
 ## Wohin geht die Reise?
 
-**Zuletzt aktualisiert:** 15. Februar 2026
+**Zuletzt aktualisiert:** 16. Februar 2026
 
 ---
 
@@ -29,11 +29,6 @@ v5.0 ist komplett (alle Bloecke erledigt). Naechste groessere Features siehe Mit
 - [ ] **Skill-Set Templates** – Vordefinierte Vorlagen ("Softwareentwicklung", "Physik Klasse 10", "Sprachen lernen" etc.)
 - [ ] **Template-Auswahl** – Bei erstem Start oder ueber Settings waehlbar
 - [ ] **Community Templates** – Templates teilen/importieren
-
-### Import-Undo
-- [ ] **Snapshot vor AI-Import** – Vor jedem Lernpfad-Import automatisch State-Snapshot speichern
-- [ ] **Rueckgaengig-Button** – Nach Import anzeigen, stellt vorherigen Zustand wieder her
-- [ ] **Timeout** – Button verschwindet nach ~5 Minuten
 
 ### Browser-Testing & Feinschliff
 - [ ] Systematischer Cross-Browser-Test
@@ -102,6 +97,10 @@ Offene Quests automatisch in freie Kalender-Slots einplanen. Bei Nicht-Erledigun
 | 15.02 | Relevance Score Formel | Verfuegbare_Zeit = dueDate - (jetzt + eigene_duration + dep_durations). Score = MAX(1, 7-Tage_Rest) x Quadrant-Gewicht. Blockiert = -1, kein dueDate = 0 |
 | 15.02 | Blockiert-Design dezent | opacity 0.55 + Schloss-Symbol statt Ketten. Sanft statt bestrafend (Neurodivergenz-Prinzip) |
 | 15.02 | Score nur im Eisenhower | Kanban-Spalten bleiben manuell sortiert (dort arbeitet man aktiv). Score sortiert nur Backlog-Quadranten |
+| 16.02 | Import-Preview statt sofort-Import | Snapshot + Review-Banner. User kann frei navigieren, neue Items an rotem Rand erkennen, dann Uebernehmen/Rueckgaengig |
+| 16.02 | Highlight per Corporate-Rot | Neue Import-Items: roter linker Rand (#c60a0f) + dezenter Hintergrund. Visuell sofort erkennbar, passt ins CI |
+| 16.02 | Banner leitet den User | Floating Banner erklaert Farbcode + wo neue Items zu finden sind + was die Buttons tun. Kein Modal, frei navigierbar |
+| 16.02 | Category-Deduplizierung Fix | importSkills pruefte stale Closure statt prev-State → doppelte Kategorien. Fix: Deduplizierung im funktionalen Updater |
 
 ---
 

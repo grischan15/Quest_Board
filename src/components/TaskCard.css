@@ -277,3 +277,10 @@
   padding: 1px 6px;
   border-radius: 3px;
 }
+
+/* Import Preview Highlight */
+.task-card-import-new {
+  border-left: 4px solid #c60a0f;
+  background: rgba(198, 10, 15, 0.05);
+  box-shadow: 0 1px 6px rgba(198, 10, 15, 0.2);
+}

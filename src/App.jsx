@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import Header from './components/Header';
 import Eisenhower from './components/Eisenhower';
 import Kanban from './components/Kanban';
@@ -14,6 +14,7 @@ import PersonalDashboard from './components/PersonalDashboard';
 import SchmiedePage from './components/schmiede/SchmiedePage';
 import HelpPage from './components/HelpPage';
 import DemoBanner from './components/DemoBanner';
+import ImportReviewBanner from './components/ImportReviewBanner';
 import { useQuestBoard } from './hooks/useQuestBoard';
 import { getLevel } from './data/questTypes';
 import './App.css';
@@ -30,8 +31,20 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [projectModal, setProjectModal] = useState(null);
   const [deleteProjectTarget, setDeleteProjectTarget] = useState(null);
+  const [importReview, setImportReview] = useState(null);
 
   const board = useQuestBoard();
+
+  const highlightIds = useMemo(() => {
+    if (!importReview?.newIds) return null;
+    const ids = importReview.newIds;
+    return {
+      tasks: new Set(ids.tasks || []),
+      skills: new Set(ids.skills || []),
+      projects: new Set(ids.projects || []),
+      categories: new Set(ids.categories || []),
+    };
+  }, [importReview]);
 
   const handleNewQuest = useCallback(() => {
     setTaskModal({ mode: 'create' });
@@ -283,11 +296,24 @@ export default function App() {
     [board]
   );
 
+  // --- Import Review handlers ---
+  const handleImportConfirm = useCallback(() => {
+    board.discardSnapshot();
+    setImportReview(null);
+  }, [board]);
+
+  const handleImportUndo = useCallback(() => {
+    board.restoreSnapshot();
+    setImportReview(null);
+  }, [board]);
+
   // --- AI Setup import handler ---
   const handleAiImportJson = useCallback(
     (data, options = {}) => {
+      board.saveSnapshot();
       const mergeSkills = options.mergeSkills || false;
       const stats = { categoriesNew: 0, categoriesSkipped: 0, skillsNew: 0, skillsMerged: 0, quests: 0, projects: 0 };
+      const newIds = { categories: [], skills: [], projects: [], tasks: [] };
 
       // Import categories
       if (data.categories && data.categories.length > 0) {
@@ -314,6 +340,7 @@ export default function App() {
           }
           if (newCats.length > 0) {
             board.updateCategories((prev) => [...prev, ...newCats]);
+            newIds.categories = newCats.map((c) => c.id);
           }
         } else {
           // Original mode: add all categories
@@ -327,6 +354,7 @@ export default function App() {
           }));
           board.updateCategories((prev) => [...prev, ...newCats]);
           stats.categoriesNew = newCats.length;
+          newIds.categories = newCats.map((c) => c.id);
         }
       }
 
@@ -366,6 +394,7 @@ export default function App() {
               skillIdMap.set(`__idx_skill_${index}`, importedNew[j].id);
             });
             stats.skillsNew = skillsToCreate.length;
+            newIds.skills = importedNew.map((s) => s.id);
           }
         } else {
           // Original mode: create all skills
@@ -383,6 +412,7 @@ export default function App() {
             skillIdMap.set(`__idx_skill_${i}`, skill.id);
           });
           stats.skillsNew = importedSkills.length;
+          newIds.skills = importedSkills.map((s) => s.id);
         }
       }
 
@@ -395,7 +425,8 @@ export default function App() {
               requiredLevel: r.requiredLevel || 2,
             }))
             .filter((r) => r.skillId && !r.skillId.startsWith('__idx_'));
-          board.createProject(proj.name, proj.description, proj.icon, requirements);
+          const createdProj = board.createProject(proj.name, proj.description, proj.icon, requirements);
+          newIds.projects.push(createdProj.id);
           stats.projects++;
         }
       }
@@ -418,6 +449,7 @@ export default function App() {
         }));
         const importedTasks = board.importTasks(taskList);
         stats.quests = importedTasks.length;
+        newIds.tasks = importedTasks.map((t) => t.id);
 
         // Build map: __idx_task_N -> real task ID
         importedTasks.forEach((task, i) => {
@@ -435,6 +467,8 @@ export default function App() {
         }
       }
 
+      const name = data.meta?.name || 'Lernpfad';
+      setImportReview({ stats, name, newIds });
       return stats;
     },
     [board]
@@ -471,7 +505,7 @@ export default function App() {
         <DemoBanner onClearDemo={board.clearDemoData} />
       )}
 
-      <main className="app-main">
+      <main className={`app-main${importReview ? ' app-main-review-active' : ''}`}>
         {activeTab === 'eisenhower' && (
           <Eisenhower
             getQuadrantTasks={board.getQuadrantTasks}
@@ -481,6 +515,7 @@ export default function App() {
             onDelete={handleRequestDelete}
             moveToQuadrant={board.moveToQuadrant}
             onNewQuest={handleNewQuest}
+            highlightTaskIds={highlightIds?.tasks}
           />
         )}
 
@@ -503,6 +538,7 @@ export default function App() {
             wipLimits={board.settings.wipLimits}
             getWildcardsUsedToday={board.getWildcardsUsedToday}
             maxWildcardsPerDay={board.settings.maxWildcardsPerDay}
+            highlightTaskIds={highlightIds?.tasks}
           />
         )}
 
@@ -518,6 +554,7 @@ export default function App() {
             onAddProject={handleAddProject}
             onEditProject={handleEditProject}
             onToggleDashboard={board.toggleCategoryDashboard}
+            highlightIds={highlightIds}
           />
         )}
 
@@ -536,6 +573,7 @@ export default function App() {
             projects={board.projects}
             tasks={board.tasks}
             isDemo={board.isDemo}
+            importReview={importReview}
             onWizardSave={handleWizardSave}
             onImportTasks={handleImport}
             onExportData={board.exportData}
@@ -666,6 +704,12 @@ export default function App() {
           onClose={() => setShowSettings(false)}
         />
       )}
+
+      <ImportReviewBanner
+        review={importReview}
+        onConfirm={handleImportConfirm}
+        onUndo={handleImportUndo}
+      />
     </div>
   );
 }

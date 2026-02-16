@@ -3,7 +3,7 @@ import { AI_PROMPT_TEMPLATE, EXAMPLE_TEMPLATES } from '../../data/aiPromptTempla
 import { getLevelLabel } from '../../data/questTypes';
 import './AiLernpfad.css';
 
-export default function AiLernpfad({ categories, skills, projects, isDemo, onImportJson }) {
+export default function AiLernpfad({ categories, skills, projects, isDemo, onImportJson, importReview }) {
   const [copied, setCopied] = useState(false);
   const [bestandCopied, setBestandCopied] = useState(false);
   const [activeExample, setActiveExample] = useState(null);
@@ -202,14 +202,13 @@ export default function AiLernpfad({ categories, skills, projects, isDemo, onImp
   }
 
   function handleImport() {
-    if (!importPreview || !onImportJson) return;
-    const stats = onImportJson(importPreview, { mergeSkills });
-    const name = importPreview.meta?.name || 'Lernpfad';
-    setImportSuccess(name);
-    setImportStats(stats || null);
+    if (!importPreview || !onImportJson || importReview) return;
+    onImportJson(importPreview, { mergeSkills });
     setImportText('');
     setImportPreview(null);
     setImportError('');
+    setImportSuccess(null);
+    setImportStats(null);
   }
 
   const hasBestand = skills.length > 0;
@@ -353,6 +352,7 @@ export default function AiLernpfad({ categories, skills, projects, isDemo, onImp
             onChange={(e) => handleImportTextChange(e.target.value)}
             placeholder='{"meta": {...}, "categories": [...], "skills": [...], "projects": [...], "tasks": [...]}'
             rows={6}
+            disabled={!!importReview}
           />
           <div className="ai-lernpfad-import-actions">
             <button
@@ -416,14 +416,23 @@ export default function AiLernpfad({ categories, skills, projects, isDemo, onImp
                 <button
                   className="schmiede-btn schmiede-btn-primary schmiede-btn-sm"
                   onClick={handleImport}
+                  disabled={!!importReview}
                 >
-                  {'\uD83D\uDE80'} Jetzt importieren
+                  {importReview ? '\uD83D\uDD0D Import wird gepr\u00FCft...' : '\uD83D\uDE80 Jetzt importieren'}
                 </button>
               </div>
             );
           })()}
 
-          {importSuccess && (
+          {importReview && (
+            <div className="ai-lernpfad-review-hint">
+              {'\uD83D\uDD0D'} <strong>{importReview.name}</strong> wurde probeweise importiert.
+              Navigiere frei durch alle Tabs und pruefe die Daten.
+              Nutze das Banner unten zum Uebernehmen oder Rueckgaengig machen.
+            </div>
+          )}
+
+          {!importReview && importSuccess && (
             <div className="schmiede-success">
               {'\u2705'} "{importSuccess}" erfolgreich importiert!
               {importStats && (

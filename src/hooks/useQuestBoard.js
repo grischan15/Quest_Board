@@ -298,6 +298,7 @@ export const KANBAN_COLUMNS = [
 export function useQuestBoard() {
   const [rawState, setRawState] = useLocalStorage(STORAGE_KEY, getInitialState);
   const migrationRef = useRef({ version: null, error: null });
+  const importSnapshotRef = useRef(null);
 
   let state = rawState;
   let migrationError = null;
@@ -616,7 +617,13 @@ export function useQuestBoard() {
       }
     }
     if (newCats.length > 0) {
-      updateCategories((prev) => [...prev, ...newCats]);
+      updateCategories((prev) => {
+        // Deduplicate: skip categories already in prev (fixes race condition
+        // when handleAiImportJson creates categories before importSkills runs)
+        const prevIds = new Set(prev.map((c) => c.id));
+        const trulyNew = newCats.filter((c) => !prevIds.has(c.id));
+        return trulyNew.length > 0 ? [...prev, ...trulyNew] : prev;
+      });
     }
 
     const allCats = [...categories, ...newCats];
@@ -861,6 +868,22 @@ export function useQuestBoard() {
     ).length;
   }, [kanbanTasks]);
 
+  // --- Import Preview Snapshot ---
+  const saveSnapshot = useCallback(() => {
+    importSnapshotRef.current = JSON.parse(JSON.stringify(rawState));
+  }, [rawState]);
+
+  const restoreSnapshot = useCallback(() => {
+    if (importSnapshotRef.current) {
+      setRawState(importSnapshotRef.current);
+      importSnapshotRef.current = null;
+    }
+  }, [setRawState]);
+
+  const discardSnapshot = useCallback(() => {
+    importSnapshotRef.current = null;
+  }, []);
+
   // Export all data as JSON
   const exportData = useCallback(() => {
     const exportObj = {
@@ -970,5 +993,8 @@ export function useQuestBoard() {
     updateSettings,
     exportData,
     restoreData,
+    saveSnapshot,
+    restoreSnapshot,
+    discardSnapshot,
   };
 }

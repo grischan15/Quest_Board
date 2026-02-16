@@ -1,7 +1,7 @@
 # STATE: NeuroForge
 ## Wo stehen wir?
 
-**Zuletzt aktualisiert:** 15. Februar 2026
+**Zuletzt aktualisiert:** 16. Februar 2026
 
 ---
 
@@ -22,6 +22,7 @@
 - **Relevance Score** – Auto-Sortierung im Eisenhower nach Dringlichkeit (dueDate + Duration-Ketten + Quadrant-Gewicht), Urgency-Badges (Dringend/Bald faellig)
 - **Blockiert-Logik** – Tasks mit offenen Dependencies werden ausgegraut (opacity 0.55), Schloss-Symbol, kein Starten-Button, ans Ende sortiert
 - **KI-Lernpfad v2** – XP-Balancing-Regeln, 120%-Puffer-Pflicht, Validierungsanweisungen, dependsOn-Feld im Prompt
+- **Import-Preview-Modus** – Snapshot vor Import, Floating Review-Banner mit Stats + Anleitung, rote Hervorhebung neuer Items (Skills, Kategorien, Projekte, Quests), Uebernehmen/Rueckgaengig, freie Navigation waehrend Review
 - **Migrations-Sicherheitsnetz** – Auto-Backup vor Migration, Schema-Validierung, Fehler-Banner, Notfall-Restore in Settings
 - **Hilfe-Seite** – Konzept, Workflow, Covey/Eisenhower/Pareto, Farb-Code, Neurodivergenz-Prinzipien
 - **Gamification** – Quest-Typen (Focus/Input/Create/Routine/Reflect), Duration (Sprint/Kurz/Lang), XP (30/50/80), Konfetti + Level-Up
@@ -74,6 +75,7 @@ Quest_Board/
 │   │   ├── LineChart.jsx/css      <- Quest-Typen ueber Zeit
 │   │   ├── EnergyCurve.jsx/css    <- Persoenliche Energiekurve
 │   │   ├── DemoBanner.jsx/css     <- Demo-Modus Banner
+│   │   ├── ImportReviewBanner.jsx/css <- Import-Preview: Floating Banner mit Stats + Guide + Farbmuster
 │   │   ├── HelpPage.jsx/css       <- Hilfe-Seite
 │   │   ├── TaskCard.jsx/css       <- Quest-Karte (+ Dependency/Blocked-Badge + Urgency-Badge)
 │   │   ├── DroppableContainer.jsx <- DnD Wrapper
@@ -94,6 +96,8 @@ Quest_Board/
 │   ├── App.jsx/css
 │   ├── main.jsx
 │   └── index.css
+├── testdaten/
+│   └── ki_lernpfad_testprojekt.json  <- Testdatei fuer Import-Preview (React Testing, 2 Kat, 6 Skills, 8 Quests, 1 Projekt)
 ├── package.json
 ├── vite.config.js
 └── index.html

@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "name": "React Testing Grundlagen",
+    "description": "Lernpfad fuer automatisiertes Testen von React-Anwendungen mit Vitest und Testing Library",
+    "version": 1,
+    "generatedFor": "neuroforge-v15"
+  },
+  "categories": [
+    {
+      "id": "testing-grundlagen",
+      "label": "Testing Grundlagen",
+      "icon": "\uD83E\uDDEA",
+      "predefined": false,
+      "order": 0,
+      "showInDashboard": true
+    },
+    {
+      "id": "react-testing",
+      "label": "React Testing",
+      "icon": "\u269B\uFE0F",
+      "predefined": false,
+      "order": 1,
+      "showInDashboard": true
+    }
+  ],
+  "skills": [
+    {
+      "name": "Unit Tests verstehen",
+      "category": "testing-grundlagen",
+      "categoryLabel": "Testing Grundlagen",
+      "status": "open",
+      "level": 0,
+      "xpCurrent": 0
+    },
+    {
+      "name": "Vitest Setup & Config",
+      "category": "testing-grundlagen",
+      "categoryLabel": "Testing Grundlagen",
+      "status": "open",
+      "level": 0,
+      "xpCurrent": 0
+    },
+    {
+      "name": "Assertions & Matcher",
+      "category": "testing-grundlagen",
+      "categoryLabel": "Testing Grundlagen",
+      "status": "open",
+      "level": 0,
+      "xpCurrent": 0
+    },
+    {
+      "name": "Mocking & Spying",
+      "category": "testing-grundlagen",
+      "categoryLabel": "Testing Grundlagen",
+      "status": "open",
+      "level": 0,
+      "xpCurrent": 0
+    },
+    {
+      "name": "React Testing Library",
+      "category": "react-testing",
+      "categoryLabel": "React Testing",
+      "status": "open",
+      "level": 0,
+      "xpCurrent": 0
+    },
+    {
+      "name": "User Events testen",
+      "category": "react-testing",
+      "categoryLabel": "React Testing",
+      "status": "open",
+      "level": 0,
+      "xpCurrent": 0
+    }
+  ],
+  "projects": [
+    {
+      "name": "Getestete Todo-App",
+      "description": "Eine Todo-App mit vollstaendiger Test-Suite: Unit Tests fuer Logik, Component Tests fuer UI, und Integration Tests fuer Workflows.",
+      "icon": "\u2705",
+      "requirements": [
+        { "skillId": "SKILL_INDEX_0", "requiredLevel": 2 },
+        { "skillId": "SKILL_INDEX_2", "requiredLevel": 2 },
+        { "skillId": "SKILL_INDEX_4", "requiredLevel": 3 },
+        { "skillId": "SKILL_INDEX_5", "requiredLevel": 2 }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Was sind Unit Tests? Artikel lesen",
+      "description": "Lies einen Einfuehrungsartikel zu Unit Testing: Was wird getestet, warum, und wie unterscheiden sich Unit/Integration/E2E Tests?",
+      "quadrant": "q2",
+      "questType": "input",
+      "duration": 20,
+      "xp": 30,
+      "linkedSkills": ["SKILL_INDEX_0"],
+      "dependsOn": []
+    },
+    {
+      "title": "Vitest in ein Vite-Projekt einrichten",
+      "description": "Installiere Vitest in einem bestehenden Vite-Projekt. Konfiguriere vitest.config.js und schreibe einen ersten Dummy-Test der gruen wird.",
+      "quadrant": "q2",
+      "questType": "routine",
+      "duration": 25,
+      "xp": 40,
+      "linkedSkills": ["SKILL_INDEX_1"],
+      "dependsOn": []
+    },
+    {
+      "title": "5 Assertions mit expect() schreiben",
+      "description": "Schreibe 5 verschiedene Tests mit expect(): toBe, toEqual, toContain, toThrow, toBeTruthy. Teste damit eine einfache Hilfsfunktion.",
+      "quadrant": "q2",
+      "questType": "focus",
+      "duration": 30,
+      "xp": 50,
+      "linkedSkills": ["SKILL_INDEX_2", "SKILL_INDEX_0"],
+      "dependsOn": ["TASK_INDEX_1"]
+    },
+    {
+      "title": "Eine Funktion mit vi.fn() mocken",
+      "description": "Erstelle einen Test, der eine Callback-Funktion mit vi.fn() mockt. Pruefe, ob sie aufgerufen wurde und mit welchen Argumenten.",
+      "quadrant": "q2",
+      "questType": "focus",
+      "duration": 30,
+      "xp": 50,
+      "linkedSkills": ["SKILL_INDEX_3", "SKILL_INDEX_2"],
+      "dependsOn": ["TASK_INDEX_2"]
+    },
+    {
+      "title": "Erste React-Komponente mit render() testen",
+      "description": "Installiere @testing-library/react. Rendere eine einfache Komponente und pruefe mit screen.getByText(), ob der richtige Text angezeigt wird.",
+      "quadrant": "q2",
+      "questType": "focus",
+      "duration": 35,
+      "xp": 60,
+      "linkedSkills": ["SKILL_INDEX_4"],
+      "dependsOn": ["TASK_INDEX_1"]
+    },
+    {
+      "title": "Button-Klick mit userEvent testen",
+      "description": "Teste eine Komponente mit einem Button: Simuliere einen Klick mit userEvent.click() und pruefe, ob sich der State korrekt aendert.",
+      "quadrant": "q2",
+      "questType": "focus",
+      "duration": 30,
+      "xp": 50,
+      "linkedSkills": ["SKILL_INDEX_5", "SKILL_INDEX_4"],
+      "dependsOn": ["TASK_INDEX_4"]
+    },
+    {
+      "title": "Formular-Eingabe testen",
+      "description": "Teste ein Eingabeformular: Tippe mit userEvent.type() Text ein, klicke Submit, und pruefe ob die Daten korrekt verarbeitet werden.",
+      "quadrant": "q2",
+      "questType": "focus",
+      "duration": 35,
+      "xp": 60,
+      "linkedSkills": ["SKILL_INDEX_5", "SKILL_INDEX_4"],
+      "dependsOn": ["TASK_INDEX_5"]
+    },
+    {
+      "title": "Reflexion: Meine Test-Strategie",
+      "description": "Schreibe in 5-10 Saetzen auf: Welche Art von Tests (Unit/Component/Integration) findest du am nuetzlichsten? Was wuerdest du in deinem naechsten Projekt als erstes testen?",
+      "quadrant": "q2",
+      "questType": "reflect",
+      "duration": 15,
+      "xp": 25,
+      "linkedSkills": ["SKILL_INDEX_0"],
+      "dependsOn": ["TASK_INDEX_3", "TASK_INDEX_6"]
+    }
+  ]
+}

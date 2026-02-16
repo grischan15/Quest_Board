@@ -32,6 +32,7 @@ export default function TaskCard({
   showFastLane = false,
   isTaskBlocked = false,
   relevanceScore = null,
+  isHighlighted = false,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -66,7 +67,7 @@ export default function TaskCard({
       style={cardStyle}
       className={`task-card ${task.fastLane && !isDone ? 'task-card-fastlane' : ''} ${
         isDone ? 'task-card-done' : ''
-      } ${isDone && wasFastLane ? 'task-card-was-fastlane' : ''} ${isTaskBlocked ? 'task-card-blocked' : ''}`}
+      } ${isDone && wasFastLane ? 'task-card-was-fastlane' : ''} ${isTaskBlocked ? 'task-card-blocked' : ''} ${isHighlighted ? 'task-card-import-new' : ''}`}
       {...attributes}
       {...listeners}
     >

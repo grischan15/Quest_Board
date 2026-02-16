@@ -420,6 +420,19 @@
   }
 }
 
+/* Import Preview Highlights */
+.skill-item-import-new {
+  border-left: 4px solid #c60a0f;
+  background: rgba(198, 10, 15, 0.06);
+}
+
+.skill-category-import-new {
+  border-left: 4px solid #c60a0f;
+  background: rgba(198, 10, 15, 0.03);
+  border-radius: 8px;
+  padding-left: 4px;
+}
+
 /* prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .skill-progress-fill {

@@ -5,7 +5,7 @@ import RpgDashboard from './RpgDashboard';
 import ProjectCard from './ProjectCard';
 import './SkillTree.css';
 
-export default function SkillTree({ skills, tasks, categories, projects, onEditSkill, onAddSkill, onEditCategory, onAddProject, onEditProject, onToggleDashboard }) {
+export default function SkillTree({ skills, tasks, categories, projects, onEditSkill, onAddSkill, onEditCategory, onAddProject, onEditProject, onToggleDashboard, highlightIds }) {
   const [collapsed, setCollapsed] = useState({});
   const [showHidden, setShowHidden] = useState(false);
   const [showDoneProjects, setShowDoneProjects] = useState(false);
@@ -95,6 +95,7 @@ export default function SkillTree({ skills, tasks, categories, projects, onEditS
                         project={proj}
                         skills={skills}
                         onClick={onEditProject ? () => onEditProject(proj) : undefined}
+                        isHighlighted={highlightIds?.projects?.has(proj.id)}
                       />
                     ))}
                   </div>
@@ -120,6 +121,7 @@ export default function SkillTree({ skills, tasks, categories, projects, onEditS
                             project={proj}
                             skills={skills}
                             onClick={onEditProject ? () => onEditProject(proj) : undefined}
+                            isHighlighted={highlightIds?.projects?.has(proj.id)}
                           />
                         ))}
                       </div>
@@ -138,7 +140,7 @@ export default function SkillTree({ skills, tasks, categories, projects, onEditS
 
           <div className="skilltree-categories">
             {categoryData.map((cat) => (
-              <div key={cat.id} className="skill-category">
+              <div key={cat.id} className={`skill-category${highlightIds?.categories?.has(cat.id) ? ' skill-category-import-new' : ''}`}>
                 <div className="skill-category-header-row">
                   <button
                     className="skill-category-header"
@@ -190,7 +192,7 @@ export default function SkillTree({ skills, tasks, categories, projects, onEditS
                           key={skill.id}
                           className={`skill-item ${
                             level >= 1 ? 'skill-learned' : 'skill-open'
-                          } ${onEditSkill ? 'skill-item-clickable' : ''}`}
+                          } ${onEditSkill ? 'skill-item-clickable' : ''} ${highlightIds?.skills?.has(skill.id) ? 'skill-item-import-new' : ''}`}
                           onClick={onEditSkill ? () => onEditSkill(skill) : undefined}
                         >
                           <span className="skill-level-stars">

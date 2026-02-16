@@ -13,6 +13,10 @@
   min-height: 0;
 }
 
+.app-main-review-active {
+  padding-bottom: 130px;
+}
+
 .migration-banner {
   display: flex;
   align-items: center;

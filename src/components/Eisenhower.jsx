@@ -30,6 +30,7 @@ export default function Eisenhower({
   onDelete,
   moveToQuadrant,
   onNewQuest,
+  highlightTaskIds,
 }) {
   const [activeId, setActiveId] = useState(null);
   const [filterType, setFilterType] = useState(null);
@@ -149,6 +150,7 @@ export default function Eisenhower({
                             onDelete={onDelete}
                             isTaskBlocked={blocked}
                             relevanceScore={scoreData.score > 0 ? scoreData.score : null}
+                            isHighlighted={highlightTaskIds?.has(task.id)}
                           />
                         );
                       })}
@@ -186,6 +188,7 @@ export default function Eisenhower({
                         onDelete={onDelete}
                         isTaskBlocked={blocked}
                         relevanceScore={scoreData.score > 0 ? scoreData.score : null}
+                        isHighlighted={highlightTaskIds?.has(task.id)}
                       />
                     );
                   })}

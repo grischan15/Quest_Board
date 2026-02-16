@@ -1,0 +1,181 @@
+.import-review-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #1a2332;
+  border-top: 3px solid #c60a0f;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+  animation: import-review-slide-up 0.3s ease-out;
+}
+
+@keyframes import-review-slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.import-review-banner-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 24px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Top row: headline + buttons */
+.import-review-banner-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.import-review-banner-headline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.import-review-banner-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.import-review-banner-headline strong {
+  color: #f1f5f9;
+  font-size: 0.92rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.import-review-banner-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.import-review-banner-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.import-review-banner-btn:hover {
+  transform: translateY(-1px);
+}
+
+.import-review-banner-btn:active {
+  transform: translateY(0);
+}
+
+.import-review-banner-btn-confirm {
+  background: #22c55e;
+  color: #fff;
+}
+
+.import-review-banner-btn-confirm:hover {
+  background: #16a34a;
+}
+
+.import-review-banner-btn-undo {
+  background: #475569;
+  color: #e2e8f0;
+}
+
+.import-review-banner-btn-undo:hover {
+  background: #64748b;
+}
+
+/* Guide area */
+.import-review-banner-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.import-review-banner-guide-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.import-review-banner-guide-row strong {
+  color: #f1f5f9;
+}
+
+/* Red color sample bar - mimics the highlight style */
+.import-review-banner-color-sample {
+  display: inline-block;
+  width: 4px;
+  height: 22px;
+  min-width: 4px;
+  background: #c60a0f;
+  border-radius: 2px;
+  box-shadow: 4px 0 8px rgba(198, 10, 15, 0.25);
+  flex-shrink: 0;
+}
+
+.import-review-banner-stats {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-weight: 500;
+  padding-left: 14px;
+}
+
+.import-review-banner-hint {
+  font-size: 0.75rem;
+  color: #64748b;
+  padding-left: 14px;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 600px) {
+  .import-review-banner-content {
+    padding: 12px 16px 14px;
+  }
+
+  .import-review-banner-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .import-review-banner-actions {
+    justify-content: stretch;
+  }
+
+  .import-review-banner-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .import-review-banner {
+    animation: none;
+  }
+
+  .import-review-banner-btn {
+    transition: none;
+    transform: none !important;
+  }
+}
